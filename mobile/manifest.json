@@ -1,0 +1,56 @@
+{
+    "name" : "校园二手书",
+    "appid" : "__UNI__CB4CDD4",
+    "description" : "校园二手教材交易平台",
+    "versionName" : "1.0.0",
+    "versionCode" : "100",
+    "transformPx" : false,
+    "app-plus" : {
+        "usingComponents" : true,
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
+        },
+        "modules" : {},
+        "distribute" : {
+            "android" : {
+                "permissions" : [
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>"
+                ]
+            },
+            "ios" : {},
+            "sdkConfigs" : {}
+        }
+    },
+    "h5" : {
+        "title" : "校园二手书",
+        "router" : {
+            "mode" : "hash"
+        },
+        "devServer" : {
+            "proxy" : {
+                "/api" : {
+                    "target" : "http://127.0.0.1",
+                    "changeOrigin" : true
+                },
+                "/storage" : {
+                    "target" : "http://127.0.0.1",
+                    "changeOrigin" : true
+                }
+            }
+        }
+    },
+    "mp-weixin" : {
+        "appid" : "wxa5fad279b9125cab",
+        "setting" : {
+            "urlCheck" : false
+        },
+        "usingComponents" : true
+    }
+}

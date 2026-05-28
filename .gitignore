@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+public/build/
+public/hot/
+storage/*.key
+storage/framework/cache/data/
+storage/framework/sessions/
+storage/framework/views/
+storage/logs/
+
+# Cache
+.phpunit.result.cache
+.php-cs-fixer.cache
+composer.lock
+package-lock.json
+yarn.lock
+
+# CodeGraph
+.codegraph/
+
+# Backend
+backend/node_modules/
+backend/vendor/
+backend/.env
+backend/storage/framework/cache/data/
+backend/storage/framework/sessions/
+backend/storage/framework/views/
+backend/storage/logs/
+
+# Mobile
+mobile/node_modules/
+mobile/.env
+mobile/unpackage/

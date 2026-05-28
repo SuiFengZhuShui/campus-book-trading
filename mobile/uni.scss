@@ -1,0 +1,170 @@
+/* 校园二手书 uni-app 全局样式 — 轻奢学院风 */
+
+uni-page-body {
+  background-color: #fdfaf4 !important;
+}
+page {
+  background-color: #fdfaf4;
+  color: #2c2416;
+  font-size: 15px;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* ====== 按钮 ====== */
+.btn-primary {
+  background: linear-gradient(135deg, #b49450, #d4bc7c);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-amber {
+  background: linear-gradient(135deg, #b49450, #d4bc7c);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-teal {
+  background: linear-gradient(135deg, #4a6741, #5a7d51);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-wine {
+  background: linear-gradient(135deg, #6b2737, #8b3a4a);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-outline {
+  background: #fffdf9;
+  color: #2c2416;
+  border: 1px solid #e5dccf;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.btn-danger {
+  background: #6b2737;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* ====== 颜色工具类 ====== */
+.text-amber { color: #b49450; }
+.text-teal { color: #4a6741; }
+.text-coral { color: #e07b5a; }
+.text-indigo { color: #5b7fbd; }
+.text-danger { color: #6b2737; }
+.text-success { color: #4a6741; }
+.text-muted { color: #8c8478; }
+.text-dark { color: #2c2416; }
+.text-wine { color: #6b2737; }
+
+/* ====== 价格 ====== */
+.price { color: #6b2737; font-weight: 700; }
+.price-original { color: #8c8478; text-decoration: line-through; font-size: 13px; }
+
+/* ====== 卡片 ====== */
+.card {
+  background: #fffdf9;
+  border-radius: 14px;
+  border: 1px solid #e5dccf;
+  overflow: hidden;
+}
+
+/* 卡片左侧彩色装饰条 */
+.card-accent-blue   { border-left: 3px solid #b49450; }
+.card-accent-amber  { border-left: 3px solid #b49450; }
+.card-accent-teal   { border-left: 3px solid #4a6741; }
+.card-accent-coral  { border-left: 3px solid #e07b5a; }
+.card-accent-indigo { border-left: 3px solid #5b7fbd; }
+.card-accent-green  { border-left: 3px solid #4a6741; }
+.card-accent-red    { border-left: 3px solid #6b2737; }
+.card-accent-gray   { border-left: 3px solid #8c8478; }
+
+/* 卡片顶部彩色条 */
+.card-top-teal  { border-top: 3px solid #4a6741; }
+.card-top-amber { border-top: 3px solid #b49450; }
+.card-top-wine  { border-top: 3px solid #6b2737; }
+
+/* ====== 渐变头部 ====== */
+.gradient-blue-indigo { background: linear-gradient(160deg, #2c2416 0%, #3d3020 60%, #5b7fbd 100%); }
+.gradient-blue-teal   { background: linear-gradient(160deg, #2c2416 0%, #3d3020 40%, #4a6741 100%); }
+.gradient-amber-coral { background: linear-gradient(135deg, #b49450, #e07b5a); }
+.gradient-warm        { background: linear-gradient(160deg, #1a1510 0%, #2c2416 50%, #3d3020 100%); }
+
+/* ====== 标签 ====== */
+.badge-success {
+  background: rgba(74,103,65,0.1); color: #4a6741;
+  padding: 2px 8px; border-radius: 12px; font-size: 12px;
+}
+.badge-warning {
+  background: rgba(180,148,80,0.1); color: #8b6914;
+  padding: 2px 8px; border-radius: 12px; font-size: 12px;
+}
+.badge-danger {
+  background: rgba(107,39,55,0.08); color: #6b2737;
+  padding: 2px 8px; border-radius: 12px; font-size: 12px;
+}
+.badge-info {
+  background: rgba(180,148,80,0.08); color: #b49450;
+  padding: 2px 8px; border-radius: 12px; font-size: 12px;
+}
+.badge-teal {
+  background: rgba(74,103,65,0.1); color: #4a6741;
+  padding: 2px 8px; border-radius: 12px; font-size: 12px;
+}
+.badge-coral {
+  background: rgba(224,123,90,0.1); color: #e07b5a;
+  padding: 2px 8px; border-radius: 12px; font-size: 12px;
+}
+.badge-indigo {
+  background: rgba(91,127,189,0.1); color: #5b7fbd;
+  padding: 2px 8px; border-radius: 12px; font-size: 12px;
+}
+
+/* ====== 间距 ====== */
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mb-8  { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.p-12 { padding: 12px; }
+.p-16 { padding: 16px; }
+.p-20 { padding: 20px; }
+
+/* ====== 通用布局 ====== */
+.flex-row { display: flex; flex-direction: row; align-items: center; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; }
+.text-center { text-align: center; }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ellipsis-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+
+/* ====== 分割线 ====== */
+.divider { height: 1px; background: #e5dccf; margin: 12px 0; }
+
+/* ====== 空状态 ====== */
+.empty-state { text-align: center; padding: 60px 20px; color: #8c8478; font-size: 14px; }

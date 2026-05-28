@@ -35,6 +35,9 @@ yarn.lock
 # CodeGraph
 .codegraph/
 
+# Worktrees
+.worktrees/
+
 # Backend
 backend/node_modules/
 backend/vendor/

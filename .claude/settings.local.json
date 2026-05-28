@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -r \"echo PHP_VERSION;\")",
+      "Bash(php artisan *)",
+      "Bash(php -r 'try { new PDO\\('\\\\''mysql:host=127.0.0.1;port=3306'\\\\'', '\\\\''root'\\\\'', '\\\\''root'\\\\''\\); echo '\\\\''MySQL OK'\\\\''; } catch\\(Exception $e\\) { echo '\\\\''MySQL 不可用: '\\\\'' . $e->getMessage\\(\\); }')",
+      "Bash(php -r 'try { new PDO\\('\\\\''mysql:host=127.0.0.1;port=3306'\\\\'', '\\\\''root'\\\\'', '\\\\''root'\\\\''\\)->exec\\('\\\\''CREATE DATABASE IF NOT EXISTS campus_books DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'\\\\''\\); echo '\\\\''建库OK'\\\\''; } catch\\(Exception $e\\) { echo $e->getMessage\\(\\); }')",
+      "Bash(php -r '$pdo = new PDO\\('\\\\''mysql:host=127.0.0.1;port=3306'\\\\'', '\\\\''root'\\\\'', '\\\\''root'\\\\''\\); $pdo->exec\\('\\\\''CREATE DATABASE IF NOT EXISTS campus_books DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'\\\\''\\); echo '\\\\''建库OK'\\\\'';')",
+      "Bash(npx vite *)",
+      "Bash(npm -v)",
+      "Bash(npx --version)",
+      "Bash(npx degit *)",
+      "Bash(npm info *)",
+      "Bash(npm install *)",
+      "WebSearch",
+      "Bash(curl -L -o /tmp/uni-preset-vue-vite.zip \"https://gitee.com/dcloud/uni-preset-vue/repository/archive/vite.zip\")",
+      "Bash(xxd)",
+      "Bash(rm -rf \"C:\\\\Users\\\\Administrator\\\\Desktop\\\\Schoolcampus_books\\\\mobile\")",
+      "Bash(unzip -o uni-preset-vue-vite.zip -d uni-template)",
+      "Bash(rm -rf mobile /tmp/uni-template)",
+      "Bash(npx @dcloudio/uvm@latest alpha)",
+      "Bash(npx uni *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" http://localhost:8080/)",
+      "Bash(curl -s http://localhost:8080/)",
+      "Bash(curl -s http://localhost:8080/api/books -H \"Accept: application/json\")",
+      "Bash(npm run *)",
+      "Bash(curl -s -w \"\\\\nHTTP:%{http_code}\" http://localhost:8080/api/books -H \"Accept: application/json\")",
+      "Bash(curl -s -o /dev/null -w \"index.html HTTP:%{http_code}\" http://localhost:8080/)",
+      "Bash(node -e \"try { require\\('fs'\\).readFileSync\\('dist/build/h5/index.html','utf8'\\).match\\(/src=\\\\\"\\([^\\\\\"]+\\\\.js\\)\\\\\"/\\); } catch\\(e\\) {}\")",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080__TRACKED_VAR__)",
+      "Bash(grep -oE '\"code\":[0-9]+|\"title\":\"[^\"]{1,20}')",
+      "Bash(curl -s http://localhost:8080/api/categories -H \"Accept: application/json\")",
+      "Bash(grep -oE '\"code\":[0-9]+|\"name\":\"[^\"]{1,15}')",
+      "Bash(curl -s http://localhost:8080/api/colleges -H \"Accept: application/json\")",
+      "Bash(npx playwright *)",
+      "Bash(node -e \"const {chromium} = require\\('playwright'\\); \\(async\\(\\)=>{const b=await chromium.launch\\({headless:true}\\);const p=await b.newPage\\(\\);await p.goto\\('http://localhost:8080/',{waitUntil:'networkidle',timeout:15000}\\);console.log\\('标题:',await p.title\\(\\)\\);await p.waitForTimeout\\(3000\\);const c=await p.$$\\('.book-card'\\);console.log\\('卡片数:',c.length\\);const t=await p.$$\\('.tab-item'\\);console.log\\('Tab数:',t.length\\);await p.screenshot\\({path:'/tmp/uni-test.png',fullPage:true}\\);console.log\\('截图: /tmp/uni-test.png'\\);await b.close\\(\\);console.log\\('测试完成'\\);}\\)\\(\\)\")",
+      "Bash(node test.mjs)",
+      "Bash(node test-debug.mjs)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}

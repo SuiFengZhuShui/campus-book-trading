@@ -1,0 +1,44 @@
+
+.container.data-v-e654fd88 { padding: 12px; min-height: 100vh;
+}
+.book-card.data-v-e654fd88 { padding: 14px; margin-bottom: 10px;
+}
+.book-row.data-v-e654fd88 { display: flex;
+}
+.cover.data-v-e654fd88 { width: 70px; height: 95px; border-radius: 6px; flex-shrink: 0; background: #f0ede7; margin-right: 12px;
+}
+.cover-placeholder.data-v-e654fd88 { width: 70px; height: 95px; border-radius: 6px; flex-shrink: 0; background: #f0ede7; margin-right: 12px;
+}
+.book-info.data-v-e654fd88 { flex: 1;
+}
+.title.data-v-e654fd88 { font-size: 15px; font-weight: 500; color: #1a1f2b; line-height: 1.4;
+}
+.status-tag.data-v-e654fd88 { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-top: 6px;
+}
+.status-success.data-v-e654fd88 { background: #f0fdfa; color: #0d9488;
+}
+.status-info.data-v-e654fd88 { background: #eff6ff; color: #1e3a5f;
+}
+.status-warning.data-v-e654fd88 { background: #fefce8; color: #b0822c;
+}
+.status-danger.data-v-e654fd88 { background: #fef2f2; color: #bc4742;
+}
+.price-row.data-v-e654fd88 { display: flex; margin-top: 6px;
+}
+.price.data-v-e654fd88 { margin-right: 12px;
+}
+.price.data-v-e654fd88 { font-size: 14px; color: #c7915c; font-weight: 600;
+}
+.cost.data-v-e654fd88 { font-size: 12px; color: #9d9fa8;
+}
+.reject-reason.data-v-e654fd88 { font-size: 12px; color: #bc4742; margin-top: 4px; display: block;
+}
+.date.data-v-e654fd88 { font-size: 11px; color: #9d9fa8; margin-top: 4px; display: block;
+}
+.actions-row.data-v-e654fd88 { display: flex; margin-top: 8px;
+}
+.btn-sm.data-v-e654fd88 { padding: 4px 12px; font-size: 12px; border-radius: 6px; margin-right: 8px;
+}
+.status-msg.data-v-e654fd88 { text-align: center; padding: 100px 0; color: #9d9fa8;
+}
+

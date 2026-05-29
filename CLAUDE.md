@@ -16,7 +16,7 @@
 | 管理员 | admin（或 13800000000）/ REDACTED-PASSWORD |
 | PHP | 7.3.4 |
 | Node | v24.15.0 / npm 11.12.1 |
-| uni-app | Vue 3 + Vite 5.2.8，14 页面，`cd mobile && npm run dev:h5` |
+| uni-app | Vue 2 Options API + HBuilder X，15 页面 + 3 tabBar，`cd mobile && npm run dev:h5` |
 
 ## 启动方式
 
@@ -76,20 +76,30 @@ cd mobile && npm run dev:h5
 40. **微信小程序 CSS 兼容**：不用 `calc()` 和 `gap`，改用 `width:49%` + `margin-bottom` + `box-sizing:border-box`。
 41. **tabBar 图标 81x81 PNG**：微信小程序不支持字体图标，用 `sharp` 将 SVG 转 PNG。
 42. **Vue `@click` 事件传参陷阱**：`@click="fn"` 会把 click 事件对象作为第一个参数传入 fn。如果 fn 期望非事件值（如 `fn(isNew)` 判断 truthy/falsy），事件对象为 truthy 会导致逻辑错误。必须显式传参：`@click="fn(false)"`。uni-app 和 Web Vue 均适用。
+43. **微信小程序密码框**：`type="password"` 在微信小程序中不生效，必须用 `:password="true"`。
+44. **微信小程序 HTTP 图片**：新版基础库禁止 `<image>` 加载 HTTP 图片。已封装 `safe-image` 全局组件（`uni.downloadFile` → 本地临时文件后显示），所有图片显示必须用 `<safe-image>` 替代 `<image>`。
+45. **401 需清本地状态**：`utils/request.js` 中 401 拦截器必须同时调用 `auth.logout()` 清空内存中的用户状态，否则页面显示旧数据但接口报未登录。
+46. **tabBar 页面不能用 navigateTo**：必须用 `switchTab` 跳转。如需从 tabBar 页面跳转到独立子页面（如"我的求购"），需创建非 tabBar 的独立页面。
+47. **微信小程序多图上传**：`uni.uploadFile` 每次只支持一个文件。多图提交走两步流程：① 逐文件 `uni.uploadFile` → `/api/upload` 获取 URL ② `uni.request` JSON POST `image_urls` 提交书数据。后端 `BookService::submit()` 已支持文件对象和路径字符串双模式。
 
-## 当前状态（2026-05-28）
+## 当前状态（2026-05-29）
 
-### uni-app 移动端（14 页 + 3 tabBar）
-- 14 个页面：首页/登录/注册/书籍详情/卖书/购买/订单列表/订单详情/评价/我的卖书/求购广场/求购详情/发布求购/个人中心
+### uni-app 移动端（15 页 + 3 tabBar）
+- 15 个页面：首页/登录/注册/书籍详情/卖书/购买/订单列表/订单详情/评价/我的卖书/求购广场/求购详情/发布求购/我的求购/个人中心
 - tabBar 导航（首页/求购/我的），Material Design 81x81 PNG 图标
-- API 封装（`utils/request.js`，#ifdef MP-WEIXIN 绝对路径）+ Vue.observable() auth store（`stores/auth.js`）
+- API 封装（`utils/request.js`，#ifdef MP-WEIXIN 绝对路径，401 自动清 auth）+ Vue.observable() auth store（`stores/auth.js`）
 - **运行唯一方式**：HBuilder X → 运行 → 运行到小程序模拟器 → 微信开发者工具。禁止 CLI/Vite
 - **设计系统**（2026-05-28 轻奢学院风）：香槟金+酒红+暖棕品牌色 + 苔绿(#4a6741 求购)/暖珊瑚(#e07b5a 快捷入口)/靛紫(#5b7fbd 分类) 辅助色
 - 全局工具类：`.card-accent-*`（8 色卡片左边框）、`.card-top-*`（顶部彩色条）、`.gradient-*`（渐变头部）、`.btn-teal`（青绿按钮）
-- CSS 兼容：全站 `gap`/`calc` 已替换为 `margin`/`padding`
-- **个人中心**（2026-05-28 风格统一）：暖棕渐变头部+头像+学号+脱敏手机号、4 格订单统计卡片（可点击按状态筛选）、4 格快捷入口（渐变色图标+在售/求购数）、菜单分组（交易管理+更多）
+- CSS 兼容：全站 `gap`/`calc` 已替换为 `margin`/`padding`，密码框 `:password="true"`
+- **全局组件**：`safe-image`（uni.downloadFile 下载 HTTP 图到本地）
+- **个人中心**（2026-05-28 风格统一）：暖棕渐变头部+头像+学号+脱敏手机号、4 格订单统计卡片（可点击按状态筛选）、菜单分组（交易管理+更多）。**快捷入口 4 圆已移除**（2026-05-29）
+- **我的求购**（2026-05-29）：独立页面 `pages/wants/mine`（非 tabBar），调用 `/api/my-wants` 仅显示自己的求购
+- **订单详情**：支持买家/卖家双视角（is_buyer/is_seller），已移除书籍封面图（纯文字布局）
+- **搜索框清除按钮**（2026-05-29）：首页+求购广场，`<view>` + `@click.stop` + `onClear` 方法（24×24 圆形 ×，z-index:2），避免微信 `<text>` 点击被 input 截获
+- **卖书多图上传**（2026-05-29）：H5 端 FormData 一次性提交不变；微信小程序端两步上传（逐文件 `uni.uploadFile` → `/api/upload` → 收集 URL → JSON POST `image_urls`），后端 `BookService::submit()` 同时支持 `UploadedFile` 对象和路径字符串
 - **首页加载更多**（2026-05-27 修复）：page 自增 + `@click="fetchBooks(false)"` 防止事件对象误传
-- **订单列表**：支持 `?status=` 参数筛选（统计卡片点击跳转）
+- **订单列表**：支持 `?status=` 参数筛选（统计卡片点击跳转），订单统计双视角计数
 
 ### Blade 后台（已完成）
 - 管理后台 7 模块（dashboard/books/orders/users/wants/categories/colleges），暖棕侧边栏+香槟金设计系统
@@ -109,16 +119,18 @@ cd mobile && npm run dev:h5
 - **卖书提交流程已修复**（2026-05-22）：CSRF、文件上传、表单清空、成功提示均正常
 - **学生登录/注册页**（2026-05-23）：独立页面，暖棕渐变背景+Logo Banner+香槟金按钮，底部含"管理后台"入口
 - **求购模块**：求购广场列表 + 详情页 + "我要卖这本书"按钮（带学院预填）+ 发布求购页（学院选择+在售验证）+ 导航栏求购入口
+- **订单模块**（2026-05-29）：买家+卖家双视角，取消按钮仅买家可见，删除按钮买卖双方可见（cancelled/picked_up），我的卖书→查看订单入口，动态删除提示文案
+- **书籍删除**（2026-05-29）：removed/rejected 状态均可删，动态确认文案区分"被下架"/"被驳回"
 
 ### 数据库
-- 已建 `campus_books`，18 张表全部 migrate（含 `add_soft_deletes`、`add_soft_deletes_to_users`、`add_category_id_to_wants`）
-- 测试数据（2026-05-24 更新）：16 用户、52 书籍（44在售+8已售）、10 订单、12 求购、5 评价
+- 已建 `campus_books`，18 张表全部 migrate（含 `add_soft_deletes`、`add_soft_deletes_to_users`、`add_soft_deletes_to_orders`、`add_category_id_to_wants`）
+- 测试数据（2026-05-29 更新）：3 学生 + 1 管理员，52 书籍（44在售+8已售），10 订单，12 求购，5 评价
 - **Seeder 已修正**：7 个真实学院（电子信息、机电、财经物流、环境食品、汽车、贸易旅游、艺术），每个学院有对应专业和课程，书籍 `course_id` 匹配正确学院
-- **软删除已覆盖**：books、categories、colleges、majors、courses、users
+- **软删除已覆盖**：books、categories、colleges、majors、courses、users、orders
 
 ### 账户
 - 测试管理员：admin（或 13800000000）/ REDACTED-PASSWORD
-- 测试学生：13800000001 ~ 13800000015 / REDACTED-PASSWORD（15 个）
+- 测试学生：3 人（13800000001 ~ 13800000003）/ REDACTED-PASSWORD
 
 ## 设计系统（2026-05-28 轻奢学院风）
 
@@ -159,6 +171,7 @@ CSS 全部内联在 Blade `<style>` 块中。移动端全局样式在 `mobile/un
 | GET | `/wants` | 求购广场 |
 | GET | `/wants/{id}` | 求购详情+"我要卖这本书"按钮（带学院预填） |
 | GET/POST | `/post-want` | 发布求购（需登录，有在售同书名验证） |
+| POST | `/orders/{id}/delete` | 删除订单（买家+卖家，cancelled/picked_up） |
 | GET/POST | `/admin/login` | 后台登录（用户名或手机号） |
 | GET | `/admin/{module}` | 后台各模块 |
 
@@ -181,6 +194,8 @@ CSS 全部内联在 Blade `<style>` 块中。移动端全局样式在 `mobile/un
 | GET | `/api/wants` | 求购列表 |
 | GET | `/api/wants/{id}` | 求购详情 |
 | POST | `/api/wants` | 发布求购（在售验证返回422） |
+| GET | `/api/my-wants` | 我的求购（需认证） |
+| DELETE | `/api/orders/{id}` | 删除订单（买家+卖家） |
 | GET | `/api/categories` | 学院分类列表 |
 | GET | `/api/colleges` | 学院列表 |
 

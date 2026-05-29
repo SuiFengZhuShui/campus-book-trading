@@ -62,4 +62,12 @@ class OrderController extends Controller
 
         return redirect()->route('admin.orders.index')->with('success', '订单已取消并退款');
     }
+
+    public function destroy($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->delete();
+
+        return redirect()->route('admin.orders.index')->with('success', '订单已删除');
+    }
 }

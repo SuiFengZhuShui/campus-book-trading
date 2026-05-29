@@ -50,33 +50,6 @@
         </view>
       </view>
 
-      <!-- 快捷入口 -->
-      <view class="quick-row">
-        <view class="quick-item" @click="goSell">
-          <view class="quick-icon quick-icon-sell">
-            <text class="quick-icon-text">+</text>
-          </view>
-          <text class="quick-label">我要卖书</text>
-        </view>
-        <view class="quick-item" @click="goPostWant">
-          <view class="quick-icon quick-icon-want">
-            <text class="quick-icon-text">?</text>
-          </view>
-          <text class="quick-label">发布求购</text>
-        </view>
-        <view class="quick-item" @click="goMySells">
-          <view class="quick-icon quick-icon-book">
-            <text class="quick-icon-text">{{ stats.my_books_active }}</text>
-          </view>
-          <text class="quick-label">在售书籍</text>
-        </view>
-        <view class="quick-item" @click="goWants">
-          <view class="quick-icon quick-icon-wanted">
-            <text class="quick-icon-text">{{ stats.my_wants_active }}</text>
-          </view>
-          <text class="quick-label">我的求购</text>
-        </view>
-      </view>
 
       <!-- 菜单分组 -->
       <view class="section">
@@ -98,7 +71,7 @@
             <text class="menu-arrow">›</text>
           </view>
           <view class="divider"></view>
-          <view class="menu-item" @click="goWants">
+          <view class="menu-item" @click="goMyWants">
             <view class="menu-left">
               <text class="menu-icon">🔍</text>
               <text class="menu-label">我的求购</text>
@@ -181,6 +154,10 @@ export default {
         }
       }).catch(function (e) {
         console.log('fetch user info error:', e)
+        if (e && e.code === 401) {
+          auth.logout()
+          self.userInfo = null
+        }
       })
     },
     goLogin: function () { uni.navigateTo({ url: '/pages/auth/login' }) },
@@ -192,6 +169,7 @@ export default {
     goMySells: function () { uni.navigateTo({ url: '/pages/my-sells/index' }) },
     goSell: function () { uni.navigateTo({ url: '/pages/books/sell' }) },
     goWants: function () { uni.switchTab({ url: '/pages/wants/index' }) },
+    goMyWants: function () { uni.navigateTo({ url: '/pages/wants/mine' }) },
     goPostWant: function () { uni.navigateTo({ url: '/pages/wants/post' }) },
     onLogout: function () {
       var self = this
@@ -276,28 +254,6 @@ export default {
 .stat-card:nth-child(3) .stat-num { color: #5b7fbd; }
 .stat-card:nth-child(4) .stat-num { color: #2d6a4f; }
 .stat-label { font-size: 11px; color: #8c8478; margin-top: 4px; display: block; }
-
-/* 快捷入口 */
-.quick-row {
-  display: flex; margin: 16px 12px;
-  background: #fffdfa; border-radius: 12px;
-  padding: 16px 0;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
-.quick-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center;
-}
-.quick-icon {
-  width: 44px; height: 44px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 6px;
-}
-.quick-icon-sell { background: linear-gradient(135deg, #b49450, #3b6ba8); }
-.quick-icon-want { background: linear-gradient(135deg, #b49450, #e07b5a); }
-.quick-icon-book { background: linear-gradient(135deg, #0d9488, #14b8a6); }
-.quick-icon-wanted { background: linear-gradient(135deg, #5b7fbd, #7b9fd4); }
-.quick-icon-text { font-size: 18px; font-weight: 700; color: #fff; }
-.quick-label { font-size: 11px; color: #8c8478; }
 
 /* 菜单分组 */
 .section { margin: 0 12px 12px; }

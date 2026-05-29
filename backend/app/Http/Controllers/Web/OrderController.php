@@ -81,7 +81,10 @@ class OrderController extends Controller
             return redirect('/login');
         }
 
-        $order = Order::where('buyer_id', auth()->id())->findOrFail($id);
+        $order = Order::findOrFail($id);
+        if ($order->buyer_id !== auth()->id()) {
+            abort(403, '无权操作此订单');
+        }
         $service->pay($order->id);
 
         return redirect('/orders/' . $order->id)->with('success', '支付成功');
@@ -93,9 +96,37 @@ class OrderController extends Controller
             return redirect('/login');
         }
 
-        $order = Order::where('buyer_id', auth()->id())->findOrFail($id);
+        $order = Order::findOrFail($id);
+        if ($order->buyer_id !== auth()->id()) {
+            abort(403, '无权操作此订单');
+        }
         $service->cancel($order->id, '买家取消');
 
         return redirect('/orders/' . $order->id)->with('success', '订单已取消');
+    }
+
+    public function delete($id)
+    {
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        $order = Order::with('items.book')->findOrFail($id);
+
+        $isBuyer = $order->buyer_id === auth()->id();
+        $isSeller = $order->items->contains(function ($item) {
+            return $item->book && $item->book->seller_id === auth()->id();
+        });
+
+        if (!$isBuyer && !$isSeller) {
+            abort(403, '无权操作此订单');
+        }
+
+        $order->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json(['code' => 200, 'message' => '已删除']);
+        }
+        return redirect('/orders')->with('success', '订单已删除');
     }
 }

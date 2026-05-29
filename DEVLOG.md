@@ -1,5 +1,51 @@
 # 开发日志
 
+## 2026-05-29
+
+### 今日完成
+- **Git 初始化 + Worktree 隔离**：项目 git init，创建 `.worktrees/` 隔离开发环境
+- **订单软删除**：orders 表加 `deleted_at`，Order Model 加 SoftDeletes，Blade + API 双端支持删除（买家+卖家，cancelled/picked_up 状态）
+- **OrderTimeline created_at 修复**：`$fillable` 补 `created_at`，所有 `create()` 调用显式传 `now()`
+- **BookService::reject() 修复**：`status = 'removed'` → `'rejected'`（关键 bug）
+- **导航栏颜色区分**：navbar 与首页背景色做区分（羊皮纸色 `rgba(247,241,230,0.94)`）
+- **Admin 分页 CSS 修复**：`.pagination .page-link` 选择器，搜索框聚焦色统一深蓝
+- **Admin 订单管理**：新增删除按钮（cancelled/picked_up）+ JS `deleteOrder()` 函数
+- **Admin 求购管理**：新增编辑按钮 + 独立编辑页（title/author/publisher/category/price/condition/status）
+- **移动端 - safe-image 全局组件**：`uni.downloadFile` 下载 HTTP 图片到本地临时文件后显示，解决微信新版基础库 HTTP 阻断
+- **移动端 - 我的求购**：独立页面 `pages/wants/mine.vue`（非 tabBar），调用 `/api/my-wants`
+- **移动端 - 个人中心优化**：移除 4 个快捷入口圆形按钮，"求购广场"→"我的求购"
+- **移动端 - 搜索清除按钮**：首页+求购广场，× 按钮（改为 `<view>` + `@click.stop` + `onClear` 方法，24×24，z-index:2）
+- **移动端 - 搜索框布局修复**：输入框 `box-sizing:border-box`，按钮 `flex-shrink:0`，不会再挡住搜索按钮
+- **移动端 - 密码可见性修复**：`type="password"` → `:password="true"`（微信小程序兼容）
+- **移动端 - 订单详情**：买家/卖家双视角（is_buyer/is_seller），移除书籍封面图（纯文字布局）
+- **移动端 - 401 处理**：`request.js` 拦截器加 `auth.logout()` 清本地状态
+- **移动端 - 全量代码审查**：审查 15 个页面 + request.js + auth.js，发现并修复 5 个 bug（见下方）
+- **移动端 - 多图上传改造**：微信小程序端从单文件改为两步上传（逐文件→`/api/upload`→收集 URL→JSON POST `image_urls`），后端 `BookService::submit()` 支持 `UploadedFile` 和路径字符串双模式
+- **Bug 修复 - sell.vue**：`image_types` 硬编码 `['cover','other']` 改为 `for` 循环动态生成
+- **Bug 修复 - request.js**：空 catch 块 `/* ignore */` 改为 `console.log`
+- **Bug 修复 - safe-image.vue**：`.ph` 占位符补 `width:100%;height:100%`
+- **Bug 修复 - detail.vue**：`.bar-info` CSS 重复定义合并
+- **订单统计双视角**：`orderCount()` 同时查 buyer_id + seller_id（通过 order_items.book）
+- **Web 端动态删除提示**：removed 提示"删除被下架的书"，rejected 提示"删除被驳回的书"
+- **卖家订单入口**：我的卖书→查看订单（`/orders/{id}?from=sells`），详情页返回按钮动态跳转
+- **测试数据精简**：16 学生 → 3 学生（13800000001~3），密码统一 REDACTED-PASSWORD
+- **使用手册更新**：v2.0，42 截图位，新增移动端专属验证点/卖家订单/多图上传/软删除章节
+
+### 待办事项
+- [ ] HBuilder X 运行移动端验证：搜索清除按钮、多图上传、全部页面
+
+### 遇到的问题
+- **OrderTimeline created_at NULL**：`$timestamps = false` + `$fillable` 缺 `created_at` → 批量赋值静默丢弃。修复：补 $fillable + 显式传 now()
+- **BookService::reject() 状态错误**：设了 `removed` 应设 `rejected`，导致驳回书无法区分
+- **订单取消 404（卖家）**：取消按钮卖家可见但 API 仅查 buyer_id。修复：Blade `@if($order->buyer_id === auth()->id())` + API 显式 403
+- **微信小程序 HTTP 图片**：新版基础库阻止 HTTP。解决：safe-image 组件 + uni.downloadFile
+- **密码明文可见**：`type="password"` 微信不生效。解决：`:password="true"`
+- **订单统计不准**：stats 仅计 buyer 但列表双视角显示。解决：orderCount() 双视角查询
+- **API /wants 无 auth**：公开路由 `auth()->check()` 始终 false。解决：新增 `/api/my-wants` 在 auth 中间件内
+- **搜索清除按钮点击无效**：`<text>` 元素在微信中点击被 input 拦截。解决：`<view>` + `@click.stop` + 独立 `onClear` 方法
+- **搜索输入框挡住按钮**：`flex:1` + `margin-right` 在微信中布局异常。解决：`flex-shrink:0` + `margin-left:8px` + `box-sizing:border-box`
+- **微信小程序多图上传**：`uni.uploadFile` 单次只支持一个文件，`uploadSequential` 只传了 `files[0]`。解决：两步上传（逐文件 → /api/upload → JSON POST image_urls）+ 后端 BookService 支持路径字符串
+
 ## 2026-05-28
 
 ### 今日完成

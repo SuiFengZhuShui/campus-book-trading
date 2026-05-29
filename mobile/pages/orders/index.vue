@@ -12,11 +12,8 @@
           <text :class="['status-tag', statusClass(o.status)]">{{ o.status_label }}</text>
         </view>
         <view class="order-body">
-          <image v-if="o.cover_img" :src="o.cover_img" mode="aspectFill" class="cover" />
-          <view class="order-info">
-            <text class="book-title ellipsis-2">{{ o.books[0] ? o.books[0].title : '' }}</text>
-            <text v-if="o.books.length > 1" class="book-count">共{{ o.books.length }}本书</text>
-          </view>
+          <text class="book-title ellipsis-2">{{ o.books[0] ? o.books[0].title : '' }}</text>
+          <text v-if="o.books.length > 1" class="book-count">共{{ o.books.length }}本书</text>
         </view>
         <view class="order-footer">
           <text class="amount">合计 ¥{{ o.total_amount }}</text>
@@ -97,9 +94,7 @@ export default {
 .status-info { background: rgba(180,148,80,0.08); color: #b49450; }
 .status-success { background: #f0fdf4; color: #2d6a4f; }
 .status-danger { background: #fef2f2; color: #bc4742; }
-.order-body { display: flex; }
-.cover { margin-right: 10px; width: 60px; height: 80px; border-radius: 6px; flex-shrink: 0; background: #e5dccf; }
-.order-info { flex: 1; }
+.order-body { margin-top: 8px; }
 .book-title { font-size: 14px; color: #2c2416; line-height: 1.4; }
 .book-count { font-size: 12px; color: #8c8478; }
 .order-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid #e5dccf; }

@@ -36,9 +36,11 @@ Route::middleware('api.auth')->group(function () {
     Route::post('orders/{id}/pay', 'OrderController@pay');
     Route::post('orders/{id}/cancel', 'OrderController@cancel');
     Route::post('orders/{id}/pickup', 'OrderController@pickup');
+    Route::delete('orders/{id}', 'OrderController@destroy');
     Route::post('orders/{id}/review', 'OrderController@review');
 
     // 求购
+    Route::get('my-wants', 'WantController@myWants');
     Route::post('wants', 'WantController@store');
     Route::post('wants/{id}/fulfill', 'WantController@fulfill');
 

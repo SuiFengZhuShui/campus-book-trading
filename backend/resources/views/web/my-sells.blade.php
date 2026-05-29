@@ -25,7 +25,7 @@
                 <div style="flex: 1; min-width: 0;">
                     <a href="/books/{{ $book->id }}" style="font-size: 14px; font-weight: 500; color: #2c2416;">{{ $book->title }}</a>
                     <div style="font-size: 12px; color: #8c8478; margin-top: 2px;">{{ $book->author }} / {{ $book->publisher }}</div>
-                    @if($book->status === 'removed' && $book->reject_reason)
+                            @if($book->reject_reason)
                         <div style="font-size: 12px; color: #bc4742; margin-top: 2px;">驳回原因：{{ $book->reject_reason }}</div>
                     @endif
                 </div>
@@ -33,8 +33,8 @@
                     <span style="display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; background: {{ $statusBg[$book->status] ?? '#f4f1ec' }}; color: {{ $statusColor[$book->status] ?? '#8c8478' }};">
                         {{ $statusMap[$book->status] ?? $book->status }}
                     </span>
-                    @if($book->status === 'removed')
-                        <form class="delete-book-form" data-id="{{ $book->id }}" style="margin-top: 6px;">
+                    @if(in_array($book->status, ['removed', 'rejected']))
+                        <form class="delete-book-form" data-id="{{ $book->id }}" data-status="{{ $book->status }}" style="margin-top: 6px;">
                             @csrf
                             <button type="button" class="btn-delete-book" style="font-size: 12px; color: #bc4742; background: none; border: 1px solid #f5c6cb; border-radius: 6px; padding: 3px 10px; cursor: pointer;">删除</button>
                         </form>
@@ -42,7 +42,7 @@
                     <div style="font-size: 16px; font-weight: 600; color: #b49450; margin-top: 4px;">¥{{ $book->price }}</div>
                     @if($book->status === 'sold' && $book->orderItems->isNotEmpty())
                         @php $orderId = $book->orderItems->first()->order_id; @endphp
-                        <a href="/orders/{{ $orderId }}" style="display:inline-block;margin-top:4px;font-size:12px;color:#b49450;">查看订单</a>
+                        <a href="/orders/{{ $orderId }}?from=sells" style="display:inline-block;margin-top:4px;font-size:12px;color:#b49450;">查看订单</a>
                     @endif
                 </div>
             </div>
@@ -62,8 +62,10 @@
 <script>
 document.querySelectorAll('.btn-delete-book').forEach(function(btn) {
     btn.addEventListener('click', function() {
-        if (!confirm('确定删除这本被驳回的书吗？')) return;
         var form = this.closest('form');
+        var status = form.dataset.status;
+        var msg = status === 'rejected' ? '确定删除被驳回的书吗？' : '确定删除被下架的书吗？';
+        if (!confirm(msg)) return;
         var token = form.querySelector('input[name="_token"]').value;
         var id = form.dataset.id;
         fetch('/my-sells/' + id + '/delete', {

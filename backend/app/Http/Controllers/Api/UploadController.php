@@ -15,6 +15,6 @@ class UploadController extends Controller
 
         $path = $request->file('file')->store('temp/' . date('Ymd'), 'public');
 
-        return $this->success(['url' => asset('storage/' . $path)]);
+        return $this->success(['url' => '/storage/' . $path]);
     }
 }

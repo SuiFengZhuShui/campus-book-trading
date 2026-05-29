@@ -8,7 +8,7 @@
       </view>
       <view v-for="b in books" :key="b.id" :class="['card', 'book-card', sellAccent(b.status)]">
         <view class="book-row">
-          <image v-if="b.cover_img" :src="b.cover_img" mode="aspectFill" class="cover" />
+          <safe-image v-if="b.cover_img" :src="b.cover_img" mode="aspectFill" class="cover" />
           <view v-else class="cover-placeholder"></view>
           <view class="book-info">
             <text class="title ellipsis-2">{{ b.title }}</text>
@@ -21,7 +21,7 @@
             <text v-if="b.submitted_at" class="date">{{ b.submitted_at }}</text>
             <view class="actions-row">
               <view v-if="b.order_id" class="btn-outline btn-sm" @click="goOrder(b.order_id)">查看订单</view>
-              <view v-if="b.status === 'removed'" class="btn-danger btn-sm" @click="onDelete(b.id)">删除</view>
+              <view v-if="b.status === 'removed' || b.status === 'rejected'" class="btn-danger btn-sm" @click="onDelete(b)">删除</view>
             </view>
           </view>
         </view>
@@ -62,15 +62,16 @@ export default {
     },
     goSell: function () { uni.navigateTo({ url: '/pages/books/sell' }) },
     goOrder: function (id) { uni.navigateTo({ url: '/pages/orders/detail?id=' + id }) },
-    onDelete: function (id) {
+    onDelete: function (book) {
       var self = this
+      var msg = book.status === 'rejected' ? '确定删除被驳回的书吗？' : '确定删除被下架的书吗？'
       uni.showModal({
         title: '确认删除',
-        content: '确定要删除此书籍吗？',
+        content: msg,
         success: async function (res) {
           if (!res.confirm) return
           try {
-            await del('/api/my-books/' + id)
+            await del('/api/my-books/' + book.id)
             uni.showToast({ title: '已删除', icon: 'success' })
             self.fetchBooks()
           } catch (e) {
@@ -83,14 +84,14 @@ export default {
       if (status === 'active') return 'status-success'
       if (status === 'sold') return 'status-info'
       if (status === 'pending_review') return 'status-warning'
-      if (status === 'removed') return 'status-danger'
+      if (status === 'removed' || status === 'rejected') return 'status-danger'
       return 'status-warning'
     },
     sellAccent: function (status) {
       if (status === 'active') return 'card-accent-green'
       if (status === 'sold') return 'card-accent-blue'
       if (status === 'pending_review') return 'card-accent-amber'
-      if (status === 'removed') return 'card-accent-red'
+      if (status === 'removed' || status === 'rejected') return 'card-accent-red'
       return 'card-accent-gray'
     }
   }

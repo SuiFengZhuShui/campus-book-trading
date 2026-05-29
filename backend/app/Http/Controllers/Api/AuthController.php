@@ -80,15 +80,26 @@ class AuthController extends Controller
         $user = auth()->user();
         $data = $this->userData($user);
         $data['stats'] = [
-            'order_pending' => Order::where('buyer_id', $user->id)->where('status', 'pending')->count(),
-            'order_paid' => Order::where('buyer_id', $user->id)->where('status', 'paid')->count(),
-            'order_confirmed' => Order::where('buyer_id', $user->id)->where('status', 'confirmed')->count(),
-            'order_done' => Order::where('buyer_id', $user->id)->where('status', 'picked_up')->count(),
+            'order_pending' => $this->orderCount($user, 'pending'),
+            'order_paid' => $this->orderCount($user, 'paid'),
+            'order_confirmed' => $this->orderCount($user, 'confirmed'),
+            'order_done' => $this->orderCount($user, 'picked_up'),
             'my_books_active' => Book::where('seller_id', $user->id)->where('status', 'active')->count(),
             'my_wants_active' => Want::where('user_id', $user->id)->where('status', 'active')->count(),
         ];
 
         return $this->success($data);
+    }
+
+    private function orderCount($user, $status)
+    {
+        return Order::where('status', $status)
+            ->where(function ($q) use ($user) {
+                $q->where('buyer_id', $user->id)
+                  ->orWhereHas('items.book', function ($q) use ($user) {
+                      $q->where('seller_id', $user->id);
+                  });
+            })->count();
     }
 
     private function userData(User $user): array

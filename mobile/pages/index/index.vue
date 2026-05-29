@@ -1,7 +1,12 @@
 <template>
   <view class="container">
     <view class="search-bar">
-      <input v-model="keyword" placeholder="搜索教材..." confirm-type="search" @confirm="onSearch" />
+      <view class="search-input-wrap">
+        <input v-model="keyword" placeholder="搜索教材..." confirm-type="search" @confirm="onSearch" />
+        <view v-if="keyword" class="search-clear" @click.stop="onClear">
+          <text>×</text>
+        </view>
+      </view>
       <text class="search-btn" @click="onSearch">搜索</text>
     </view>
 
@@ -30,7 +35,7 @@
 
     <view class="book-grid">
       <view v-for="(b, idx) in books" :key="b.id" :class="['book-card', cardAccent(idx)]" @click="goDetail(b.id)">
-        <image :src="b.cover_img" mode="aspectFill" class="cover" />
+        <safe-image :src="b.cover_img" mode="aspectFill" class="cover" />
         <view class="info">
           <text class="title ellipsis-2">{{ b.title }}</text>
           <text class="author">{{ b.author }}</text>
@@ -116,6 +121,7 @@ export default {
       }
     },
     onSearch() { this.fetchBooks(true) },
+    onClear() { this.keyword = ''; this.fetchBooks(true) },
     selectCategory(idx) {
       this.showDropdown = false
       if (idx === this.categoryIndex) return
@@ -138,9 +144,12 @@ export default {
 
 <style scoped>
 .container { padding: 12px; min-height: 100vh; }
-.search-bar { display: flex; margin-bottom: 12px; }
-.search-bar input { flex: 1; height: 40px; border: 1px solid #e5dccf; border-radius: 8px; padding: 0 12px; background: #fff; font-size: 14px; margin-right: 8px; }
-.search-btn { background: linear-gradient(135deg, #b49450, #3b6ba8); color: #fff; padding: 0 16px; border-radius: 8px; line-height: 40px; font-size: 14px; white-space: nowrap; }
+.search-bar { display: flex; align-items: center; margin-bottom: 12px; }
+.search-input-wrap { flex: 1; position: relative; }
+.search-input-wrap input { width: 100%; height: 40px; border: 1px solid #e5dccf; border-radius: 8px; padding: 0 30px 0 12px; background: #fff; font-size: 14px; box-sizing: border-box; }
+.search-clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: #d4bc7c; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; }
+.search-clear text { font-size: 14px; color: #fff; line-height: 1; }
+.search-btn { flex-shrink: 0; margin-left: 8px; background: linear-gradient(135deg, #b49450, #3b6ba8); color: #fff; padding: 0 16px; border-radius: 8px; line-height: 40px; font-size: 14px; white-space: nowrap; }
 .filter-row { position: relative; margin-bottom: 12px; }
 .dropdown { height: 40px; line-height: 40px; padding: 0 14px; background: #fff; border: 1px solid #e5dccf; border-radius: 8px; font-size: 14px; color: #2c2416; display: flex; justify-content: space-between; align-items: center; }
 .dropdown-text { flex: 1; }

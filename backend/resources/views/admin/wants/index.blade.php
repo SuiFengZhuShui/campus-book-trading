@@ -40,10 +40,11 @@
                     <span class="badge {{ $badge[$want->status] ?? 'badge-gray' }}">{{ $label[$want->status] ?? $want->status }}</span>
                 </td>
                 <td>{{ $want->expires_at }}</td>
-                <td>
-                    <form action="{{ url('admin/wants/'.$want->id.'/delete') }}" method="POST" onsubmit="return confirm('确定要删除这条求购吗？相关的接单记录也会一并删除。')" style="margin:0">
+                <td style="white-space:nowrap">
+                    <a href="{{ url('admin/wants/'.$want->id.'/edit') }}" class="btn btn-sm">编辑</a>
+                    <form action="{{ url('admin/wants/'.$want->id.'/delete') }}" method="POST" onsubmit="return confirm('确定要删除这条求购吗？相关的接单记录也会一并删除。')" style="display:inline;margin-left:4px">
                         @csrf
-                        <button type="submit" class="btn btn-danger btn-sm" style="min-width:52px;white-space:nowrap;">删除</button>
+                        <button type="submit" class="btn btn-danger btn-sm">删除</button>
                     </form>
                 </td>
             </tr>

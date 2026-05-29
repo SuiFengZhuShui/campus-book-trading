@@ -12,7 +12,7 @@
       </view>
       <view class="input-group">
         <text class="input-label">密码</text>
-        <input v-model="form.password" type="password" placeholder="请输入密码" class="input" />
+        <input v-model="form.password" :password="true" placeholder="请输入密码" class="input" />
       </view>
       <view class="btn-amber login-btn" @click="onLogin">登 录</view>
       <view class="link-row">

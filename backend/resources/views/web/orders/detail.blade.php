@@ -4,7 +4,8 @@
 
 @section('content')
 <div style="max-width: 800px; margin: 0 auto;">
-    <a href="/orders" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: linear-gradient(135deg, #b49450, #d4bc7c); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none; margin-bottom: 20px;">&larr; 返回订单列表</a>
+    @php $fromSells = request('from') === 'sells'; @endphp
+    <a href="{{ $fromSells ? '/my-sells' : '/orders' }}" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: linear-gradient(135deg, #b49450, #d4bc7c); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none; margin-bottom: 20px;">&larr; {{ $fromSells ? '返回我的卖书' : '返回订单列表' }}</a>
 
     @php
         $statusMap = ['pending'=>'待付款','paid'=>'待确认','confirmed'=>'待取书','picked_up'=>'已完成','cancelled'=>'已取消'];
@@ -27,22 +28,35 @@
             </div>
         </div>
 
-        @if($order->status === 'pending')
-            <div style="display: flex; gap: 12px; margin-top: 20px;">
-                <form method="POST" action="/orders/{{ $order->id }}/pay" style="flex: 1;">
+        @php
+            $isSeller = $order->items->contains(function ($item) {
+                return $item->book && $item->book->seller_id === auth()->id();
+            });
+        @endphp
+        @if($order->buyer_id === auth()->id())
+            @if($order->status === 'pending')
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <form method="POST" action="/orders/{{ $order->id }}/pay" style="flex: 1;">
+                        @csrf
+                        <button type="submit" style="width: 100%; height: 42px; background: linear-gradient(135deg, #b49450, #b49450); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.2s;">确认支付</button>
+                    </form>
+                    <form method="POST" action="/orders/{{ $order->id }}/cancel" style="flex: 1;" onsubmit="return confirm('确定取消订单？')">
+                        @csrf
+                        <button type="submit" style="width: 100%; height: 42px; background: #fffdfa; color: #8c8478; border: 1px solid #e5dccf; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">取消订单</button>
+                    </form>
+                </div>
+            @endif
+            @if($order->status === 'paid')
+                <form method="POST" action="/orders/{{ $order->id }}/cancel" style="margin-top: 20px;" onsubmit="return confirm('确定取消订单？')">
                     @csrf
-                    <button type="submit" style="width: 100%; height: 42px; background: linear-gradient(135deg, #b49450, #b49450); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.2s;">确认支付</button>
+                    <button type="submit" style="height: 42px; padding: 0 24px; background: #fffdfa; color: #8c8478; border: 1px solid #e5dccf; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">取消订单</button>
                 </form>
-                <form method="POST" action="/orders/{{ $order->id }}/cancel" style="flex: 1;" onsubmit="return confirm('确定取消订单？')">
-                    @csrf
-                    <button type="submit" style="width: 100%; height: 42px; background: #fffdfa; color: #8c8478; border: 1px solid #e5dccf; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">取消订单</button>
-                </form>
-            </div>
+            @endif
         @endif
-        @if($order->status === 'paid')
-            <form method="POST" action="/orders/{{ $order->id }}/cancel" style="margin-top: 20px;" onsubmit="return confirm('确定取消订单？')">
+        @if(in_array($order->status, ['cancelled', 'picked_up']) && ($order->buyer_id === auth()->id() || $isSeller))
+            <form method="POST" action="/orders/{{ $order->id }}/delete" style="margin-top: 20px;" onsubmit="return confirm('确定删除此订单吗？')">
                 @csrf
-                <button type="submit" style="height: 42px; padding: 0 24px; background: #fffdfa; color: #8c8478; border: 1px solid #e5dccf; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">取消订单</button>
+                <button type="submit" style="height: 42px; padding: 0 24px; background: #fffdfa; color: #bc4742; border: 1px solid #f5c6cb; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">删除订单</button>
             </form>
         @endif
     </div>

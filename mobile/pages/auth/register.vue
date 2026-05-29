@@ -20,11 +20,11 @@
       </view>
       <view class="input-group">
         <text class="input-label">密码</text>
-        <input v-model="form.password" type="password" placeholder="8位以上，含大小写字母和数字" class="input" />
+        <input v-model="form.password" :password="true" placeholder="8位以上，含大小写字母和数字" class="input" />
       </view>
       <view class="input-group">
         <text class="input-label">确认密码</text>
-        <input v-model="form.password_confirmation" type="password" placeholder="请再次输入密码" class="input" />
+        <input v-model="form.password_confirmation" :password="true" placeholder="请再次输入密码" class="input" />
       </view>
       <view class="btn-amber login-btn" @click="onRegister">注 册</view>
       <view class="link-row">

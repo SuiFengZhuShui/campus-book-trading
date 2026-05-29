@@ -46,6 +46,7 @@ class OrderService
                 'order_id' => $order->id,
                 'status' => 'pending',
                 'remark' => '订单创建',
+                'created_at' => now(),
             ]);
 
             return $order;
@@ -68,6 +69,7 @@ class OrderService
             'order_id' => $order->id,
             'status' => 'paid',
             'remark' => '买家已支付',
+            'created_at' => now(),
         ]);
     }
 
@@ -87,6 +89,7 @@ class OrderService
             'order_id' => $order->id,
             'status' => 'confirmed',
             'remark' => '平台已确认',
+            'created_at' => now(),
         ]);
     }
 
@@ -111,6 +114,7 @@ class OrderService
                 'order_id' => $order->id,
                 'status' => 'cancelled',
                 'remark' => $reason ?: '订单取消',
+                'created_at' => now(),
             ]);
         });
     }
@@ -130,7 +134,7 @@ class OrderService
 
             foreach ($order->items as $item) {
                 $book = $item->book;
-                if ($book && $book->status === 'active') {
+                if ($book) {
                     $book->seller_paid = 1;
                     $book->status = 'sold';
                     $book->save();
@@ -141,6 +145,7 @@ class OrderService
                 'order_id' => $order->id,
                 'status' => 'picked_up',
                 'remark' => '买家已取书，交易完成',
+                'created_at' => now(),
             ]);
         });
     }

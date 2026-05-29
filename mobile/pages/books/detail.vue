@@ -4,7 +4,7 @@
     <template v-else-if="book">
       <swiper v-if="book.images.length" class="image-swiper" :indicator-dots="true" indicator-color="#e5dccf" indicator-active-color="#b49450" circular>
         <swiper-item v-for="img in book.images" :key="img.id">
-          <image :src="img.url" mode="aspectFill" class="swiper-image" @click="previewImage(img.url)" />
+          <safe-image :src="img.url" mode="aspectFill" class="swiper-image" @click="previewImage(img.url)" />
         </swiper-item>
       </swiper>
       <view v-else class="no-cover">暂无图片</view>
@@ -129,7 +129,6 @@ export default {
 .review-date { font-size: 11px; color: #8c8478; margin-top: 4px; display: block; }
 .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; align-items: center; background: #fffdfa; padding: 10px 16px; border-top: 1px solid #e5dccf; padding-bottom: 20px; }
 .bar-info { flex: 1; display: flex; flex-direction: column; }
-.bar-info { display: flex; flex-direction: column; }
 .bar-info .price { font-size: 20px; }
 .bar-info .condition { font-size: 11px; color: #8c8478; }
 .bar-btn { padding: 12px 32px; font-size: 15px; border-radius: 10px; }

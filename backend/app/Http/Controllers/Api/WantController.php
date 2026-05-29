@@ -48,6 +48,40 @@ class WantController extends Controller
         ]);
     }
 
+    public function myWants(Request $request)
+    {
+        $wants = Want::with(['user', 'category'])
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        $list = $wants->map(function ($w) {
+            return [
+                'id' => $w->id,
+                'title' => $w->title,
+                'author' => $w->author,
+                'publisher' => $w->publisher,
+                'category_id' => $w->category_id,
+                'category_name' => $w->category ? $w->category->name : null,
+                'max_price' => $w->max_price,
+                'acceptable_condition' => $w->acceptable_condition,
+                'condition_label' => $this->conditionLabel($w->acceptable_condition),
+                'status' => $w->status,
+                'status_label' => $this->wantStatusLabel($w->status),
+                'fulfiller_count' => $w->fulfillments()->count(),
+                'expires_at' => $w->expires_at->toDateTimeString(),
+                'created_at' => $w->created_at->toDateTimeString(),
+            ];
+        });
+
+        return $this->paginate($list, [
+            'current_page' => $wants->currentPage(),
+            'per_page' => $wants->perPage(),
+            'total' => $wants->total(),
+            'last_page' => $wants->lastPage(),
+        ]);
+    }
+
     public function show($id)
     {
         $want = Want::with(['user', 'category', 'fulfillments.fulfiller', 'fulfillments.book'])->findOrFail($id);

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderTimeline extends Model
 {
     protected $table = 'order_timeline';
-    protected $fillable = ['order_id', 'status', 'remark'];
+    protected $fillable = ['order_id', 'status', 'remark', 'created_at'];
     protected $dates = ['created_at'];
 
     public $timestamps = false;

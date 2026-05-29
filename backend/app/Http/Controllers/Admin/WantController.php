@@ -31,6 +31,31 @@ class WantController extends Controller
         return view('admin.wants.index', compact('wants'));
     }
 
+    public function edit($id)
+    {
+        $want = Want::findOrFail($id);
+        $categories = \App\Category::orderBy('sort')->get();
+        return view('admin.wants.edit', compact('want', 'categories'));
+    }
+
+    public function update($id, Request $request)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:200',
+            'author' => 'nullable|string|max:100',
+            'publisher' => 'nullable|string|max:100',
+            'category_id' => 'required|exists:categories,id',
+            'max_price' => 'required|numeric|min:0',
+            'acceptable_condition' => 'nullable|string|max:100',
+            'status' => 'required|in:active,fulfilled,expired,closed',
+        ]);
+
+        $want = Want::findOrFail($id);
+        $want->fill($data)->save();
+
+        return redirect()->route('admin.wants.index')->with('success', '求购已更新');
+    }
+
     public function destroy($id)
     {
         $want = Want::findOrFail($id);

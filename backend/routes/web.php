@@ -17,6 +17,7 @@ Route::get('/orders', 'Web\OrderController@index');
 Route::get('/orders/{id}', 'Web\OrderController@detail');
 Route::post('/orders/{id}/pay', 'Web\OrderController@pay');
 Route::post('/orders/{id}/cancel', 'Web\OrderController@cancel');
+Route::post('/orders/{id}/delete', 'Web\OrderController@delete');
 Route::get('/buy/{bookId}', 'Web\OrderController@buyForm');
 Route::post('/buy/{bookId}', 'Web\OrderController@buy');
 
@@ -64,6 +65,7 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
             Route::post('{id}/confirm', 'OrderController@confirm');
             Route::post('{id}/pickup', 'OrderController@pickup');
             Route::post('{id}/cancel', 'OrderController@cancel');
+            Route::post('{id}/delete', 'OrderController@destroy');
         });
 
         // 用户管理
@@ -75,6 +77,8 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
 
         // 求购管理
         Route::get('wants', 'WantController@index')->name('admin.wants.index');
+        Route::get('wants/{id}/edit', 'WantController@edit');
+        Route::post('wants/{id}/update', 'WantController@update');
         Route::post('wants/{id}/delete', 'WantController@destroy');
 
         // 分类管理

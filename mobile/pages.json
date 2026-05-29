@@ -53,6 +53,10 @@
       "style": { "navigationBarTitleText": "发布求购" }
     },
     {
+      "path": "pages/wants/mine",
+      "style": { "navigationBarTitleText": "我的求购" }
+    },
+    {
       "path": "pages/user/profile",
       "style": { "navigationBarTitleText": "个人中心" }
     }

@@ -46,7 +46,7 @@ class BookController extends Controller
                 'title' => $book->title,
                 'author' => $book->author,
                 'publisher' => $book->publisher,
-                'cover_img' => $cover ? asset('storage/' . $cover->path) : null,
+                'cover_img' => $cover ? '/storage/' .$cover->path : null,
                 'condition' => $book->condition,
                 'condition_label' => $this->conditionLabel($book->condition),
                 'price' => $book->price,
@@ -83,7 +83,7 @@ class BookController extends Controller
             'images' => $book->images->map(function ($img) {
                 return [
                     'id' => $img->id,
-                    'url' => asset('storage/' . $img->path),
+                    'url' => '/storage/' .$img->path,
                     'type' => $img->type,
                 ];
             }),
@@ -122,12 +122,19 @@ class BookController extends Controller
             'condition' => 'required|in:like_new,excellent,good,fair',
             'original_price' => 'required|numeric|min:0.01',
             'description' => 'nullable|string|max:500',
-            'images' => 'required|array|min:2|max:5',
+            'images' => 'required_without:image_urls|array|min:2|max:5',
             'images.*' => 'file|mimetypes:image/jpeg,image/png,image/webp|max:5120',
+            'image_urls' => 'required_without:images|array|min:2|max:5',
+            'image_urls.*' => 'string',
             'image_types' => 'nullable|array',
         ]);
 
-        $images = $request->file('images', []);
+        $imageUrls = $request->input('image_urls', []);
+        if (!empty($imageUrls)) {
+            $data['images'] = $imageUrls;
+        }
+
+        $images = !empty($imageUrls) ? $imageUrls : $request->file('images', []);
         $book = $service->submit($data, $images);
 
         return $this->success(['id' => $book->id], '提交成功，等待审核');
@@ -149,7 +156,7 @@ class BookController extends Controller
             return [
                 'id' => $book->id,
                 'title' => $book->title,
-                'cover_img' => $cover ? asset('storage/' . $cover->path) : null,
+                'cover_img' => $cover ? '/storage/' .$cover->path : null,
                 'status' => $book->status,
                 'status_label' => $this->statusLabel($book->status),
                 'price' => $book->price,
@@ -173,8 +180,8 @@ class BookController extends Controller
     {
         $book = Book::where('id', $id)->where('seller_id', auth()->id())->firstOrFail();
 
-        if ($book->status !== 'removed') {
-            return $this->error('只能删除已驳回的书籍', 403);
+        if (!in_array($book->status, ['removed', 'rejected'])) {
+            return $this->error('只能删除已驳回或已下架的书籍', 403);
         }
 
         $book->delete();

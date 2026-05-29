@@ -25,7 +25,7 @@
             color: var(--ink);
         }
 
-        .layout { display: flex; min-height: 100vh; }
+        .layout { display: flex; height: 100vh; }
 
         /* 侧边栏 — 暖棕深色 */
         .sidebar {
@@ -35,6 +35,7 @@
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
         .sidebar .logo {
             padding: 26px 22px;
@@ -70,7 +71,7 @@
         }
 
         /* 主区域 */
-        .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow-y: auto; }
 
         /* 顶栏 */
         .topbar {
@@ -235,6 +236,13 @@
             border-color: var(--gold);
             box-shadow: 0 0 0 3px rgba(180,148,80,0.12);
         }
+        .form-control:-webkit-autofill,
+        .form-control:-webkit-autofill:hover,
+        .form-control:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 50px #fefdfb inset;
+            -webkit-text-fill-color: #2c2416;
+            transition: background-color 9999s ease-in-out 0s;
+        }
         select.form-control { cursor: pointer; }
 
         .flex-row { display: flex; gap: 14px; align-items: stretch; flex-wrap: wrap; }
@@ -248,18 +256,21 @@
             margin-top: 24px; font-size: 13px;
             list-style: none; padding: 0;
         }
-        .pagination a, .pagination span {
+        .pagination .page-link {
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 36px; height: 36px; padding: 0 8px;
             border: 1px solid var(--border); border-radius: 20px;
             text-decoration: none; color: var(--muted);
             background: var(--card); transition: all 0.2s ease;
         }
-        .pagination a:hover { background: rgba(180,148,80,0.04); border-color: var(--gold); color: var(--gold); }
-        .pagination .active {
+        .pagination .page-link:hover { background: rgba(180,148,80,0.04); border-color: var(--gold); color: var(--gold); }
+        .pagination .active .page-link {
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             color: #fff; border-color: transparent; font-weight: 600;
-            box-shadow: 0 2px 6px rgba(180,148,80,0.25);
+            box-shadow: 0 2px 8px rgba(180,148,80,0.25);
+        }
+        .pagination .disabled .page-link {
+            color: #d4ccb8; cursor: not-allowed; pointer-events: none;
         }
 
         /* 统计卡片 */

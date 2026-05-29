@@ -37,12 +37,13 @@
         }
         a { text-decoration: none; color: inherit; }
 
-        /* 导航 — 暖白毛玻璃 */
+        /* 导航 — 暖羊皮纸毛玻璃，与奶油底色形成层次 */
         .header {
-            background: rgba(253,250,244,0.92);
+            background: rgba(247,241,230,0.94);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 1px 12px rgba(44,36,22,0.04);
         }
         .header-inner {
             max-width: 1200px; margin: 0 auto; padding: 0 32px;

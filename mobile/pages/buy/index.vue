@@ -4,7 +4,7 @@
     <template v-else-if="book">
       <view class="card card-accent-amber">
         <view class="book-row">
-          <image v-if="book.cover_img" :src="book.cover_img" mode="aspectFill" class="cover" />
+          <safe-image v-if="book.cover_img" :src="book.cover_img" mode="aspectFill" class="cover" />
           <view class="book-info">
             <text class="title ellipsis-2">{{ book.title }}</text>
             <text class="meta">{{ book.author }}</text>

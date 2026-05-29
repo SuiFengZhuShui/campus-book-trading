@@ -71,10 +71,17 @@ class HomeController extends Controller
     {
         $book = Book::with(['images', 'category', 'seller'])->findOrFail($id);
 
-        // 非在售书籍仅卖家和管理员可查看
+        // 非在售书籍仅卖家、买家和管理员可查看
         if ($book->status !== 'active') {
             $user = auth()->user();
-            if (!$user || ($user->id !== $book->seller_id && $user->role !== 'admin')) {
+            if (!$user) {
+                abort(404);
+            }
+            $isBuyer = \App\OrderItem::where('book_id', $book->id)
+                ->whereHas('order', function ($q) use ($user) {
+                    $q->where('buyer_id', $user->id);
+                })->exists();
+            if ($user->id !== $book->seller_id && $user->role !== 'admin' && !$isBuyer) {
                 abort(404);
             }
         }
@@ -190,8 +197,8 @@ class HomeController extends Controller
 
         $book = Book::where('id', $id)->where('seller_id', auth()->id())->firstOrFail();
 
-        if ($book->status !== 'removed') {
-            abort(403, '只能删除已驳回的书籍');
+        if (!in_array($book->status, ['removed', 'rejected'])) {
+            abort(403, '只能删除已驳回或已下架的书籍');
         }
 
         $book->delete();

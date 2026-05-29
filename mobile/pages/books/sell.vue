@@ -42,7 +42,7 @@
         <text class="input-label">上传图片（2-5张，需含封面）</text>
         <view class="image-upload">
           <view v-for="(img, idx) in images" :key="idx" class="image-item" @click="removeImage(idx)">
-            <image :src="img" mode="aspectFill" class="upload-img" />
+            <safe-image :src="img" mode="aspectFill" class="upload-img" />
             <text class="remove-icon">×</text>
           </view>
           <view v-if="images.length < 5" class="add-btn" @click="chooseImage">
@@ -144,12 +144,16 @@ export default {
           category_id: this.form.category_id,
           condition: this.form.condition,
           original_price: parseFloat(this.form.original_price),
-          description: this.form.description.trim(),
-          image_types: ['cover', 'other']
+          description: this.form.description.trim()
+        }
+
+        var imageTypes = ['cover']
+        for (var i = 1; i < this.images.length; i++) {
+          imageTypes.push('other')
         }
 
         // uploadFiles sends images[] as multipart/form-data (H5: native fetch, others: uni.uploadFile)
-        await uploadFiles('/api/books/submit', this.images, fields)
+        await uploadFiles('/api/books/submit', this.images, fields, imageTypes)
 
         uni.hideLoading()
         uni.showToast({ title: '提交成功，等待审核', icon: 'success' })

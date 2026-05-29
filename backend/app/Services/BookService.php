@@ -24,7 +24,16 @@ class BookService
             $book->save();
 
             foreach ($images as $i => $file) {
-                $path = $file->store("books/{$book->id}/original", 'public');
+                if ($file instanceof \Illuminate\Http\UploadedFile) {
+                    $path = $file->store("books/{$book->id}/original", 'public');
+                } else {
+                    // 路径字符串：从 temp/ 目录移动到书籍目录
+                    $tempPath = str_replace('/storage/', '', (string)$file);
+                    $filename = basename($tempPath);
+                    $destPath = "books/{$book->id}/original/{$filename}";
+                    \Storage::disk('public')->move($tempPath, $destPath);
+                    $path = $destPath;
+                }
                 BookImage::create([
                     'book_id' => $book->id,
                     'path' => $path,
@@ -60,7 +69,7 @@ class BookService
             throw new BusinessException('当前状态不允许此操作');
         }
 
-        $book->status = 'removed';
+        $book->status = 'rejected';
         $book->reject_reason = $reason;
         $book->save();
     }

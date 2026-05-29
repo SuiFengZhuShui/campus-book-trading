@@ -66,6 +66,8 @@ class OrderController extends Controller
         }
 
         $data = $this->formatOrder($order);
+        $data['is_buyer'] = $order->buyer_id === auth()->id();
+        $data['is_seller'] = $isSeller;
         $data['timeline'] = $order->timeline->map(function ($t) {
             return [
                 'status' => $t->status,
@@ -121,6 +123,23 @@ class OrderController extends Controller
         return $this->success(null, '确认取书成功');
     }
 
+    public function destroy($id)
+    {
+        $order = Order::with('items.book')->findOrFail($id);
+
+        $isBuyer = $order->buyer_id === auth()->id();
+        $isSeller = $order->items->contains(function ($item) {
+            return $item->book && $item->book->seller_id === auth()->id();
+        });
+
+        if (!$isBuyer && !$isSeller) {
+            return $this->error('无权操作此订单', 403);
+        }
+
+        $order->delete();
+        return $this->success(null, '已删除');
+    }
+
     public function review($id, Request $request, ReviewService $service)
     {
         $data = $request->validate([
@@ -139,14 +158,17 @@ class OrderController extends Controller
         $cover = null;
         $books = $order->items->map(function ($item) use (&$cover) {
             $book = $item->book;
-            if (!$cover && $book) {
+            $bookCover = null;
+            if ($book) {
                 $img = $book->images->where('type', 'cover')->first();
-                $cover = $img ? asset('storage/' . $img->path) : null;
+                $bookCover = $img ? '/storage/' . $img->path : null;
+                if (!$cover) $cover = $bookCover;
             }
             return [
                 'book_id' => $item->book_id,
                 'title' => $book ? $book->title : '',
                 'price' => $item->price,
+                'cover_img' => $bookCover,
             ];
         });
 

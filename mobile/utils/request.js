@@ -37,8 +37,10 @@ function request(options) {
         } else if (res.statusCode === 422 && res.data.code === 422) {
           reject(res.data)
         } else if (res.statusCode === 401) {
-          try { uni.removeStorageSync('auth') } catch (e) { /* ignore */ }
-          uni.showToast({ title: '请先登录', icon: 'none' })
+          try { uni.removeStorageSync('auth') } catch (e) { console.log('removeStorageSync error:', e) }
+          var auth = require('@/stores/auth.js').default
+          auth.logout()
+          uni.showToast({ title: '请先登录，重新进入', icon: 'none' })
           reject(res.data)
         } else {
           uni.showToast({ title: res.data.message || '请求失败', icon: 'none' })
@@ -68,7 +70,8 @@ export function del(url, data) {
 
 // uploadFiles: sends multiple files + form fields as multipart/form-data
 // Used for submitting books with images
-export function uploadFiles(url, files, fields) {
+export function uploadFiles(url, files, fields, imageTypes) {
+  imageTypes = imageTypes || []
   return new Promise((resolve, reject) => {
     const token = getToken()
     // #ifdef H5
@@ -76,14 +79,12 @@ export function uploadFiles(url, files, fields) {
     const formData = new FormData()
     files.forEach(function (file, index) {
       formData.append('images[]', file)
-      if (fields.image_types && fields.image_types[index]) {
-        formData.append('image_types[]', fields.image_types[index])
+      if (imageTypes[index]) {
+        formData.append('image_types[]', imageTypes[index])
       }
     })
     Object.keys(fields).forEach(function (key) {
-      if (key !== 'image_types') {
-        formData.append(key, fields[key])
-      }
+      formData.append(key, fields[key])
     })
 
     fetch(BASE_URL + url, {
@@ -109,38 +110,87 @@ export function uploadFiles(url, files, fields) {
     // #endif
 
     // #ifndef H5
-    // Non-H5: fallback — upload individually via uploadFile
-    uploadSequential(url, files, fields, token).then(resolve).catch(reject)
+    // Non-H5: upload each file to /api/upload first, then POST book data with image_urls
+    uploadSequential(url, files, fields, imageTypes, token).then(resolve).catch(reject)
     // #endif
   })
 }
 
-// Sequential upload fallback for non-H5 platforms
-function uploadSequential(url, files, fields, token) {
+// Step 1: upload each file to /api/upload, collect URLs
+// Step 2: POST book data with image_urls
+function uploadSequential(url, files, fields, imageTypes, token) {
   return new Promise(function (resolve, reject) {
-    const task = uni.uploadFile({
-      url: BASE_URL + url,
-      filePath: files[0],
-      name: 'images[]',
-      formData: Object.assign({}, fields),
-      header: {
-        'Authorization': 'Bearer ' + token
-      },
-      success(res) {
-        try {
-          const data = JSON.parse(res.data)
-          if (data.code === 200) {
-            resolve(data)
-          } else {
-            reject(data)
+    var uploadedUrls = []
+    var idx = 0
+
+    function uploadNext() {
+      if (idx >= files.length) {
+        // All files uploaded — now POST book data
+        submitWithUrls(url, fields, uploadedUrls, imageTypes, token).then(resolve).catch(reject)
+        return
+      }
+
+      uni.uploadFile({
+        url: BASE_URL + '/api/upload',
+        filePath: files[idx],
+        name: 'file',
+        header: {
+          'Authorization': 'Bearer ' + token
+        },
+        success: function (res) {
+          try {
+            var data = JSON.parse(res.data)
+            if (data.code === 200 && data.data && data.data.url) {
+              uploadedUrls.push(data.data.url)
+              idx++
+              uploadNext()
+            } else {
+              reject(data)
+            }
+          } catch (e) {
+            console.log('upload parse error:', e)
+            reject({ code: 500, message: '解析失败' })
           }
-        } catch (e) {
-          reject({ code: 500, message: '解析失败' })
+        },
+        fail: function (err) {
+          console.log('upload fail:', err)
+          uni.showToast({ title: '上传失败，请重试', icon: 'none' })
+          reject(err)
+        }
+      })
+    }
+
+    uploadNext()
+  })
+}
+
+// POST book data with image_urls instead of multipart files
+function submitWithUrls(url, fields, imageUrls, imageTypes, token) {
+  return new Promise(function (resolve, reject) {
+    var body = Object.assign({}, fields)
+    body.image_urls = imageUrls
+    body.image_types = imageTypes
+
+    uni.request({
+      url: BASE_URL + url,
+      method: 'POST',
+      data: body,
+      header: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      success: function (res) {
+        if (res.statusCode === 200 && res.data.code === 200) {
+          resolve(res.data)
+        } else {
+          uni.showToast({ title: res.data.message || '提交失败', icon: 'none' })
+          reject(res.data)
         }
       },
-      fail(err) {
-        console.log('upload fail:', err)
-        uni.showToast({ title: '上传失败', icon: 'none' })
+      fail: function (err) {
+        console.log('submit fail:', err)
+        uni.showToast({ title: '网络错误，请重试', icon: 'none' })
         reject(err)
       }
     })

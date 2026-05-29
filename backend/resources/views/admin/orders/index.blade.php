@@ -44,6 +44,9 @@
                         <button class="btn btn-danger btn-sm" onclick="cancelOrder({{ $order->id }}, '{{ $order->order_no }}')">取消</button>
                     @endif
                     <a href="{{ url('admin/orders/'.$order->id) }}" class="btn btn-sm">查看</a>
+                    @if(in_array($order->status, ['cancelled', 'picked_up']))
+                        <button class="btn btn-sm" style="color:#bc4742;border-color:rgba(107,39,55,0.3)" onclick="deleteOrder({{ $order->id }}, '{{ $order->order_no }}')">删除</button>
+                    @endif
                 </td>
             </tr>
             @empty
@@ -67,6 +70,13 @@ function cancelOrder(id, no) {
     var form = document.createElement('form');
     form.method = 'POST'; form.action = '/admin/orders/' + id + '/cancel';
     form.innerHTML = '@csrf<input type="hidden" name="reason" value="' + reason + '">';
+    document.body.appendChild(form); form.submit();
+}
+function deleteOrder(id, no) {
+    if (!confirm('确定删除订单 ' + no + ' 吗？')) return;
+    var form = document.createElement('form');
+    form.method = 'POST'; form.action = '/admin/orders/' + id + '/delete';
+    form.innerHTML = '@csrf';
     document.body.appendChild(form); form.submit();
 }
 </script>

@@ -51,18 +51,21 @@
         </view>
       </view>
 
-      <view class="actions">
+      <view v-if="order.is_buyer" class="actions">
         <view v-if="order.status === 'pending'" class="btn-danger action-btn" @click="onCancel">取消订单</view>
         <view v-if="order.status === 'pending'" class="btn-amber action-btn" @click="onPay">立即支付</view>
         <view v-if="order.status === 'paid'" class="btn-amber action-btn" @click="onPickup">确认取书</view>
         <view v-if="order.status === 'picked_up'" class="btn-primary action-btn" @click="goReview">去评价</view>
+      </view>
+      <view v-if="(order.status === 'cancelled' || order.status === 'picked_up') && (order.is_buyer || order.is_seller)" class="actions">
+        <view class="btn-danger action-btn" @click="onDelete">删除订单</view>
       </view>
     </template>
   </view>
 </template>
 
 <script>
-import { get, post } from '@/utils/request.js'
+import { get, post, del } from '@/utils/request.js'
 
 export default {
   data() {
@@ -127,6 +130,23 @@ export default {
             setTimeout(function () { self.fetchOrder(self.order.id) }, 800)
           } catch (e) {
             console.log('pickup error:', e)
+          }
+        }
+      })
+    },
+    onDelete: function () {
+      var self = this
+      uni.showModal({
+        title: '删除订单',
+        content: '确定删除此订单吗？',
+        success: async function (res) {
+          if (!res.confirm) return
+          try {
+            await del('/api/orders/' + self.order.id)
+            uni.showToast({ title: '已删除', icon: 'success' })
+            setTimeout(function () { uni.navigateBack() }, 800)
+          } catch (e) {
+            console.log('delete error:', e)
           }
         }
       })

@@ -79,7 +79,9 @@
                     <a href="/books/{{ $item->book->id }}" style="font-size: 14px; font-weight: 500; color: #2c2416;">{{ $item->book->title }}</a>
                     <div style="font-size: 12px; color: #6e6559; margin-top: 4px;">{{ $item->book->author }} / {{ $item->book->publisher }}</div>
                 </div>
-                <div style="text-align: right; font-size: 16px; font-weight: 600; color: #b49450;">¥{{ $item->price }}</div>
+                <div style="text-align: right; font-size: 16px; font-weight: 600; color: #b49450;">
+                    @if($item->price) ¥{{ $item->price }} @else <span style="font-size:13px;color:#b0822c;font-weight:500;">审核中，待定价</span> @endif
+                </div>
             </div>
         @endforeach
     </div>

@@ -25,6 +25,10 @@
 }
 .price-row .price.data-v-b5324562 { font-size: 24px; margin-right: 8px;
 }
+.price-pending.data-v-b5324562 { font-size: 16px; color: #b0822c; font-weight: 500;
+}
+.price-pending-sm.data-v-b5324562 { font-size: 13px; color: #b0822c; font-weight: 500;
+}
 .desc.data-v-b5324562 { font-size: 14px; color: #8c8478; line-height: 1.6; margin-top: 12px; display: block;
 }
 .section-title.data-v-b5324562 { font-size: 16px; font-weight: 600; color: #2c2416; margin-bottom: 12px; display: block; padding-left: 10px; border-left: 3px solid #b49450;

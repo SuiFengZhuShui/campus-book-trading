@@ -50,10 +50,9 @@
         </view>
       </view>
 
-      <view class="bottom-bar">
+      <view v-if="book.status === 'active'" class="bottom-bar">
         <view class="bar-info">
-          <text v-if="book.price" class="price">¥{{ book.price }}</text>
-          <text v-else class="price-pending-sm">审核中，待定价</text>
+          <text class="price">¥{{ book.price }}</text>
           <text class="condition">{{ book.condition_label }}</text>
         </view>
         <view class="btn-amber bar-btn" @click="goBuy">立即购买</view>

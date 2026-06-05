@@ -481,6 +481,8 @@
                     <div class="user-dropdown">
                         <span class="user-dropdown-trigger">👤 {{ auth()->user()->name }} ▾</span>
                         <div class="user-dropdown-menu">
+                            <a href="/profile">👤 个人中心</a>
+                            <div class="dropdown-divider"></div>
                             <a href="/orders">📋 我的订单</a>
                             <a href="/my-sells">📖 我的卖书</a>
                             <div class="dropdown-divider"></div>

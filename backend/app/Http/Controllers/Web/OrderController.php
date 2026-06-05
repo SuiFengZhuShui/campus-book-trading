@@ -105,6 +105,21 @@ class OrderController extends Controller
         return redirect('/orders/' . $order->id)->with('success', '订单已取消');
     }
 
+    public function pickup($id, OrderService $service)
+    {
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        $order = Order::findOrFail($id);
+        if ($order->buyer_id !== auth()->id()) {
+            abort(403, '无权操作此订单');
+        }
+        $service->pickup($order->id);
+
+        return redirect('/orders/' . $order->id)->with('success', '取书成功，交易完成');
+    }
+
     public function delete($id)
     {
         if (!auth()->check()) {

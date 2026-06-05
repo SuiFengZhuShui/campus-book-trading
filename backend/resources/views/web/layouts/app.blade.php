@@ -454,6 +454,15 @@
 
             <div class="header-actions">
                 <a href="/sell" class="btn-sell">✦ 卖书</a>
+                @auth
+                    @php $cartCount = \App\CartItem::where('user_id', auth()->id())->count(); @endphp
+                    <a href="/cart" class="cart-link" style="position:relative;font-size:13px;color:var(--muted);padding:6px 10px;border-radius:20px;transition:all 0.3s;">
+                        🛒 购物车
+                        @if($cartCount > 0)
+                        <span style="position:absolute;top:-2px;right:-2px;background:#bc4742;color:#fff;font-size:10px;min-width:16px;height:16px;line-height:16px;text-align:center;border-radius:8px;padding:0 4px;">{{ $cartCount }}</span>
+                        @endif
+                    </a>
+                @endauth
                 @guest
                     <a href="/login" class="btn-login">登录</a>
                 @else

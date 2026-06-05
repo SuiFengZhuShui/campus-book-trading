@@ -28,6 +28,12 @@ Route::get('/wants/{id}', 'Web\HomeController@wantDetail');
 Route::get('/post-want', 'Web\HomeController@postWant');
 Route::post('/post-want', 'Web\HomeController@storeWant');
 
+// 购物车（需登录）
+Route::get('/cart', 'Web\CartController@index');
+Route::post('/cart/add', 'Web\CartController@add');
+Route::post('/cart/remove/{id}', 'Web\CartController@remove');
+Route::post('/cart/checkout', 'Web\CartController@checkout');
+
 // 我的卖书（需登录）
 Route::get('/my-sells', 'Web\HomeController@mySells');
 Route::post('/my-sells/{id}/delete', 'Web\HomeController@deleteBook');

@@ -116,10 +116,17 @@
 
             {{-- 购买按钮 --}}
             @if($book->status === 'active')
-            <a href="/buy/{{ $book->id }}" class="btn-amber"
-                    style="display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; font-size: 18px;">
-                立即购买
-            </a>
+            <div style="display:flex;gap:12px;">
+                <a href="/buy/{{ $book->id }}" class="btn-amber"
+                        style="display:flex;align-items:center;justify-content:center;flex:2;height:52px;font-size:18px;">
+                    立即购买
+                </a>
+                <form method="POST" action="/cart/add" style="flex:1;">
+                    @csrf
+                    <input type="hidden" name="book_id" value="{{ $book->id }}">
+                    <button type="submit" style="width:100%;height:52px;background:#ffffff;color:#b49450;border:1px solid #b49450;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;">加入购物车</button>
+                </form>
+            </div>
             @endif
         </div>
     </div>

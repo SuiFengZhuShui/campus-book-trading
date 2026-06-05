@@ -3,6 +3,7 @@
 @section('title', '我的卖书 - 校园二手书网')
 
 @section('content')
+<a href="/" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:16px;">&larr; 返回首页</a>
 <h2 style="font-size: 22px; font-weight: 600; color: #2c2416; letter-spacing: -0.01em; margin-bottom: 20px;">我卖的书</h2>
 
 @if($books->count() > 0)

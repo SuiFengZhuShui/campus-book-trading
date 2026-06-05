@@ -57,6 +57,10 @@
       "style": { "navigationBarTitleText": "我的求购" }
     },
     {
+      "path": "pages/cart/index",
+      "style": { "navigationBarTitleText": "购物车" }
+    },
+    {
       "path": "pages/user/profile",
       "style": { "navigationBarTitleText": "个人中心" }
     }

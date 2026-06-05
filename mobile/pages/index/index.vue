@@ -41,7 +41,10 @@
           <text class="author">{{ b.author }}</text>
           <view class="bottom">
             <text class="price">¥{{ b.price }}</text>
-            <text class="condition">{{ b.condition_label }}</text>
+            <view class="bottom-actions">
+              <text class="condition">{{ b.condition_label }}</text>
+              <view class="cart-btn" @click.stop="addCart(b.id)">🛒</view>
+            </view>
           </view>
         </view>
       </view>
@@ -55,7 +58,7 @@
 </template>
 
 <script>
-import { get } from '@/utils/request.js'
+import { get, post } from '@/utils/request.js'
 
 export default {
   data() {
@@ -134,6 +137,14 @@ export default {
       this.fetchBooks(true)
     },
     goDetail(id) { uni.navigateTo({ url: '/pages/books/detail?id=' + id }) },
+    async addCart(bookId) {
+      try {
+        await post('/api/cart', { book_id: bookId })
+        uni.showToast({ title: '已加入购物车', icon: 'success' })
+      } catch (e) {
+        uni.showToast({ title: e.message || '操作失败', icon: 'none' })
+      }
+    },
     cardAccent(idx) {
       var accents = ['card-accent-blue', 'card-accent-amber', 'card-accent-teal', 'card-accent-coral', 'card-accent-indigo']
       return accents[idx % accents.length]
@@ -173,6 +184,8 @@ export default {
 .book-card .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
 .book-card .price { color: #b49450; font-size: 16px; font-weight: 700; }
 .book-card .condition { font-size: 11px; color: #2d6a4f; background: #f0fdf4; padding: 2px 6px; border-radius: 4px; }
+.bottom-actions { display: flex; align-items: center; }
+.cart-btn { font-size: 16px; padding: 2px 6px; margin-left: auto; }
 .status-msg { text-align: center; padding: 60px 0; color: #6e6559; font-size: 14px; }
 .status-msg.error { color: #bc4742; }
 .load-more { text-align: center; padding: 16px; color: #b49450; font-size: 14px; }

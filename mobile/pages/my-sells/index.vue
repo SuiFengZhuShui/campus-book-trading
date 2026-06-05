@@ -17,6 +17,7 @@
             <text :class="['status-tag', statusClass(b.status)]">{{ b.status_label }}</text>
             <view class="price-row">
               <text v-if="b.price" class="price">售价 ¥{{ b.price }}</text>
+              <text v-else class="price-pending">售价 待定价</text>
               <text v-if="b.cost_price" class="cost">结算 ¥{{ b.cost_price }}</text>
             </view>
             <text v-if="b.reject_reason" class="reject-reason">驳回原因：{{ b.reject_reason }}</text>
@@ -118,6 +119,7 @@ export default {
 .price-row { display: flex; margin-top: 6px; }
 .price { margin-right: 12px; }
 .price { font-size: 14px; color: #b49450; font-weight: 600; }
+.price-pending { font-size: 13px; color: #b0822c; font-weight: 500; }
 .cost { font-size: 12px; color: #6e6559; }
 .reject-reason { font-size: 12px; color: #bc4742; margin-top: 4px; display: block; }
 .date { font-size: 11px; color: #6e6559; margin-top: 4px; display: block; }

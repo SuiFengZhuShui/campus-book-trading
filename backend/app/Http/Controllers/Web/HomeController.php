@@ -177,6 +177,20 @@ class HomeController extends Controller
         return redirect('/wants')->with('success', '求购发布成功');
     }
 
+    public function profile()
+    {
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        $user = auth()->user();
+        $orderCount = \App\Order::where('buyer_id', $user->id)->count();
+        $sellCount = \App\Book::where('seller_id', $user->id)->count();
+        $cartCount = \App\CartItem::where('user_id', $user->id)->count();
+
+        return view('web.profile', compact('user', 'orderCount', 'sellCount', 'cartCount'));
+    }
+
     public function sell()
     {
         if (!auth()->check()) {

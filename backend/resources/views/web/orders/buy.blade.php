@@ -7,7 +7,7 @@
     <h2 style="font-size: 22px; font-weight: 600; color: #2c2416; letter-spacing: -0.01em; margin-bottom: 24px;">确认购买</h2>
 
     {{-- 书籍信息 --}}
-    <div style="background: #fffdfa; border-radius: 12px; padding: 24px; border: 1px solid rgba(26,31,43,0.05); box-shadow: 0 2px 8px rgba(26,31,43,0.04); margin-bottom: 24px; display: flex; gap: 20px;">
+    <div style="background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid #cec4b0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; display: flex; gap: 20px;">
         @php $cover = $book->images->where('type', 'cover')->first(); @endphp
         @if($cover)
             <img src="{{ asset('storage/' . $cover->path) }}" alt="{{ $book->title }}"
@@ -17,14 +17,14 @@
         @endif
         <div>
             <div style="font-size: 16px; font-weight: 600; color: #2c2416; margin-bottom: 6px;">{{ $book->title }}</div>
-            <div style="font-size: 13px; color: #8c8478; margin-bottom: 4px;">{{ $book->author }} / {{ $book->publisher }}</div>
-            <div style="font-size: 13px; color: #8c8478; margin-bottom: 8px;">{{ $book->category->name ?? '' }}</div>
+            <div style="font-size: 13px; color: #6e6559; margin-bottom: 4px;">{{ $book->author }} / {{ $book->publisher }}</div>
+            <div style="font-size: 13px; color: #6e6559; margin-bottom: 8px;">{{ $book->category->name ?? '' }}</div>
             <div style="font-size: 24px; color: #b49450; font-weight: 700;">¥{{ $book->price }}</div>
         </div>
     </div>
 
     {{-- 下单表单 --}}
-    <div style="background: #fffdfa; border-radius: 12px; padding: 24px; border: 1px solid rgba(26,31,43,0.05); box-shadow: 0 2px 8px rgba(26,31,43,0.04);">
+    <div style="background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid #cec4b0; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
         <form method="POST" action="/buy/{{ $book->id }}">
             @csrf
 
@@ -52,7 +52,7 @@
                 @enderror
             </div>
 
-            <div style="background: rgba(180,148,80,0.06); border-radius: 8px; padding: 16px; margin-bottom: 20px; font-size: 13px; color: #8c8478; border-left: 3px solid #b49450;">
+            <div style="background: rgba(180,148,80,0.06); border-radius: 8px; padding: 16px; margin-bottom: 20px; font-size: 13px; color: #6e6559; border-left: 3px solid #b49450;">
                 <p style="margin: 0 0 6px 0; font-weight: 500; color: #2c2416;">下单须知：</p>
                 <p style="margin: 0 0 2px 0;">- 下单后请在<strong>30分钟内</strong>完成支付，超时订单将自动取消</p>
                 <p style="margin: 0 0 2px 0;">- 支付后平台确认，凭订单号到取书地点拿书</p>

@@ -5,34 +5,30 @@
 }
 .order-header.data-v-47f41221 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
 }
-.order-no.data-v-47f41221 { font-size: 13px; color: #9d9fa8;
+.order-no.data-v-47f41221 { font-size: 13px; color: #8c8478;
 }
 .status-tag.data-v-47f41221 { font-size: 12px; padding: 2px 8px; border-radius: 12px;
 }
 .status-warning.data-v-47f41221 { background: #fefce8; color: #b0822c;
 }
-.status-info.data-v-47f41221 { background: #eff6ff; color: #1e3a5f;
+.status-info.data-v-47f41221 { background: rgba(180,148,80,0.08); color: #b49450;
 }
 .status-success.data-v-47f41221 { background: #f0fdf4; color: #2d6a4f;
 }
 .status-danger.data-v-47f41221 { background: #fef2f2; color: #bc4742;
 }
-.order-body.data-v-47f41221 { display: flex;
+.order-body.data-v-47f41221 { margin-top: 8px;
 }
-.cover.data-v-47f41221 { margin-right: 10px; width: 60px; height: 80px; border-radius: 6px; flex-shrink: 0; background: #f0ede7;
+.book-title.data-v-47f41221 { font-size: 14px; color: #2c2416; line-height: 1.4;
 }
-.order-info.data-v-47f41221 { flex: 1;
+.book-count.data-v-47f41221 { font-size: 12px; color: #8c8478;
 }
-.book-title.data-v-47f41221 { font-size: 14px; color: #1a1f2b; line-height: 1.4;
+.order-footer.data-v-47f41221 { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid #e5dccf;
 }
-.book-count.data-v-47f41221 { font-size: 12px; color: #9d9fa8;
+.amount.data-v-47f41221 { font-size: 15px; font-weight: 600; color: #b49450;
 }
-.order-footer.data-v-47f41221 { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid #f0ede7;
+.date.data-v-47f41221 { font-size: 12px; color: #8c8478;
 }
-.amount.data-v-47f41221 { font-size: 15px; font-weight: 600; color: #c7915c;
-}
-.date.data-v-47f41221 { font-size: 12px; color: #9d9fa8;
-}
-.status-msg.data-v-47f41221 { text-align: center; padding: 100px 0; color: #9d9fa8;
+.status-msg.data-v-47f41221 { text-align: center; padding: 100px 0; color: #8c8478;
 }
 

@@ -268,11 +268,12 @@ var _default = {
         url: '/pages/orders/detail?id=' + id
       });
     },
-    onDelete: function onDelete(id) {
+    onDelete: function onDelete(book) {
       var self = this;
+      var msg = book.status === 'rejected' ? '确定删除被驳回的书吗？' : '确定删除被下架的书吗？';
       uni.showModal({
         title: '确认删除',
-        content: '确定要删除此书籍吗？',
+        content: msg,
         success: function () {
           var _success = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(res) {
             return _regenerator.default.wrap(function _callee2$(_context2) {
@@ -287,7 +288,7 @@ var _default = {
                   case 2:
                     _context2.prev = 2;
                     _context2.next = 5;
-                    return (0, _request.del)('/api/my-books/' + id);
+                    return (0, _request.del)('/api/my-books/' + book.id);
                   case 5:
                     uni.showToast({
                       title: '已删除',
@@ -318,14 +319,14 @@ var _default = {
       if (status === 'active') return 'status-success';
       if (status === 'sold') return 'status-info';
       if (status === 'pending_review') return 'status-warning';
-      if (status === 'removed') return 'status-danger';
+      if (status === 'removed' || status === 'rejected') return 'status-danger';
       return 'status-warning';
     },
     sellAccent: function sellAccent(status) {
       if (status === 'active') return 'card-accent-green';
       if (status === 'sold') return 'card-accent-blue';
       if (status === 'pending_review') return 'card-accent-amber';
-      if (status === 'removed') return 'card-accent-red';
+      if (status === 'removed' || status === 'rejected') return 'card-accent-red';
       return 'card-accent-gray';
     }
   }

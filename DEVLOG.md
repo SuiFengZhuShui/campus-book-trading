@@ -1,5 +1,64 @@
 # 开发日志
 
+## 2026-06-03
+
+### 今日完成
+- **图片不显示修复**：`public/storage` Unix symlink 替换为 PowerShell Junction，恢复被清空的 `.htaccess`
+- **`rejected` vs `removed` 状态分离**：3 个 admin Blade 页面 badge/label/筛选全部拆开，`rejected`→红色已驳回，`removed`→灰色已下架
+- **订单评价逻辑**：平台收购订单（`buyer->role === 'admin'`）不显示/不允许评价，ReviewService/API/Web/Mobile 四端同步
+- **订单号格式统一**：Seeder 改用 `YmdHis+4位随机数` 匹配 `OrderService::generateOrderNo()`，清理旧 ORD 格式数据
+- **软删除记录物理删除**：6 条软删除+17 条关联记录全部硬删除
+- **移动端首页加卖书按钮**：右下角浮动按钮跳转 `/pages/books/sell`
+- **Web 首页分页**：`paginate(50)`→`paginate(20)`，测试数据 50→100 本，5 页分页
+- **Web 书籍详情加返回按钮**：`history.back()` + 香槟金渐变
+- **Layout 搜索框上下文**：求购页隐藏学院下拉和搜索栏，避免误触跳首页
+- **Admin 书籍管理按钮**：统一显示「编辑」，「查看」→「编辑」，`rejected` 增加「删除」按钮
+- **后台菜单**：隐藏冗余的「院校管理」，保留「分类管理」
+- **CLAUDE.md**：新增 7 条铁律（#55~#61）
+
+## 2026-05-30
+
+### 今日完成
+- **数据库引擎 InnoDB 修复**：`database.php` `'engine' => null` → `'engine' => 'InnoDB'`，14 张表 ALTER 转 InnoDB，dump 文件全局替换 ENGINE=MyISAM → InnoDB
+- **移动端我的卖书 - 列表去封面**：列表不再显示封面图，点进详情才能看图片
+- **移动端我的卖书 - 卡片点击跳转**：补 `goDetail()` 方法，点击跳转书籍详情
+- **价格 null 显示修复（三端）**：待审核书籍 price/cost_price 为 null，前端展示空 `¥` 像 bug
+  - 移动端详情 `books/detail.vue`：`v-if="book.price"` + `v-else` 显示"待定价"
+  - Blade 列表 `my-sells.blade.php`：`@if($book->price)` 判空
+  - Blade 详情 `book-detail.blade.php`：价格 + "省¥" 两处加 `@if($book->price)`
+- **API `/api/books/{id}` 扩展**：返回 `status` 和 `is_seller` 字段
+- **移动端详情 - 自己的书隐藏购买栏**：`v-if="book.status === 'active' && !book.is_seller"`，待审核/自己的书不显示"立即购买"
+- **`canViewSeller()` 修复**：卖家自己也能看到卖家信息卡片
+- **Web + Admin 截图**：Playwright 自动化截取 25 张（Web 14 + Admin 11），1440px 全页截图
+- **使用手册 v3.1**：docx npm 包程序化生成，文案更新 + 40 截图位
+- **源代码文本**：Web 端（PHP + Blade）+ 移动端（Vue + JS）合并为 `source-code.txt`，10165 行
+- **管理员密码修正**：实际密码为 `REDACTED-PASSWORD`（非 REDACTED-PASSWORD），旧哈希不匹配已重新 hash
+- **旧文件清理**：删除旧 MyISAM dump（防误导入回退）+ 旧 source_code.txt（命名不统一）
+- **Web 注册软删除排除**：`unique:users` → `unique:users,phone,NULL,id,deleted_at,NULL`，Web 端注册遗漏软删除排除，导致已删号无法重注册
+- **books 表 status ENUM 缺 `rejected`**：migration 枚举值只有 5 个（pending_review/approved/active/sold/removed），`BookService::reject()` 设 `rejected` 被 MySQL 截断报错。修复：ALTER TABLE + migration 补值
+- **Web 端评价功能补齐**：之前只有 API + Service，Blade 端三条全漏——`OrderController@review` 方法、`/orders/{id}/review` 路由、订单详情页评价表单。补测试数据才发现
+- **跨层完整性检查规则**：新功能加完后三端自查——API 有 ≠ Blade 有 ≠ 移动端有，每层确认 路由 + Controller + UI + 导航入口 齐全才算完成。子页面加完必须回到父页面补入口按钮。
+- **评价表单左右布局**：书籍评分在左、服务评分在右并排显示
+- **老八用户清理**：物理删除软删除的刘七(13800000005) + 老八(13800000006)，让用户可重新注册
+- **学号顺延**：李四→20240000002、王五→20240000003，按张三的 20240000001 顺延
+- **users 表唯一索引修复**：phone 和 student_id 的单列唯一索引改为 (column, deleted_at) 复合唯一索引，软删除不阻止重注册
+- **移动端下单取书地点**：从自由输入改为 picker 选择器，6 个选项与 Web 端一致（图书馆/一食堂/二食堂/教学楼A区/B区/学生活动中心）
+- **移动端求购广场 - 我的求购入口**：右上角新增苔绿胶囊按钮"我的求购 →"，跳转 `/pages/wants/mine`
+
+### 待办事项
+- [ ] HBuilder X 运行移动端验证：我的卖书列表/详情价格/购买栏隐藏
+- [ ] 移动端截图：微信开发者工具手动截取 16 张
+
+### 遇到的问题
+- **数据库全部 MyISAM**：`database.php` `'engine' => null` 走 MySQL 默认引擎（小皮配的 MyISAM），无外键无事务。修复：改配置 + 转换表 + 修正 dump
+- **旧 dump 导入导致引擎回退**：转换 InnoDB 后导入旧 MyISAM dump 会覆盖引擎。教训：转换后立即删旧 dump
+- **管理员密码不匹配**：文档写 REDACTED-PASSWORD 但数据库哈希实际是 REDACTED-PASSWORD。重置后密码改为 REDACTED-PASSWORD
+- **Blade `¥{{ $book->price }}` null 渲染为 `¥`**：PHP null 在字符串中转为空串，看起来像 bug。解决方案：统一加判空，显示"待定价"
+- **自己的待审核书底部显示"立即购买"**：详情页未区分书籍状态和卖家身份。解决方案：API 加 `status` + `is_seller`，前端双条件判断
+- **Web 注册被已删号阻止**：软删除用户（deleted_at 非空）仍被 unique 验证拦截。根因：Web AuthController 注册验证漏写 `deleted_at,NULL`。修复：补上排除条件
+- **驳回书籍报 Data truncated**：books 表 status ENUM 没有 `rejected` 值。根因：migration 写死了 5 个值，后来加的 `rejected` 状态未同步。修复：ALTER TABLE + migration 补值
+- **Web 端评价功能从未上线**：API + ReviewService 都有，但 Blade 路由/Controller/UI 全缺。根因：写完 API 就以为是完成，没人端到端走一遍。修复：补全三层 + 测试数据验证
+
 ## 2026-05-29
 
 ### 今日完成
@@ -29,12 +88,36 @@
 - **Web 端动态删除提示**：removed 提示"删除被下架的书"，rejected 提示"删除被驳回的书"
 - **卖家订单入口**：我的卖书→查看订单（`/orders/{id}?from=sells`），详情页返回按钮动态跳转
 - **测试数据精简**：16 学生 → 3 学生（13800000001~3），密码统一 REDACTED-PASSWORD
-- **使用手册更新**：v2.0，42 截图位，新增移动端专属验证点/卖家订单/多图上传/软删除章节
+- **使用手册更新**：v3.0，40 截图位，15 Web + 16 移动 + 9 后台 + 15 验证点，完整覆盖软著申请所需截图
+- **登录 401 错误提示修复**：request.js 401拦截器区分登录/注册接口（业务错误不清理auth）
+- **注册 422 中文提示修复**：request.js 提取 validation errors 第一条覆盖顶层英文 message
+- **unique 验证排除软删除**：AuthController register/updateProfile 加 `deleted_at,NULL` 条件
+- **测试数据物理删除**：清理 12 个软删除用户 + 1 本书（管理者指令=真删除）
+- **订单空状态文案优化**：computed emptyText 按 pending/paid/confirmed/picked_up 显示不同文案
+- **后端性能优化**：WantController N+1（`withCount('fulfillments')`）、AuthController::me() 4次 SQL→1次 GROUP BY、首页分类+书籍并行加载
+- **求购页分页**：加载更多（page/per_page/hasMore）
+- **空状态按钮换行**：my-sells/wants/mine/wants-mine 空状态 `<text>` 加 `display:block`
+- **求购浮动按钮改为文字**："+"圆形 → "发布求购"胶囊按钮
+- **卖书预填修复**：onLoad接收参数+decodeURIComponent+categoryIndex同步picker
+- **ISBN → 书号**：卖书页标签改为中文
+- **首页卡片布局对齐**：title/author min-height + safe-image外层view包裹固定高度
+- **登录/注册满屏不滚动**：pages.json disableScroll + height:100vh+box-sizing
+- **跨端同步检查规则**：记忆+feedback（改一端必须同步检查另一端）
+- **全项目 Bug 排查**：发现 32 个 bug，修复 26 个（CRITICAL 9 + HIGH 9 + MEDIUM 8）
+  - 后端：8 个 Model 补 SoftDeletes + 6 张表迁移补 deleted_at + error() 参数反转×2 + 订单删除加状态校验×3
+  - 后端：Want scopeActive 加过期过滤 + BookController eager load 补 seller + badge-cyan CSS 补缺
+  - 后端：3 个 admin Blade innerHTML 注入改为 createElement 安全拼接
+  - 移动端：8 个页面 catch 块静默吞错补 toast + sell categoryIndex 修复 + edit error 路径修复
+  - 移动端：index.html 路径修复 + safe-image fail 回调补日志
+- **源代码文本生成**：软著申请用，PHP+Vue+JS 全量源码合并文本
+
+- **数据库引擎 InnoDB 修复**：`database.php` `'engine' => null` → `'engine' => 'InnoDB'`，14 张表 ALTER 转 InnoDB，dump 文件 `ENGINE=MyISAM` → `ENGINE=InnoDB` 全局替换
 
 ### 待办事项
-- [ ] HBuilder X 运行移动端验证：搜索清除按钮、多图上传、全部页面
+- [ ] HBuilder X 运行移动端验证：首页卡片/登录满屏/卖书预填/求购分页/订单空状态
 
 ### 遇到的问题
+- **数据库全部 MyISAM**：`database.php` `'engine' => null` 走 MySQL 默认引擎（小皮配的 MyISAM），导致无外键、无事务。修复：改配置 + 转换表 + 修正 dump 文件
 - **OrderTimeline created_at NULL**：`$timestamps = false` + `$fillable` 缺 `created_at` → 批量赋值静默丢弃。修复：补 $fillable + 显式传 now()
 - **BookService::reject() 状态错误**：设了 `removed` 应设 `rejected`，导致驳回书无法区分
 - **订单取消 404（卖家）**：取消按钮卖家可见但 API 仅查 buyer_id。修复：Blade `@if($order->buyer_id === auth()->id())` + API 显式 403
@@ -45,6 +128,11 @@
 - **搜索清除按钮点击无效**：`<text>` 元素在微信中点击被 input 拦截。解决：`<view>` + `@click.stop` + 独立 `onClear` 方法
 - **搜索输入框挡住按钮**：`flex:1` + `margin-right` 在微信中布局异常。解决：`flex-shrink:0` + `margin-left:8px` + `box-sizing:border-box`
 - **微信小程序多图上传**：`uni.uploadFile` 单次只支持一个文件，`uploadSequential` 只传了 `files[0]`。解决：两步上传（逐文件 → /api/upload → JSON POST image_urls）+ 后端 BookService 支持路径字符串
+- **WantController N+1 查询**：`fulfillments()->count()` 在 map 内每行一次 SQL。解决：`withCount('fulfillments')` + `fulfillments_count`
+- **AuthController::me() 6次SQL**：4个 orderCount + 2个 count。解决：订单统计用 GROUP BY status 一次查询
+- **求购预填数据乱码**：uni-app微信小程序 onLoad 不解码 URL 参数。解决：手动 `decodeURIComponent()`
+- **safe-image class不生效**：微信小程序自定义组件外部class不透视。解决：外层 `<view class="cover-wrap">` 固定高度包裹
+- **登录/注册页可滚动**：100vh含导航栏，min-height超出可视区。解决：pages.json disableScroll + height:100vh
 
 ## 2026-05-28
 

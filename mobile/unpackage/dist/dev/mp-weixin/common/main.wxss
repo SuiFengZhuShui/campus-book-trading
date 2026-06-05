@@ -1,61 +1,73 @@
 @charset "UTF-8";
-/* 校园二手书 uni-app 全局样式 */
+/* 校园二手书 uni-app 全局样式 — 轻奢学院风 */
 uni-page-body {
-  background-color: #faf8f5 !important;
+  background-color: #fdfaf4 !important;
 }
 page {
-  background-color: #faf8f5;
-  color: #1a1f2b;
+  background-color: #fdfaf4;
+  color: #2c2416;
   font-size: 15px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 /* ====== 按钮 ====== */
 .btn-primary {
-  background: linear-gradient(135deg, #1e3a5f, #2c5282);
+  background: linear-gradient(135deg, #b49450, #d4bc7c);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 12px 24px;
   font-size: 16px;
+  font-weight: 600;
 }
 .btn-amber {
-  background: linear-gradient(135deg, #c7915c, #d4a574);
+  background: linear-gradient(135deg, #b49450, #d4bc7c);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 12px 24px;
   font-size: 16px;
+  font-weight: 600;
 }
 .btn-teal {
-  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  background: linear-gradient(135deg, #4a6741, #5a7d51);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 12px 24px;
   font-size: 16px;
+  font-weight: 600;
+}
+.btn-wine {
+  background: linear-gradient(135deg, #6b2737, #8b3a4a);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
 }
 .btn-outline {
-  background: #fff;
-  color: #1e3a5f;
-  border: 1px solid #1e3a5f;
-  border-radius: 8px;
+  background: #fffdf9;
+  color: #2c2416;
+  border: 1px solid #e5dccf;
+  border-radius: 20px;
   padding: 10px 20px;
   font-size: 14px;
 }
 .btn-danger {
-  background: #bc4742;
+  background: #6b2737;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 10px 20px;
   font-size: 14px;
 }
 /* ====== 颜色工具类 ====== */
 .text-amber {
-  color: #c7915c;
+  color: #b49450;
 }
 .text-teal {
-  color: #0d9488;
+  color: #4a6741;
 }
 .text-coral {
   color: #e07b5a;
@@ -64,43 +76,46 @@ page {
   color: #5b7fbd;
 }
 .text-danger {
-  color: #bc4742;
+  color: #6b2737;
 }
 .text-success {
-  color: #2d6a4f;
+  color: #4a6741;
 }
 .text-muted {
-  color: #9d9fa8;
+  color: #8c8478;
 }
 .text-dark {
-  color: #1a1f2b;
+  color: #2c2416;
+}
+.text-wine {
+  color: #6b2737;
 }
 /* ====== 价格 ====== */
 .price {
-  color: #c7915c;
+  color: #6b2737;
   font-weight: 700;
 }
 .price-original {
-  color: #9d9fa8;
+  color: #8c8478;
   text-decoration: line-through;
   font-size: 13px;
 }
 /* ====== 卡片 ====== */
 .card {
-  background: #fffdfa;
-  border-radius: 12px;
-  border: 1px solid #f0ede7;
+  background: #fffdf9;
+  border-radius: 14px;
+  border: 1px solid #e5dccf;
   overflow: hidden;
 }
 /* 卡片左侧彩色装饰条 */
 .card-accent-blue {
-  border-left: 3px solid #1e3a5f;
+  border-left: 3px solid #b49450;
 }
 .card-accent-amber {
-  border-left: 3px solid #c7915c;
+  border-left: 3px solid #b49450;
 }
 .card-accent-teal {
-  border-left: 3px solid #0d9488;
+  border-left: 3px solid #4a6741;
 }
 .card-accent-coral {
   border-left: 3px solid #e07b5a;
@@ -109,76 +124,82 @@ page {
   border-left: 3px solid #5b7fbd;
 }
 .card-accent-green {
-  border-left: 3px solid #2d6a4f;
+  border-left: 3px solid #4a6741;
 }
 .card-accent-red {
-  border-left: 3px solid #bc4742;
+  border-left: 3px solid #6b2737;
 }
 .card-accent-gray {
-  border-left: 3px solid #9d9fa8;
+  border-left: 3px solid #8c8478;
 }
 /* 卡片顶部彩色条 */
 .card-top-teal {
-  border-top: 3px solid #0d9488;
+  border-top: 3px solid #4a6741;
 }
 .card-top-amber {
-  border-top: 3px solid #c7915c;
+  border-top: 3px solid #b49450;
+}
+.card-top-wine {
+  border-top: 3px solid #6b2737;
 }
 /* ====== 渐变头部 ====== */
 .gradient-blue-indigo {
-  background: linear-gradient(160deg, #1e3a5f 0%, #2c5282 50%, #5b7fbd 100%);
+  background: linear-gradient(160deg, #2c2416 0%, #3d3020 60%, #5b7fbd 100%);
 }
 .gradient-blue-teal {
-  background: linear-gradient(160deg, #1e3a5f 0%, #2c5282 40%, #0d9488 100%);
+  background: linear-gradient(160deg, #2c2416 0%, #3d3020 40%, #4a6741 100%);
 }
 .gradient-amber-coral {
-  background: linear-gradient(135deg, #c7915c, #e07b5a);
+  background: linear-gradient(135deg, #b49450, #e07b5a);
+}
+.gradient-warm {
+  background: linear-gradient(160deg, #1a1510 0%, #2c2416 50%, #3d3020 100%);
 }
 /* ====== 标签 ====== */
 .badge-success {
-  background: #f0fdf4;
-  color: #2d6a4f;
+  background: rgba(74, 103, 65, 0.1);
+  color: #4a6741;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-warning {
-  background: #fefce8;
-  color: #b0822c;
+  background: rgba(180, 148, 80, 0.1);
+  color: #8b6914;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-danger {
-  background: #fef2f2;
-  color: #bc4742;
+  background: rgba(107, 39, 55, 0.08);
+  color: #6b2737;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-info {
-  background: #eff6ff;
-  color: #1e3a5f;
+  background: rgba(180, 148, 80, 0.08);
+  color: #b49450;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-teal {
-  background: #f0fdfa;
-  color: #0d9488;
+  background: rgba(74, 103, 65, 0.1);
+  color: #4a6741;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-coral {
-  background: #fff7f5;
+  background: rgba(224, 123, 90, 0.1);
   color: #e07b5a;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-indigo {
-  background: #f0f4ff;
+  background: rgba(91, 127, 189, 0.1);
   color: #5b7fbd;
   padding: 2px 8px;
   border-radius: 12px;
@@ -245,73 +266,85 @@ page {
 /* ====== 分割线 ====== */
 .divider {
   height: 1px;
-  background: #f0ede7;
+  background: #e5dccf;
   margin: 12px 0;
 }
 /* ====== 空状态 ====== */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #9d9fa8;
+  color: #8c8478;
   font-size: 14px;
 }
-/* 校园二手书 uni-app 全局样式 */
+/* 校园二手书 uni-app 全局样式 — 轻奢学院风 */
 uni-page-body {
-  background-color: #faf8f5 !important;
+  background-color: #fdfaf4 !important;
 }
 page {
-  background-color: #faf8f5;
-  color: #1a1f2b;
+  background-color: #fdfaf4;
+  color: #2c2416;
   font-size: 15px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 /* ====== 按钮 ====== */
 .btn-primary {
-  background: linear-gradient(135deg, #1e3a5f, #2c5282);
+  background: linear-gradient(135deg, #b49450, #d4bc7c);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 12px 24px;
   font-size: 16px;
+  font-weight: 600;
 }
 .btn-amber {
-  background: linear-gradient(135deg, #c7915c, #d4a574);
+  background: linear-gradient(135deg, #b49450, #d4bc7c);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 12px 24px;
   font-size: 16px;
+  font-weight: 600;
 }
 .btn-teal {
-  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  background: linear-gradient(135deg, #4a6741, #5a7d51);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 12px 24px;
   font-size: 16px;
+  font-weight: 600;
+}
+.btn-wine {
+  background: linear-gradient(135deg, #6b2737, #8b3a4a);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
 }
 .btn-outline {
-  background: #fff;
-  color: #1e3a5f;
-  border: 1px solid #1e3a5f;
-  border-radius: 8px;
+  background: #fffdf9;
+  color: #2c2416;
+  border: 1px solid #e5dccf;
+  border-radius: 20px;
   padding: 10px 20px;
   font-size: 14px;
 }
 .btn-danger {
-  background: #bc4742;
+  background: #6b2737;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 10px 20px;
   font-size: 14px;
 }
 /* ====== 颜色工具类 ====== */
 .text-amber {
-  color: #c7915c;
+  color: #b49450;
 }
 .text-teal {
-  color: #0d9488;
+  color: #4a6741;
 }
 .text-coral {
   color: #e07b5a;
@@ -320,43 +353,46 @@ page {
   color: #5b7fbd;
 }
 .text-danger {
-  color: #bc4742;
+  color: #6b2737;
 }
 .text-success {
-  color: #2d6a4f;
+  color: #4a6741;
 }
 .text-muted {
-  color: #9d9fa8;
+  color: #8c8478;
 }
 .text-dark {
-  color: #1a1f2b;
+  color: #2c2416;
+}
+.text-wine {
+  color: #6b2737;
 }
 /* ====== 价格 ====== */
 .price {
-  color: #c7915c;
+  color: #6b2737;
   font-weight: 700;
 }
 .price-original {
-  color: #9d9fa8;
+  color: #8c8478;
   text-decoration: line-through;
   font-size: 13px;
 }
 /* ====== 卡片 ====== */
 .card {
-  background: #fffdfa;
-  border-radius: 12px;
-  border: 1px solid #f0ede7;
+  background: #fffdf9;
+  border-radius: 14px;
+  border: 1px solid #e5dccf;
   overflow: hidden;
 }
 /* 卡片左侧彩色装饰条 */
 .card-accent-blue {
-  border-left: 3px solid #1e3a5f;
+  border-left: 3px solid #b49450;
 }
 .card-accent-amber {
-  border-left: 3px solid #c7915c;
+  border-left: 3px solid #b49450;
 }
 .card-accent-teal {
-  border-left: 3px solid #0d9488;
+  border-left: 3px solid #4a6741;
 }
 .card-accent-coral {
   border-left: 3px solid #e07b5a;
@@ -365,76 +401,82 @@ page {
   border-left: 3px solid #5b7fbd;
 }
 .card-accent-green {
-  border-left: 3px solid #2d6a4f;
+  border-left: 3px solid #4a6741;
 }
 .card-accent-red {
-  border-left: 3px solid #bc4742;
+  border-left: 3px solid #6b2737;
 }
 .card-accent-gray {
-  border-left: 3px solid #9d9fa8;
+  border-left: 3px solid #8c8478;
 }
 /* 卡片顶部彩色条 */
 .card-top-teal {
-  border-top: 3px solid #0d9488;
+  border-top: 3px solid #4a6741;
 }
 .card-top-amber {
-  border-top: 3px solid #c7915c;
+  border-top: 3px solid #b49450;
+}
+.card-top-wine {
+  border-top: 3px solid #6b2737;
 }
 /* ====== 渐变头部 ====== */
 .gradient-blue-indigo {
-  background: linear-gradient(160deg, #1e3a5f 0%, #2c5282 50%, #5b7fbd 100%);
+  background: linear-gradient(160deg, #2c2416 0%, #3d3020 60%, #5b7fbd 100%);
 }
 .gradient-blue-teal {
-  background: linear-gradient(160deg, #1e3a5f 0%, #2c5282 40%, #0d9488 100%);
+  background: linear-gradient(160deg, #2c2416 0%, #3d3020 40%, #4a6741 100%);
 }
 .gradient-amber-coral {
-  background: linear-gradient(135deg, #c7915c, #e07b5a);
+  background: linear-gradient(135deg, #b49450, #e07b5a);
+}
+.gradient-warm {
+  background: linear-gradient(160deg, #1a1510 0%, #2c2416 50%, #3d3020 100%);
 }
 /* ====== 标签 ====== */
 .badge-success {
-  background: #f0fdf4;
-  color: #2d6a4f;
+  background: rgba(74, 103, 65, 0.1);
+  color: #4a6741;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-warning {
-  background: #fefce8;
-  color: #b0822c;
+  background: rgba(180, 148, 80, 0.1);
+  color: #8b6914;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-danger {
-  background: #fef2f2;
-  color: #bc4742;
+  background: rgba(107, 39, 55, 0.08);
+  color: #6b2737;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-info {
-  background: #eff6ff;
-  color: #1e3a5f;
+  background: rgba(180, 148, 80, 0.08);
+  color: #b49450;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-teal {
-  background: #f0fdfa;
-  color: #0d9488;
+  background: rgba(74, 103, 65, 0.1);
+  color: #4a6741;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-coral {
-  background: #fff7f5;
+  background: rgba(224, 123, 90, 0.1);
   color: #e07b5a;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
 }
 .badge-indigo {
-  background: #f0f4ff;
+  background: rgba(91, 127, 189, 0.1);
   color: #5b7fbd;
   padding: 2px 8px;
   border-radius: 12px;
@@ -501,13 +543,13 @@ page {
 /* ====== 分割线 ====== */
 .divider {
   height: 1px;
-  background: #f0ede7;
+  background: #e5dccf;
   margin: 12px 0;
 }
 /* ====== 空状态 ====== */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #9d9fa8;
+  color: #8c8478;
   font-size: 14px;
 }

@@ -9,12 +9,12 @@
     <div style="display: flex; flex-direction: column; gap: 12px;">
         @foreach($books as $book)
             @php
-                $statusBorder = ['pending_review'=>'#b0822c','approved'=>'#b49450','active'=>'#2d6a4f','sold'=>'#8c8478','rejected'=>'#bc4742','removed'=>'#d0cdc7'];
+                $statusBorder = ['pending_review'=>'#b0822c','approved'=>'#b49450','active'=>'#2d6a4f','sold'=>'#6e6559','rejected'=>'#bc4742','removed'=>'#8a8070'];
                 $statusMap = ['pending_review'=>'待审核','approved'=>'已通过','active'=>'在售','sold'=>'已售出','rejected'=>'已驳回','removed'=>'已下架'];
                 $statusBg = ['pending_review'=>'#fef9f0','approved'=>'rgba(180,148,80,0.08)','active'=>'#edf5f0','sold'=>'#f4f1ec','rejected'=>'#fdf2f1','removed'=>'#f4f1ec'];
-                $statusColor = ['pending_review'=>'#b0822c','approved'=>'#b49450','active'=>'#2d6a4f','sold'=>'#8c8478','rejected'=>'#bc4742','removed'=>'#8c8478'];
+                $statusColor = ['pending_review'=>'#b0822c','approved'=>'#b49450','active'=>'#2d6a4f','sold'=>'#6e6559','rejected'=>'#bc4742','removed'=>'#6e6559'];
             @endphp
-            <div style="background: #fffdfa; border-radius: 12px; padding: 16px 20px; border: 1px solid rgba(26,31,43,0.05); box-shadow: 0 1px 2px rgba(26,31,43,0.03); display: flex; gap: 16px; align-items: center; border-left: 4px solid {{ $statusBorder[$book->status] ?? '#d0cdc7' }}; transition: box-shadow 0.25s;">
+            <div style="background: #ffffff; border-radius: 12px; padding: 16px 20px; border: 1px solid #cec4b0; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; gap: 16px; align-items: center; border-left: 4px solid {{ $statusBorder[$book->status] ?? '#8a8070' }}; transition: box-shadow 0.25s;">
                 @php $cover = $book->images->where('type', 'cover')->first(); @endphp
                 @if($cover)
                     <img src="{{ asset('storage/' . $cover->path) }}" alt="{{ $book->title }}"
@@ -24,13 +24,13 @@
                 @endif
                 <div style="flex: 1; min-width: 0;">
                     <a href="/books/{{ $book->id }}" style="font-size: 14px; font-weight: 500; color: #2c2416;">{{ $book->title }}</a>
-                    <div style="font-size: 12px; color: #8c8478; margin-top: 2px;">{{ $book->author }} / {{ $book->publisher }}</div>
+                    <div style="font-size: 12px; color: #6e6559; margin-top: 2px;">{{ $book->author }} / {{ $book->publisher }}</div>
                             @if($book->reject_reason)
                         <div style="font-size: 12px; color: #bc4742; margin-top: 2px;">驳回原因：{{ $book->reject_reason }}</div>
                     @endif
                 </div>
                 <div style="text-align: right; flex-shrink: 0;">
-                    <span style="display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; background: {{ $statusBg[$book->status] ?? '#f4f1ec' }}; color: {{ $statusColor[$book->status] ?? '#8c8478' }};">
+                    <span style="display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; background: {{ $statusBg[$book->status] ?? '#f4f1ec' }}; color: {{ $statusColor[$book->status] ?? '#6e6559' }};">
                         {{ $statusMap[$book->status] ?? $book->status }}
                     </span>
                     @if(in_array($book->status, ['removed', 'rejected']))

@@ -53,6 +53,11 @@
                 </form>
             @endif
         @endif
+        @if($order->status === 'confirmed')
+            <div style="margin-top: 16px; background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #b0822c;">
+                📢 {{ $order->buyer_id === auth()->id() ? '请等待平台通知取书' : '请等待买家确认取书' }}
+            </div>
+        @endif
         @if(in_array($order->status, ['cancelled', 'picked_up']) && ($order->buyer_id === auth()->id() || $isSeller))
             <form method="POST" action="/orders/{{ $order->id }}/delete" style="margin-top: 20px;" onsubmit="return confirm('确定删除此订单吗？')">
                 @csrf

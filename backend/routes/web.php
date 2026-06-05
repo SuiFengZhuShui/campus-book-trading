@@ -28,6 +28,9 @@ Route::get('/wants/{id}', 'Web\HomeController@wantDetail');
 Route::get('/post-want', 'Web\HomeController@postWant');
 Route::post('/post-want', 'Web\HomeController@storeWant');
 
+// 个人中心（需登录）
+Route::get('/profile', 'Web\HomeController@profile');
+
 // 购物车（需登录）
 Route::get('/cart', 'Web\CartController@index');
 Route::post('/cart/add', 'Web\CartController@add');

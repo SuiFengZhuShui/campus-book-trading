@@ -8,7 +8,7 @@
     <div style="display:flex;gap:8px;">
         @auth
         @if(request('mine'))
-        <a href="/wants" style="display:inline-flex;align-items:center;gap:4px;padding:10px 18px;border:1px solid #cec4b0;border-radius:8px;font-size:14px;color:#2c2416;text-decoration:none;">全部求购</a>
+        <a href="/wants" style="display:inline-flex;align-items:center;gap:4px;padding:10px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;">全部求购</a>
         @else
         <a href="/wants?mine=1" style="display:inline-flex;align-items:center;gap:4px;padding:10px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;">🔍 我的求购</a>
         @endif

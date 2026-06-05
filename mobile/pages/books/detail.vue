@@ -55,6 +55,7 @@
           <text class="price">¥{{ book.price }}</text>
           <text class="condition">{{ book.condition_label }}</text>
         </view>
+        <view class="btn-outline bar-btn-sm" @click="addCart">加入购物车</view>
         <view class="btn-amber bar-btn" @click="goBuy">立即购买</view>
       </view>
     </template>
@@ -62,7 +63,7 @@
 </template>
 
 <script>
-import { get } from '@/utils/request.js'
+import { get, post } from '@/utils/request.js'
 
 export default {
   data() {
@@ -95,6 +96,14 @@ export default {
     },
     goBuy() {
       uni.navigateTo({ url: '/pages/buy/index?bookId=' + this.book.id })
+    },
+    async addCart() {
+      try {
+        await post('/api/cart', { book_id: this.book.id })
+        uni.showToast({ title: '已加入购物车', icon: 'success' })
+      } catch (e) {
+        uni.showToast({ title: e.message || '操作失败', icon: 'none' })
+      }
     }
   }
 }
@@ -135,5 +144,6 @@ export default {
 .bar-info .price { font-size: 20px; }
 .bar-info .condition { font-size: 11px; color: #8c8478; }
 .bar-btn { padding: 12px 32px; font-size: 15px; border-radius: 10px; }
+.bar-btn-sm { padding: 8px 16px; font-size: 12px; border-radius: 8px; margin-right: 8px; flex-shrink: 0; }
 .status-msg { text-align: center; padding: 100px 0; color: #8c8478; }
 </style>

@@ -55,6 +55,14 @@
       <view class="section">
         <text class="section-title">交易管理</text>
         <view class="menu-card card">
+          <view class="menu-item" @click="goCart">
+            <view class="menu-left">
+              <text class="menu-icon">🛒</text>
+              <text class="menu-label">购物车</text>
+            </view>
+            <text class="menu-arrow">›</text>
+          </view>
+          <view class="divider"></view>
           <view class="menu-item" @click="goOrders">
             <view class="menu-left">
               <text class="menu-icon">📋</text>
@@ -162,6 +170,7 @@ export default {
     },
     goLogin: function () { uni.navigateTo({ url: '/pages/auth/login' }) },
     goRegister: function () { uni.navigateTo({ url: '/pages/auth/register' }) },
+    goCart: function () { uni.navigateTo({ url: '/pages/cart/index' }) },
     goOrders: function () { uni.navigateTo({ url: '/pages/orders/index' }) },
     goOrdersFilter: function (status) {
       uni.navigateTo({ url: '/pages/orders/index?status=' + status })

@@ -46,6 +46,12 @@ Route::middleware('api.auth')->group(function () {
 
     // 上传
     Route::post('upload', 'UploadController@upload');
+
+    // 购物车
+    Route::get('cart', 'CartController@index');
+    Route::post('cart', 'CartController@store');
+    Route::delete('cart/{id}', 'CartController@destroy');
+    Route::post('cart/checkout', 'CartController@checkout');
 });
 
 }); // end namespace Api

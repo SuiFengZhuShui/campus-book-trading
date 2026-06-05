@@ -21,7 +21,8 @@
           <text v-if="book.category" class="category-tag">{{ book.category }}</text>
         </view>
         <view class="price-row">
-          <text class="price">¥{{ book.price }}</text>
+          <text v-if="book.price" class="price">¥{{ book.price }}</text>
+          <text v-else class="price-pending">审核中，待定价</text>
           <text v-if="book.original_price" class="price-original">¥{{ book.original_price }}</text>
         </view>
         <text v-if="book.description" class="desc">{{ book.description }}</text>
@@ -51,7 +52,8 @@
 
       <view class="bottom-bar">
         <view class="bar-info">
-          <text class="price">¥{{ book.price }}</text>
+          <text v-if="book.price" class="price">¥{{ book.price }}</text>
+          <text v-else class="price-pending-sm">审核中，待定价</text>
           <text class="condition">{{ book.condition_label }}</text>
         </view>
         <view class="btn-amber bar-btn" @click="goBuy">立即购买</view>
@@ -113,6 +115,8 @@ export default {
 .category-tag { font-size: 12px; color: #5b7fbd; background: #f0f4ff; padding: 2px 10px; border-radius: 12px; }
 .price-row { display: flex; align-items: baseline; margin-top: 14px; background: linear-gradient(135deg, #fffdfa 0%, #fef9f0 100%); padding: 12px; border-radius: 10px; border: 1px solid #e5dccf; }
 .price-row .price { font-size: 24px; margin-right: 8px; }
+.price-pending { font-size: 16px; color: #b0822c; font-weight: 500; }
+.price-pending-sm { font-size: 13px; color: #b0822c; font-weight: 500; }
 .desc { font-size: 14px; color: #8c8478; line-height: 1.6; margin-top: 12px; display: block; }
 .section-title { font-size: 16px; font-weight: 600; color: #2c2416; margin-bottom: 12px; display: block; padding-left: 10px; border-left: 3px solid #b49450; }
 .seller-card { border-left: 3px solid #b49450; }

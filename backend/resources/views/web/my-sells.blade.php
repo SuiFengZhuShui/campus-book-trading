@@ -39,7 +39,9 @@
                             <button type="button" class="btn-delete-book" style="font-size: 12px; color: #bc4742; background: none; border: 1px solid #f5c6cb; border-radius: 6px; padding: 3px 10px; cursor: pointer;">删除</button>
                         </form>
                     @endif
-                    <div style="font-size: 16px; font-weight: 600; color: #b49450; margin-top: 4px;">¥{{ $book->price }}</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #b49450; margin-top: 4px;">
+                        @if($book->price) ¥{{ $book->price }} @else <span style="font-size:12px;color:#b0822c;font-weight:500;">待定价</span> @endif
+                    </div>
                     @if($book->status === 'sold' && $book->orderItems->isNotEmpty())
                         @php $orderId = $book->orderItems->first()->order_id; @endphp
                         <a href="/orders/{{ $orderId }}?from=sells" style="display:inline-block;margin-top:4px;font-size:12px;color:#b49450;">查看订单</a>

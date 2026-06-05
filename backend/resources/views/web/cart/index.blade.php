@@ -3,6 +3,7 @@
 @section('title', '购物车 - 校园二手书网')
 
 @section('content')
+<a href="/" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:16px;">&larr; 返回首页</a>
 <div style="max-width: 800px; margin: 0 auto;">
     <h2 style="font-size: 22px; font-weight: 600; color: #2c2416; margin-bottom: 20px;">🛒 我的购物车</h2>
 

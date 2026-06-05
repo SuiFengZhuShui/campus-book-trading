@@ -3,6 +3,7 @@
 @section('title', '个人中心 - 校园二手书网')
 
 @section('content')
+<a href="/" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:16px;">&larr; 返回首页</a>
 <div style="max-width: 600px; margin: 0 auto;">
     <div style="background: linear-gradient(135deg, #2c2416, #3d3020); border-radius: 14px; padding: 32px 28px; color: #fff; margin-bottom: 24px;">
         <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 20px;">

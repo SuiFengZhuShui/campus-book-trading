@@ -75,6 +75,7 @@ class BookController extends Controller
             'isbn' => $book->isbn,
             'category' => $book->category ? $book->category->name : null,
             'course' => $book->course ? $book->course->name : null,
+            'status' => $book->status,
             'condition' => $book->condition,
             'condition_label' => $this->conditionLabel($book->condition),
             'original_price' => $book->original_price,

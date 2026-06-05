@@ -90,7 +90,14 @@
                                 <span class="book-price-original">¥{{ $book->original_price }}</span>
                             @endif
                         </div>
-                        <a href="/buy/{{ $book->id }}" style="display: block; margin-top: 10px; padding: 8px 0; background: linear-gradient(135deg, #b49450, #d4bc7c); color: #fff; border: none; border-radius: 20px; font-size: 12px; text-align: center; font-weight: 600; text-decoration: none; transition: all 0.3s;">立即购买</a>
+                        <div style="display:flex;gap:6px;margin-top:10px;">
+                            <a href="/buy/{{ $book->id }}" style="flex:1;padding:8px 0;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:20px;font-size:12px;text-align:center;font-weight:600;text-decoration:none;">立即购买</a>
+                            <form method="POST" action="/cart/add" style="flex:1;">
+                                @csrf
+                                <input type="hidden" name="book_id" value="{{ $book->id }}">
+                                <button type="submit" style="width:100%;padding:8px 0;background:#ffffff;color:#b49450;border:1px solid #b49450;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">加购物车</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endforeach

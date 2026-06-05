@@ -6,9 +6,11 @@
         <text>暂无卖书记录</text>
         <text class="btn-amber mt-16" style="padding:8px 20px;display:inline-block;" @click="goSell">我要卖书</text>
       </view>
-      <view v-for="b in books" :key="b.id" :class="['card', 'book-card', sellAccent(b.status)]">
+      <view v-for="b in books" :key="b.id" :class="['card', 'book-card', sellAccent(b.status)]" @click="goDetail(b.id)">
         <view class="book-row">
-          <safe-image v-if="b.cover_img" :src="b.cover_img" mode="aspectFill" class="cover" />
+          <view v-if="b.cover_img" class="cover-wrap">
+            <safe-image :src="b.cover_img" mode="aspectFill" class="cover-img" />
+          </view>
           <view v-else class="cover-placeholder"></view>
           <view class="book-info">
             <text class="title ellipsis-2">{{ b.title }}</text>
@@ -20,8 +22,8 @@
             <text v-if="b.reject_reason" class="reject-reason">驳回原因：{{ b.reject_reason }}</text>
             <text v-if="b.submitted_at" class="date">{{ b.submitted_at }}</text>
             <view class="actions-row">
-              <view v-if="b.order_id" class="btn-outline btn-sm" @click="goOrder(b.order_id)">查看订单</view>
-              <view v-if="b.status === 'removed' || b.status === 'rejected'" class="btn-danger btn-sm" @click="onDelete(b)">删除</view>
+              <view v-if="b.order_id" class="btn-outline btn-sm" @click.stop="goOrder(b.order_id)">查看订单</view>
+              <view v-if="b.status === 'removed' || b.status === 'rejected'" class="btn-danger btn-sm" @click.stop="onDelete(b)">删除</view>
             </view>
           </view>
         </view>
@@ -61,6 +63,7 @@ export default {
       }
     },
     goSell: function () { uni.navigateTo({ url: '/pages/books/sell' }) },
+    goDetail: function (id) { uni.navigateTo({ url: '/pages/books/detail?id=' + id }) },
     goOrder: function (id) { uni.navigateTo({ url: '/pages/orders/detail?id=' + id }) },
     onDelete: function (book) {
       var self = this
@@ -102,8 +105,9 @@ export default {
 .container { padding: 12px; min-height: 100vh; }
 .book-card { padding: 14px; margin-bottom: 10px; }
 .book-row { display: flex; }
-.cover { width: 70px; height: 95px; border-radius: 6px; flex-shrink: 0; background: #e5dccf; margin-right: 12px; }
-.cover-placeholder { width: 70px; height: 95px; border-radius: 6px; flex-shrink: 0; background: #e5dccf; margin-right: 12px; }
+.cover-wrap { width: 70px; height: 95px; border-radius: 6px; flex-shrink: 0; overflow: hidden; margin-right: 12px; }
+.cover-img { width: 100%; height: 100%; }
+.cover-placeholder { width: 70px; height: 95px; border-radius: 6px; flex-shrink: 0; background: #cec4b0; margin-right: 12px; }
 .book-info { flex: 1; }
 .title { font-size: 15px; font-weight: 500; color: #2c2416; line-height: 1.4; }
 .status-tag { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-top: 6px; }
@@ -114,10 +118,10 @@ export default {
 .price-row { display: flex; margin-top: 6px; }
 .price { margin-right: 12px; }
 .price { font-size: 14px; color: #b49450; font-weight: 600; }
-.cost { font-size: 12px; color: #8c8478; }
+.cost { font-size: 12px; color: #6e6559; }
 .reject-reason { font-size: 12px; color: #bc4742; margin-top: 4px; display: block; }
-.date { font-size: 11px; color: #8c8478; margin-top: 4px; display: block; }
+.date { font-size: 11px; color: #6e6559; margin-top: 4px; display: block; }
 .actions-row { display: flex; margin-top: 8px; }
 .btn-sm { padding: 4px 12px; font-size: 12px; border-radius: 6px; margin-right: 8px; }
-.status-msg { text-align: center; padding: 100px 0; color: #8c8478; }
+.status-msg { text-align: center; padding: 100px 0; color: #6e6559; }
 </style>

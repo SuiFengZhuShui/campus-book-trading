@@ -47,15 +47,29 @@
                 </div>
             @endif
             @if($order->status === 'paid')
-                <form method="POST" action="/orders/{{ $order->id }}/cancel" style="margin-top: 20px;" onsubmit="return confirm('确定取消订单？')">
+                <div style="margin-top: 16px; background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #b0822c;">
+                    📢 等待平台确认订单
+                </div>
+                <form method="POST" action="/orders/{{ $order->id }}/cancel" style="margin-top: 12px;" onsubmit="return confirm('确定取消订单？')">
                     @csrf
                     <button type="submit" style="height: 42px; padding: 0 24px; background: #ffffff; color: #6e6559; border: 1px solid #cec4b0; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">取消订单</button>
                 </form>
             @endif
+            @if($order->status === 'confirmed')
+                <form method="POST" action="/orders/{{ $order->id }}/pickup" style="margin-top: 12px;">
+                    @csrf
+                    <button type="submit" style="width: 100%; height: 42px; background: linear-gradient(135deg, #b49450, #b49450); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer;" onclick="return confirm('确认已收到书籍？')">确认取书</button>
+                </form>
+            @endif
+        @endif
+        @if($order->status === 'paid' && $order->buyer_id !== auth()->id())
+            <div style="margin-top: 16px; background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #b0822c;">
+                📢 等待平台确认订单
+            </div>
         @endif
         @if($order->status === 'confirmed')
             <div style="margin-top: 16px; background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #b0822c;">
-                📢 {{ $order->buyer_id === auth()->id() ? '请等待平台通知取书' : '请等待买家确认取书' }}
+                📢 {{ $order->buyer_id === auth()->id() ? '请前往取书地点取书' : '请等待买家确认取书' }}
             </div>
         @endif
         @if(in_array($order->status, ['cancelled', 'picked_up']) && ($order->buyer_id === auth()->id() || $isSeller))

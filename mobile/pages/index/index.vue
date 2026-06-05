@@ -35,7 +35,7 @@
 
     <view class="book-grid">
       <view v-for="(b, idx) in books" :key="b.id" :class="['book-card', cardAccent(idx)]" @click="goDetail(b.id)">
-        <safe-image :src="b.cover_img" mode="aspectFill" class="cover" />
+        <view class="cover-wrap"><safe-image :src="b.cover_img" mode="aspectFill" class="cover-img" /></view>
         <view class="info">
           <text class="title ellipsis-2">{{ b.title }}</text>
           <text class="author">{{ b.author }}</text>
@@ -146,33 +146,34 @@ export default {
 .container { padding: 12px; min-height: 100vh; }
 .search-bar { display: flex; align-items: center; margin-bottom: 12px; }
 .search-input-wrap { flex: 1; position: relative; }
-.search-input-wrap input { width: 100%; height: 40px; border: 1px solid #e5dccf; border-radius: 8px; padding: 0 30px 0 12px; background: #fff; font-size: 14px; box-sizing: border-box; }
+.search-input-wrap input { width: 100%; height: 40px; border: 1px solid #cec4b0; border-radius: 8px; padding: 0 30px 0 12px; background: #fff; font-size: 14px; box-sizing: border-box; }
 .search-clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: #d4bc7c; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; }
 .search-clear text { font-size: 14px; color: #fff; line-height: 1; }
 .search-btn { flex-shrink: 0; margin-left: 8px; background: linear-gradient(135deg, #b49450, #3b6ba8); color: #fff; padding: 0 16px; border-radius: 8px; line-height: 40px; font-size: 14px; white-space: nowrap; }
 .filter-row { position: relative; margin-bottom: 12px; }
-.dropdown { height: 40px; line-height: 40px; padding: 0 14px; background: #fff; border: 1px solid #e5dccf; border-radius: 8px; font-size: 14px; color: #2c2416; display: flex; justify-content: space-between; align-items: center; }
+.dropdown { height: 40px; line-height: 40px; padding: 0 14px; background: #fff; border: 1px solid #cec4b0; border-radius: 8px; font-size: 14px; color: #2c2416; display: flex; justify-content: space-between; align-items: center; }
 .dropdown-text { flex: 1; }
-.dropdown-arrow { font-size: 10px; color: #8c8478; margin-left: 8px; }
+.dropdown-arrow { font-size: 10px; color: #6e6559; margin-left: 8px; }
 .dropdown-mask { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99; }
-.dropdown-list { position: absolute; top: 44px; left: 0; right: 0; background: #fff; border: 1px solid #e5dccf; border-radius: 8px; z-index: 100; max-height: 240px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.dropdown-item { height: 42px; line-height: 42px; padding: 0 14px; font-size: 14px; color: #2c2416; border-bottom: 1px solid #e5dccf; }
+.dropdown-list { position: absolute; top: 44px; left: 0; right: 0; background: #fff; border: 1px solid #cec4b0; border-radius: 8px; z-index: 100; max-height: 240px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.dropdown-item { height: 42px; line-height: 42px; padding: 0 14px; font-size: 14px; color: #2c2416; border-bottom: 1px solid #cec4b0; }
 .dropdown-item:last-child { border-bottom: none; }
-.dropdown-item.active { color: #b49450; font-weight: 500; background: #fffdfa; }
+.dropdown-item.active { color: #b49450; font-weight: 500; background: #ffffff; }
 .sort-row { display: flex; margin-bottom: 12px; }
-.sort-item { padding: 4px 12px; border-radius: 14px; font-size: 12px; color: #8c8478; background: #fff; border: 1px solid #e5dccf; margin-right: 8px; }
+.sort-item { padding: 4px 12px; border-radius: 14px; font-size: 12px; color: #6e6559; background: #fff; border: 1px solid #cec4b0; margin-right: 8px; }
 .sort-item.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, #b49450, #d4bc7c); }
 .book-grid { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
-.book-card { width: 49%; background: #fffdfa; border-radius: 10px; overflow: hidden; border: 1px solid #e5dccf; margin-bottom: 10px; box-sizing: border-box; }
+.book-card { width: 49%; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #cec4b0; margin-bottom: 10px; box-sizing: border-box; }
 .book-card:active { transform: scale(0.98); opacity: 0.9; }
-.book-card .cover { width: 100%; height: 180px; display: block; }
+.cover-wrap { width: 100%; height: 180px; overflow: hidden; }
+.cover-img { width: 100%; height: 100%; }
 .book-card .info { padding: 10px; }
-.book-card .title { font-size: 14px; font-weight: 500; color: #2c2416; line-height: 1.4; }
-.book-card .author { font-size: 12px; color: #8c8478; margin-top: 4px; display: block; }
+.book-card .title { font-size: 14px; font-weight: 500; color: #2c2416; line-height: 1.4; min-height: 38px; }
+.book-card .author { font-size: 12px; color: #6e6559; margin-top: 4px; display: block; min-height: 18px; }
 .book-card .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
 .book-card .price { color: #b49450; font-size: 16px; font-weight: 700; }
 .book-card .condition { font-size: 11px; color: #2d6a4f; background: #f0fdf4; padding: 2px 6px; border-radius: 4px; }
-.status-msg { text-align: center; padding: 60px 0; color: #8c8478; font-size: 14px; }
+.status-msg { text-align: center; padding: 60px 0; color: #6e6559; font-size: 14px; }
 .status-msg.error { color: #bc4742; }
 .load-more { text-align: center; padding: 16px; color: #b49450; font-size: 14px; }
 </style>

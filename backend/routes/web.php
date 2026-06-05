@@ -16,6 +16,7 @@ Route::post('/register', 'Web\AuthController@register');
 Route::get('/orders', 'Web\OrderController@index');
 Route::get('/orders/{id}', 'Web\OrderController@detail');
 Route::post('/orders/{id}/pay', 'Web\OrderController@pay');
+Route::post('/orders/{id}/pickup', 'Web\OrderController@pickup');
 Route::post('/orders/{id}/cancel', 'Web\OrderController@cancel');
 Route::post('/orders/{id}/delete', 'Web\OrderController@delete');
 Route::get('/buy/{bookId}', 'Web\OrderController@buyForm');

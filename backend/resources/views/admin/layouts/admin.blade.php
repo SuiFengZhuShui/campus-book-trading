@@ -8,14 +8,14 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --cream: #fdfaf4;
+            --cream: #ebe3d4;
             --ink: #2c2416;
             --gold: #b49450;
             --gold-light: #d4bc7c;
             --wine: #6b2737;
             --moss: #4a6741;
-            --muted: #8c8478;
-            --border: #e5dccf;
+            --muted: #6e6559;
+            --border: #cec4b0;
             --card: #fffdf9;
             --sidebar-bg: #1a1510;
         }

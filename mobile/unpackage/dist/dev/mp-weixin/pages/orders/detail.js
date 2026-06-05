@@ -172,6 +172,9 @@ var _request = __webpack_require__(/*! @/utils/request.js */ 47);
 //
 //
 //
+//
+//
+//
 var _default = {
   data: function data() {
     return {
@@ -350,6 +353,54 @@ var _default = {
           }));
           function success(_x3) {
             return _success2.apply(this, arguments);
+          }
+          return success;
+        }()
+      });
+    },
+    onDelete: function onDelete() {
+      var self = this;
+      uni.showModal({
+        title: '删除订单',
+        content: '确定删除此订单吗？',
+        success: function () {
+          var _success3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(res) {
+            return _regenerator.default.wrap(function _callee5$(_context5) {
+              while (1) {
+                switch (_context5.prev = _context5.next) {
+                  case 0:
+                    if (res.confirm) {
+                      _context5.next = 2;
+                      break;
+                    }
+                    return _context5.abrupt("return");
+                  case 2:
+                    _context5.prev = 2;
+                    _context5.next = 5;
+                    return (0, _request.del)('/api/orders/' + self.order.id);
+                  case 5:
+                    uni.showToast({
+                      title: '已删除',
+                      icon: 'success'
+                    });
+                    setTimeout(function () {
+                      uni.navigateBack();
+                    }, 800);
+                    _context5.next = 12;
+                    break;
+                  case 9:
+                    _context5.prev = 9;
+                    _context5.t0 = _context5["catch"](2);
+                    console.log('delete error:', _context5.t0);
+                  case 12:
+                  case "end":
+                    return _context5.stop();
+                }
+              }
+            }, _callee5, null, [[2, 9]]);
+          }));
+          function success(_x4) {
+            return _success3.apply(this, arguments);
           }
           return success;
         }()

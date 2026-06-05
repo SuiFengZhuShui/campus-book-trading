@@ -53,6 +53,10 @@
         </view>
       </view>
 
+      <view v-if="order.status === 'confirmed'" class="notice-bar">
+        <text class="notice-text">{{ order.is_buyer ? '📢 请等待平台通知取书' : '📢 请等待买家确认取书' }}</text>
+      </view>
+
       <view v-if="order.is_buyer" class="actions">
         <view v-if="order.status === 'pending'" class="btn-danger action-btn" @click="onCancel">取消订单</view>
         <view v-if="order.status === 'pending'" class="btn-amber action-btn" @click="onPay">立即支付</view>
@@ -202,4 +206,6 @@ export default {
 .action-btn { margin-right: 10px; }
 .action-btn { flex: 1; text-align: center; padding: 12px 0; border-radius: 8px; font-size: 15px; }
 .status-msg { text-align: center; padding: 100px 0; color: #8c8478; }
+.notice-bar { background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 14px; margin-top: 14px; }
+.notice-text { font-size: 13px; color: #b0822c; }
 </style>

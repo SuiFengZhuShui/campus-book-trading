@@ -200,6 +200,8 @@ var _auth = _interopRequireDefault(__webpack_require__(/*! @/stores/auth.js */ 3
 //
 //
 //
+//
+//
 var _default = {
   data: function data() {
     return {
@@ -261,6 +263,11 @@ var _default = {
     goSell: function goSell() {
       uni.navigateTo({
         url: '/pages/books/sell'
+      });
+    },
+    goDetail: function goDetail(id) {
+      uni.navigateTo({
+        url: '/pages/books/detail?id=' + id
       });
     },
     goOrder: function goOrder(id) {

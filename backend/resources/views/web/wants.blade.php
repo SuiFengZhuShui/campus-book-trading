@@ -5,7 +5,12 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
     <h2 style="font-size: 22px; font-weight: 600; color: #2c2416; letter-spacing: -0.01em; margin: 0;">求购广场</h2>
-    <a href="/post-want" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; background: linear-gradient(135deg, #b49450, #d4bc7c); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; text-decoration: none;">发布求购</a>
+    <div style="display:flex;gap:8px;">
+        @auth
+        <a href="/wants?mine=1" style="display:inline-flex;align-items:center;gap:4px;padding:10px 18px;border:1px solid #cec4b0;border-radius:8px;font-size:14px;color:#2c2416;text-decoration:none;">🔍 我的求购</a>
+        @endauth
+        <a href="/post-want" style="display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;">发布求购</a>
+    </div>
 </div>
 
 @if($wants->count() > 0)

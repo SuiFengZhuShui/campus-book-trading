@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd C:/Users/Administrator/Desktop/Schoolcampus_books/backend && php -r \"echo 'app ok';\" 2>&1 && curl -s -o /dev/null -w 'http_status:%{http_code}' http://127.0.0.1/ 2>&1"
+            "command": "cd C:/Users/Administrator/Desktop/Schoolcampus-books/backend && php -r \"echo 'app ok';\" 2>&1 && curl -s -o /dev/null -w 'http_status:%{http_code}' http://127.0.0.1/ 2>&1"
           }
         ]
       },
@@ -36,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd C:/Users/Administrator/Desktop/Schoolcampus_books/frontend && npm run build 2>&1"
+            "command": "cd C:/Users/Administrator/Desktop/Schoolcampus-books/frontend && npm run build 2>&1"
           }
         ]
       }

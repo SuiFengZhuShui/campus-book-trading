@@ -68,7 +68,7 @@
         @if($book->status === 'pending_review')
         <div class="card">
             <div class="card-title">定价</div>
-            <div class="form-group"><label>建议售价</label><input type="text" class="form-control" value="¥{{ $suggestPrice }}" readonly style="background:#fefdfb;color:#8c8478"></div>
+            <div class="form-group"><label>建议售价</label><input type="text" class="form-control" value="¥{{ $suggestPrice }}" readonly style="background:#fefdfb;color:#6e6559"></div>
             <div class="form-group"><label>最终售价</label><input type="number" step="0.01" name="price" form="approve-form" class="form-control" value="{{ old('price', $book->price ?: $suggestPrice) }}" required></div>
             <div class="form-group"><label>收书价</label><input type="number" step="0.01" name="cost_price" form="approve-form" class="form-control" value="{{ old('cost_price', $book->cost_price ?: round($suggestPrice * 0.5, 2)) }}" required></div>
             <p class="text-muted">收书价建议为售价的 40%-60%</p>

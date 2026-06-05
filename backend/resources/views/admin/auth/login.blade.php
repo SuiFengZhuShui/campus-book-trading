@@ -52,7 +52,7 @@
         }
 
         .card {
-            background: #fffdfa;
+            background: #ffffff;
             border-radius: 14px;
             padding: 40px 36px;
             box-shadow: 0 24px 64px rgba(0,0,0,0.2);
@@ -68,7 +68,7 @@
         .card .subtitle {
             text-align: center;
             font-size: 13px;
-            color: #8c8478;
+            color: #6e6559;
             margin-bottom: 28px;
         }
 
@@ -80,7 +80,7 @@
             display: block;
             font-size: 13px;
             font-weight: 500;
-            color: #8c8478;
+            color: #6e6559;
             margin-bottom: 6px;
         }
         .form-group .input-wrap {
@@ -99,7 +99,7 @@
             width: 100%;
             height: 44px;
             padding: 0 14px 0 40px;
-            border: 1px solid #e5dccf;
+            border: 1px solid #cec4b0;
             border-radius: 8px;
             font-size: 14px;
             color: #2c2416;
@@ -111,7 +111,7 @@
         .form-control:focus {
             border-color: #b49450;
             box-shadow: 0 0 0 3px rgba(180,148,80,0.12);
-            background: #fffdfa;
+            background: #ffffff;
         }
 
         .btn {
@@ -151,7 +151,7 @@
         }
         .links a {
             font-size: 13px;
-            color: #8c8478;
+            color: #6e6559;
             text-decoration: none;
             transition: color 0.2s;
         }

@@ -6,7 +6,7 @@
 <div style="max-width: 640px; margin: 0 auto;">
     <a href="/wants" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:20px;">&larr; 返回求购广场</a>
 
-    <div style="background:#fffdfa;border-radius:12px;padding:28px;border:1px solid rgba(26,31,43,0.05);box-shadow:0 2px 8px rgba(26,31,43,0.04);">
+    <div style="background:#ffffff;border-radius:12px;padding:28px;border:1px solid #cec4b0;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
         <h2 style="font-size:20px;font-weight:600;color:#2c2416;margin-bottom:24px;">发布求购</h2>
 
         @if(session('success'))
@@ -21,23 +21,23 @@
 
             <div style="margin-bottom:18px;">
                 <label style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;color:#2c2416;"><span style="color:#bc4742;">*</span> 书名</label>
-                <input type="text" name="title" value="{{ old('title') }}" placeholder="请输入教材名称" required maxlength="200" style="width:100%;height:42px;padding:0 14px;border:1px solid #e5dccf;border-radius:8px;font-size:15px;">
+                <input type="text" name="title" value="{{ old('title') }}" placeholder="请输入教材名称" required maxlength="200" style="width:100%;height:42px;padding:0 14px;border:1px solid #cec4b0;border-radius:8px;font-size:15px;">
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                 <div style="margin-bottom:18px;">
                     <label style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;color:#2c2416;">作者</label>
-                    <input type="text" name="author" value="{{ old('author') }}" placeholder="选填" maxlength="100" style="width:100%;height:42px;padding:0 14px;border:1px solid #e5dccf;border-radius:8px;font-size:15px;">
+                    <input type="text" name="author" value="{{ old('author') }}" placeholder="选填" maxlength="100" style="width:100%;height:42px;padding:0 14px;border:1px solid #cec4b0;border-radius:8px;font-size:15px;">
                 </div>
                 <div style="margin-bottom:18px;">
                     <label style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;color:#2c2416;">出版社</label>
-                    <input type="text" name="publisher" value="{{ old('publisher') }}" placeholder="选填" maxlength="100" style="width:100%;height:42px;padding:0 14px;border:1px solid #e5dccf;border-radius:8px;font-size:15px;">
+                    <input type="text" name="publisher" value="{{ old('publisher') }}" placeholder="选填" maxlength="100" style="width:100%;height:42px;padding:0 14px;border:1px solid #cec4b0;border-radius:8px;font-size:15px;">
                 </div>
             </div>
 
             <div style="margin-bottom:18px;">
                 <label style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;color:#2c2416;">学院</label>
-                <select name="category_id" style="width:100%;height:42px;padding:0 14px;border:1px solid #e5dccf;border-radius:8px;font-size:15px;background:#fff;">
+                <select name="category_id" style="width:100%;height:42px;padding:0 14px;border:1px solid #cec4b0;border-radius:8px;font-size:15px;background:#fff;">
                     <option value="">请选择学院（选填）</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -47,7 +47,7 @@
 
             <div style="margin-bottom:18px;">
                 <label style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;color:#2c2416;"><span style="color:#bc4742;">*</span> 最高接受价</label>
-                <input type="number" name="max_price" value="{{ old('max_price') }}" placeholder="¥" required min="0.01" step="0.01" style="width:100%;height:42px;padding:0 14px;border:1px solid #e5dccf;border-radius:8px;font-size:15px;">
+                <input type="number" name="max_price" value="{{ old('max_price') }}" placeholder="¥" required min="0.01" step="0.01" style="width:100%;height:42px;padding:0 14px;border:1px solid #cec4b0;border-radius:8px;font-size:15px;">
             </div>
 
             <div style="margin-bottom:24px;">
@@ -73,7 +73,7 @@
             @endif
 
             <button type="submit" style="width:100%;height:46px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:500;cursor:pointer;">发布求购</button>
-            <p style="text-align:center;margin-top:12px;font-size:13px;color:#8c8478;">发布后有效期7天，到期自动过期</p>
+            <p style="text-align:center;margin-top:12px;font-size:13px;color:#6e6559;">发布后有效期7天，到期自动过期</p>
         </form>
     </div>
 </div>

@@ -9,16 +9,16 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --cream: #fdfaf4;
-            --parchment: #f7f1e6;
+            --cream: #ebe3d4;
+            --parchment: #e5dcc8;
             --ink: #2c2416;
             --gold: #b49450;
             --gold-light: #d4bc7c;
             --bronze: #8b6914;
             --wine: #6b2737;
             --moss: #4a6741;
-            --muted: #8c8478;
-            --border: #e5dccf;
+            --muted: #6e6559;
+            --border: #cec4b0;
             --card: #fffdf9;
         }
         body {

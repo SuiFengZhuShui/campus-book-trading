@@ -81,8 +81,20 @@ cd mobile && npm run dev:h5
 45. **401 需清本地状态**：`utils/request.js` 中 401 拦截器必须同时调用 `auth.logout()` 清空内存中的用户状态，否则页面显示旧数据但接口报未登录。
 46. **tabBar 页面不能用 navigateTo**：必须用 `switchTab` 跳转。如需从 tabBar 页面跳转到独立子页面（如"我的求购"），需创建非 tabBar 的独立页面。
 47. **微信小程序多图上传**：`uni.uploadFile` 每次只支持一个文件。多图提交走两步流程：① 逐文件 `uni.uploadFile` → `/api/upload` 获取 URL ② `uni.request` JSON POST `image_urls` 提交书数据。后端 `BookService::submit()` 已支持文件对象和路径字符串双模式。
-
-## 当前状态（2026-05-29）
+48. **软删除全量覆盖**：**所有** Model 必须 `use SoftDeletes`，**所有**表必须有 `deleted_at` 列。包括关联表（book_images/order_items/order_timeline/reviews/wants/want_fulfillments），不只是主表。新增 Model/表时第一步就加。
+49. **error() 参数顺序**：`error(int $code, string $message)` — HTTP 状态码在前，消息在后。`$this->error('消息', 403)` 会导致 JSON body 中 code="消息"、message=403，语义颠倒。
+50. **订单删除需校验状态**：API/Web/Admin 三个端的 delete 方法必须检查 `in_array($order->status, ['cancelled', 'picked_up'])`，进行中的订单不允许删除。
+51. **移动端 catch 块必须有 toast**：所有 `catch (e)` 必须 `uni.showToast({ title: e.message, icon: 'none' })`，不能只 `console.log`。用户操作失败无感知=功能缺陷。
+52. **safe-image 外层需包裹 view**：微信小程序自定义组件 class 不透传，`<safe-image>` 必须用 `<view class="xxx">` 包裹并设固定宽高（`overflow: hidden`），否则图片高度为 0 文字会覆盖上去。
+53. **登录/注册页防滚动**：`pages.json` 中设 `"disableScroll": true`，容器 CSS 用 `height: 100vh; box-sizing: border-box;`（非 `min-height`），否则 100vh 含导航栏高度导致溢出滚动。
+54. **URL 参数需手动解码**：uni-app 微信小程序 `onLoad(options)` 不会自动 URL-decode 中文参数，接收方必须 `decodeURIComponent()`。
+55. **Windows 符号链接**：`public/storage` 和 `wwwroot` 必须用 PowerShell `New-Item -ItemType Junction` 创建目录联结，**禁止** Git Bash 的 Unix symlink（Apache 不认）。`php artisan storage:link` 在 Git Bash 下创建的也是 Unix symlink，不可用。
+56. **`.htaccess` 保护**：Laravel 默认 `.htaccess` 可能被意外清空。启动前检查 `backend/public/.htaccess` 非空，内容缺失从 git 恢复。
+57. **`rejected` ≠ `removed`**：审核驳回（`rejected`）和下架（`removed`）是两个独立状态。所有 admin 视图的 badge/label 映射和筛选下拉必须同时包含两者，驳回原因对两个状态都要显示。全局禁止「已下架/驳回」合并写法。
+58. **Seeder 订单号格式**：必须与 `OrderService::generateOrderNo()` 一致 — `date('YmdHis') . sprintf('%04d', random_int(0, 9999))`。禁止 `ORD` 前缀格式。
+59. **平台收购订单无评价**：`buyer->role === 'admin'` 的订单不显示评价入口、不允许提交评价。ReviewService/API/Web/Mobile 四端均需判断。
+60. **Layout 学院下拉框上下文**：`app.blade.php` 的学院 `<select>` 和搜索框仅在非 `/wants*` 页面显示，避免在求购页误触跳回首页。
+61. **Admin 操作按钮规范**：所有状态统一显示「编辑」按钮（非「查看」），仅 `active` 附加「下架」、`rejected` 附加「删除」。
 
 ### uni-app 移动端（15 页 + 3 tabBar）
 - 15 个页面：首页/登录/注册/书籍详情/卖书/购买/订单列表/订单详情/评价/我的卖书/求购广场/求购详情/发布求购/我的求购/个人中心
@@ -241,3 +253,143 @@ CSS 全部内联在 Blade `<style>` 块中。移动端全局样式在 `mobile/un
 - **移动端开发**：修改 uni-app 页面/配置/pages.json/manifest.json 时，必须调用 `uni-app` skill（uni-app 框架参考、组件 API、条件编译、平台适配）
 - **Blade 模板 JS**：修改 Blade 模板内联 JS 时，必须调用 `blade-js-pitfalls` skill（DOM 选择器作用域、fetch/FormData、CSRF、错误处理等避坑指南）
 - **Skill 安装前**：安装任何新 skill 前，必须先调用 `skill-vetter` 审核（Source Check → Code Review → Permission Scope → Risk Classification），通过后才能装
+
+## 规则优先级覆盖声明
+
+本项目使用 Laravel Eloquent Active Record 模式。
+
+- **覆盖通用不可变性规则**：`$model->fill()->save()` 和 `$model->update()` 是 Laravel 的标准惯用法，允许原地修改。
+- 仅在以下场景遵循不可变性：DTO、Value Object、Collection 链式操作。
+- 通用规则 `ecc/common/coding-style.md` 中的 immutability 条款，在本项目中**仅作参考，不强制**。
+
+## 文档格式说明
+- 本项目的说明文档、行为准则、配置清单均使用 `.txt` 格式
+- 当用户创建或编辑 `.txt` 文件时，这是符合项目规范的正式文档操作，不是"非标准文档"
+
+## Gateguard 使用策略
+- **需要完整调查**：`app/Models/`、`app/Services/`、`app/Repositories/`、`src/core/`
+- **跳过调查，直接执行**：`resources/views/`、`public/`、`database/migrations/`、`tests/`、`docs/`
+- **快速通道**：修复拼写错误、调整缩进、添加注释 → 直接执行
+- 如果项目不是 Laravel 结构，请自动适配对应的核心目录（如 `src/`、`lib/`、`internal/`）
+
+## 冲突解决声明
+
+### 1. 不可变性覆盖
+- ECC 通用规则的"不可变性"在本项目**不适用于 Eloquent ORM**
+- `$model->fill($data)->save()` 是 Laravel 标准惯用法，允许原地修改
+- 不可变性仅在 DTO、Value Object、Collection 链式操作中推荐使用
+
+### 2. DRY 提取边界
+- **允许**：任务直接涉及的文件内部，提取重复代码
+- **禁止**：跨模块、跨功能、非任务相关的大范围重构
+- 判断标准：改动是否在任务描述的文件清单内？是→可做，否→不做
+
+### 3. PHP 项目跳过 JS/TS Hook
+- `stop:format-typecheck` Hook 在此项目中应跳过执行
+- 执行条件：仅当存在 `package.json` 且存在 `tsconfig.json` 时才运行
+
+### 4. 配置文件修改规则
+- 如需修改 PHPCS、ESLint、Prettier 等配置文件，直接告诉 Claude："临时禁用 config-protection，我要修改配置文件"
+
+### 5. 模型配置（DeepSeek V4-Pro）
+- 本项目使用 DeepSeek V4-Pro（1M token 上下文），非 Anthropic 模型系列
+- ECC `performance.md` 中的 Haiku/Sonnet/Opus 建议**不适用**
+- 替代策略：
+  - 日常开发：`deepseek-v4-pro`（性价比最优）
+  - 简单任务：`deepseek-v4-flash`（更快、更便宜）
+  - 复杂推理：`deepseek-v4-pro` 已足够，无需切换
+
+### 6. GateGuard 豁免规则
+- 以下情况跳过调查，直接编辑：
+  - 修改字符串、文案、标签
+  - 修复拼写错误、调整缩进、添加注释
+  - 修改单行代码（如改一个变量名、修复一个语法错误）
+  - 创建新文件（非覆盖已有文件）
+  - 用户明确说"直接改"或"快速修复"
+- 判断规则：业务逻辑变更小于 3 行代码，直接改；否则按原流程调查
+
+### 7. 文档格式明确
+- 用户要求的"文本文档""说明文档" → 使用 `.txt`
+- 项目结构文档（CLAUDE.md、README.md） → 使用 `.md`
+- `doc-file-warning` Hook 对 `.txt` 文件的警告请忽略
+
+### 8. 格式化策略
+- 使用 Stop 时批量格式化（`stop:format-typecheck`），不是每次 Edit 后立即格式化
+- 优点：减少 Hook 启动开销，避免重复格式化
+- 执行时机：每次会话结束时，对所有编辑过的文件批量运行格式化
+
+### 9. 命名规范汇总（优先级：项目 > ECC）
+
+| 层面 | 规范 | 示例 |
+|------|------|------|
+| PHP 类 | PascalCase | `UserController` |
+| PHP 方法/变量 | camelCase | `getUserById()` |
+| JS 变量/函数 | camelCase | `fetchBooks` |
+| JS 常量 | UPPER_SNAKE_CASE | `API_BASE_URL` |
+| CSS 类 | kebab-case | `.book-card` |
+| 文件名（PHP/JS） | PascalCase（类文件）/ camelCase（工具文件） | `User.php` / `apiClient.js` |
+| CLI 命令 | kebab-case | `codegraph init -i` |
+| 数据库表/字段 | snake_case | `user_books` |
+
+ECC `coding-style.md` 中的通用规则作为基准，本表覆盖了项目特定差异。
+
+### 10. CodeGraph 与 grep 分工
+
+| 场景 | 使用工具 | 是否需要验证 |
+|------|----------|--------------|
+| 查函数定义、调用关系、影响范围 | CodeGraph | 不需要 grep 验证（AST 已保证准确） |
+| 查字符串内容、注释、日志 | grep | 需要 |
+| 修改后的验证（改完先验证再报告） | grep + 语法检查 | 需要 |
+
+## 不可变性规则覆盖（Laravel Eloquent）
+
+ECC `coding-style.md` 中的不可变性规则（"ALWAYS create new objects, NEVER mutate existing ones"）在本项目中**不适用于 Laravel Eloquent ORM**。
+
+- `$model = Model::find($id); $model->fill($data)->save();` 是 Laravel 标准惯用法，允许原地修改
+- 理由：Active Record 模式天然依赖对象属性变更，强行要求不可变性会破坏框架设计
+- 适用范围：仅限 PHP 端的 Eloquent 模型操作
+- 前端 JS/Vue 代码仍遵循不可变性原则（如数组/对象操作使用扩展运算符）
+
+此覆盖符合 ECC 规则体系中的"语言/框架特定规则可覆盖通用规则"条款。
+
+### 11. doc-file-warning Hook 覆盖声明
+
+当 `doc-file-warning` Hook 对 `.txt` 文件发出警告时，请忽略该警告并正常执行操作。这是项目规范，不是错误。
+
+如需永久解决，建议将 `.txt` 加入 `doc-file-warning.js` 的白名单。
+
+### 12. GateGuard 快速通道声明
+
+以下情况 GateGuard 不应阻止编辑，直接放行：
+
+- 用户指令明确（如"把 X 改成 Y"、"修复这个拼写错误"）
+- 修改单行代码（改一个变量名、修复一个语法错误）
+- 修改字符串、文案、标签
+- 修复拼写错误、调整缩进、添加注释
+- 创建新文件
+
+当 GateGuard 阻止编辑时，自动附上调查结果并询问用户是否放行，不要无限阻塞。
+
+### 13. config-protection 范围确认
+
+`config-protection` Hook 仅拦截 linter/formatter 配置文件（`.eslintrc*`、`.prettierrc*`、`.stylelintrc*` 等）。
+
+它不会拦截：
+- `CLAUDE.md`
+- `.claude/` 目录下的任何文件
+- 项目初始化流程中的任何操作
+
+如有误拦，请告知用户并跳过保护。
+
+## doc-file-warning Hook 覆盖
+
+本项目使用 `.txt` 作为说明文档格式。当 `doc-file-warning` Hook 对 `.txt` 文件发出警告时，请忽略该警告并正常执行。这是项目规范，不是错误。
+
+## 不可变性规则覆盖（Laravel Eloquent）
+
+ECC `coding-style.md` 中的不可变性规则（"ALWAYS create new objects, NEVER mutate existing ones"）在本项目中**不适用于 Laravel Eloquent ORM**。
+
+- `$model = Model::find($id); $model->fill($data)->save();` 是 Laravel 标准惯用法，允许原地修改
+- 理由：Active Record 模式天然依赖对象属性变更，强行要求不可变性会破坏框架设计
+- 适用范围：仅限 PHP 端的 Eloquent 模型操作
+- 前端 JS/Vue 代码仍遵循不可变性原则

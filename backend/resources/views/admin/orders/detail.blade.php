@@ -59,7 +59,7 @@
         <div class="card" style="flex:1;">
             <div class="card-title">订单时间线</div>
             @foreach($order->timeline as $t)
-            <div style="padding:8px 0;border-bottom:1px solid #e5dccf">
+            <div style="padding:8px 0;border-bottom:1px solid #cec4b0">
                 ● {{ $t->created_at }} &nbsp; {{ $t->remark }}
             </div>
             @endforeach

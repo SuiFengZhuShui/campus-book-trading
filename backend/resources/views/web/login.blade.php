@@ -26,21 +26,21 @@
         .brand p { font-size: 13px; opacity: 0.7; margin-top: 6px; letter-spacing: 0.06em; }
         .brand .accent-line { width: 40px; height: 2px; background: #b49450; margin: 14px auto 0; border-radius: 1px; }
 
-        .card { background: #fffdfa; border-radius: 14px; padding: 40px 36px; box-shadow: 0 24px 64px rgba(0,0,0,0.2); }
+        .card { background: #ffffff; border-radius: 14px; padding: 40px 36px; box-shadow: 0 24px 64px rgba(0,0,0,0.2); }
         .card .title { text-align: center; font-size: 18px; font-weight: 600; color: #2c2416; letter-spacing: 0.02em; margin-bottom: 8px; }
-        .card .subtitle { text-align: center; font-size: 13px; color: #8c8478; margin-bottom: 28px; }
+        .card .subtitle { text-align: center; font-size: 13px; color: #6e6559; margin-bottom: 28px; }
 
         .form-group { margin-bottom: 20px; position: relative; }
-        .form-group label { display: block; font-size: 13px; font-weight: 500; color: #8c8478; margin-bottom: 6px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 500; color: #6e6559; margin-bottom: 6px; }
         .form-group .input-wrap { position: relative; }
         .form-group .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #bbb; pointer-events: none; }
         .form-control {
             width: 100%; height: 44px; padding: 0 14px 0 40px;
-            border: 1px solid #e5dccf; border-radius: 8px; font-size: 14px;
+            border: 1px solid #cec4b0; border-radius: 8px; font-size: 14px;
             color: #2c2416; background: #fefdfb; outline: none;
             transition: border-color 0.2s cubic-bezier(0.25,0.1,0.25,1), box-shadow 0.2s cubic-bezier(0.25,0.1,0.25,1);
         }
-        .form-control:focus { border-color: #b49450; box-shadow: 0 0 0 3px rgba(180,148,80,0.12); background: #fffdfa; }
+        .form-control:focus { border-color: #b49450; box-shadow: 0 0 0 3px rgba(180,148,80,0.12); background: #ffffff; }
 
         .btn {
             width: 100%; height: 46px;
@@ -58,7 +58,7 @@
         .alert-error { background: #fdf2f1; border: 1px solid rgba(188,71,66,0.2); color: #bc4742; }
 
         .links { display: flex; justify-content: center; gap: 24px; margin-top: 20px; }
-        .links a { font-size: 13px; color: #8c8478; text-decoration: none; transition: color 0.2s; }
+        .links a { font-size: 13px; color: #6e6559; text-decoration: none; transition: color 0.2s; }
         .links a:hover { color: #b49450; }
 
         .bottom-text { text-align: center; margin-top: 24px; font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 0.04em; }

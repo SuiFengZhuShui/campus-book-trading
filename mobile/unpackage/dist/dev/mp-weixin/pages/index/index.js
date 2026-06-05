@@ -222,6 +222,11 @@ var _request = __webpack_require__(/*! @/utils/request.js */ 47);
 //
 //
 //
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
@@ -359,6 +364,10 @@ var _default = {
       }))();
     },
     onSearch: function onSearch() {
+      this.fetchBooks(true);
+    },
+    onClear: function onClear() {
+      this.keyword = '';
       this.fetchBooks(true);
     },
     selectCategory: function selectCategory(idx) {

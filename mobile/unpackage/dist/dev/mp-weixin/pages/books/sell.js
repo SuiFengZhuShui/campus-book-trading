@@ -312,7 +312,7 @@ var _default = {
     },
     onSubmit: function () {
       var _onSubmit = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
-        var fields;
+        var fields, imageTypes, i;
         return _regenerator.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -399,12 +399,17 @@ var _default = {
                   category_id: this.form.category_id,
                   condition: this.form.condition,
                   original_price: parseFloat(this.form.original_price),
-                  description: this.form.description.trim(),
-                  image_types: ['cover', 'other']
-                }; // uploadFiles sends images[] as multipart/form-data (H5: native fetch, others: uni.uploadFile)
-                _context2.next = 26;
-                return (0, _request.uploadFiles)('/api/books/submit', this.images, fields);
-              case 26:
+                  description: this.form.description.trim()
+                };
+                imageTypes = ['cover'];
+                for (i = 1; i < this.images.length; i++) {
+                  imageTypes.push('other');
+                }
+
+                // uploadFiles sends images[] as multipart/form-data (H5: native fetch, others: uni.uploadFile)
+                _context2.next = 28;
+                return (0, _request.uploadFiles)('/api/books/submit', this.images, fields, imageTypes);
+              case 28:
                 uni.hideLoading();
                 uni.showToast({
                   title: '提交成功，等待审核',
@@ -415,19 +420,19 @@ var _default = {
                     url: '/pages/user/profile'
                   });
                 }, 1000);
-                _context2.next = 35;
+                _context2.next = 37;
                 break;
-              case 31:
-                _context2.prev = 31;
+              case 33:
+                _context2.prev = 33;
                 _context2.t0 = _context2["catch"](22);
                 uni.hideLoading();
                 console.log('submit book error:', _context2.t0);
-              case 35:
+              case 37:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[22, 31]]);
+        }, _callee2, this, [[22, 33]]);
       }));
       function onSubmit() {
         return _onSubmit.apply(this, arguments);

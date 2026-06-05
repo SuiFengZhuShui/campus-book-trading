@@ -485,6 +485,7 @@
                             <div class="dropdown-divider"></div>
                             <a href="/orders">📋 我的订单</a>
                             <a href="/my-sells">📖 我的卖书</a>
+                            <a href="/wants?mine=1">🔍 我的求购</a>
                             <div class="dropdown-divider"></div>
                             <a href="javascript:document.getElementById('logout-form').submit();">退出登录</a>
                         </div>

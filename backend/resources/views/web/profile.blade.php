@@ -37,6 +37,9 @@
         <a href="/my-sells" style="display: flex; align-items: center; padding: 14px 20px; font-size: 15px; color: #2c2416; border-bottom: 1px solid #cec4b0; text-decoration: none;">
             <span style="margin-right: 10px;">📖</span> 我的卖书 <span style="margin-left: auto; color: #cec4b0;">›</span>
         </a>
+        <a href="/wants?mine=1" style="display: flex; align-items: center; padding: 14px 20px; font-size: 15px; color: #2c2416; border-bottom: 1px solid #cec4b0; text-decoration: none;">
+            <span style="margin-right: 10px;">🔍</span> 我的求购 <span style="margin-left: auto; color: #cec4b0;">›</span>
+        </a>
         <a href="/cart" style="display: flex; align-items: center; padding: 14px 20px; font-size: 15px; color: #2c2416; border-bottom: 1px solid #cec4b0; text-decoration: none;">
             <span style="margin-right: 10px;">🛒</span> 购物车 <span style="margin-left: auto; color: #cec4b0;">›</span>
         </a>

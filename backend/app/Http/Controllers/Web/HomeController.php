@@ -107,6 +107,9 @@ class HomeController extends Controller
     {
         $wants = \App\Want::with(['user', 'category'])
             ->active()
+            ->when(request('mine') && auth()->check(), function ($q) {
+                $q->where('user_id', auth()->id());
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         return view('web.wants', compact('wants'));

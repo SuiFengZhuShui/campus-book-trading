@@ -1,10 +1,10 @@
 @charset "UTF-8";
 /* 校园二手书 uni-app 全局样式 — 轻奢学院风 */
 uni-page-body {
-  background-color: #fdfaf4 !important;
+  background-color: #ebe3d4 !important;
 }
 page {
-  background-color: #fdfaf4;
+  background-color: #ebe3d4;
   color: #2c2416;
   font-size: 15px;
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -47,9 +47,9 @@ page {
   font-weight: 600;
 }
 .btn-outline {
-  background: #fffdf9;
+  background: #ffffff;
   color: #2c2416;
-  border: 1px solid #e5dccf;
+  border: 1px solid #cec4b0;
   border-radius: 20px;
   padding: 10px 20px;
   font-size: 14px;
@@ -82,7 +82,7 @@ page {
   color: #4a6741;
 }
 .text-muted {
-  color: #8c8478;
+  color: #6e6559;
 }
 .text-dark {
   color: #2c2416;
@@ -96,15 +96,15 @@ page {
   font-weight: 700;
 }
 .price-original {
-  color: #8c8478;
+  color: #6e6559;
   text-decoration: line-through;
   font-size: 13px;
 }
 /* ====== 卡片 ====== */
 .card {
-  background: #fffdf9;
+  background: #ffffff;
   border-radius: 14px;
-  border: 1px solid #e5dccf;
+  border: 1px solid #cec4b0;
   overflow: hidden;
 }
 /* 卡片左侧彩色装饰条 */
@@ -130,7 +130,7 @@ page {
   border-left: 3px solid #6b2737;
 }
 .card-accent-gray {
-  border-left: 3px solid #8c8478;
+  border-left: 3px solid #6e6559;
 }
 /* 卡片顶部彩色条 */
 .card-top-teal {
@@ -266,22 +266,22 @@ page {
 /* ====== 分割线 ====== */
 .divider {
   height: 1px;
-  background: #e5dccf;
+  background: #cec4b0;
   margin: 12px 0;
 }
 /* ====== 空状态 ====== */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #8c8478;
+  color: #6e6559;
   font-size: 14px;
 }
 /* 校园二手书 uni-app 全局样式 — 轻奢学院风 */
 uni-page-body {
-  background-color: #fdfaf4 !important;
+  background-color: #ebe3d4 !important;
 }
 page {
-  background-color: #fdfaf4;
+  background-color: #ebe3d4;
   color: #2c2416;
   font-size: 15px;
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -324,9 +324,9 @@ page {
   font-weight: 600;
 }
 .btn-outline {
-  background: #fffdf9;
+  background: #ffffff;
   color: #2c2416;
-  border: 1px solid #e5dccf;
+  border: 1px solid #cec4b0;
   border-radius: 20px;
   padding: 10px 20px;
   font-size: 14px;
@@ -359,7 +359,7 @@ page {
   color: #4a6741;
 }
 .text-muted {
-  color: #8c8478;
+  color: #6e6559;
 }
 .text-dark {
   color: #2c2416;
@@ -373,15 +373,15 @@ page {
   font-weight: 700;
 }
 .price-original {
-  color: #8c8478;
+  color: #6e6559;
   text-decoration: line-through;
   font-size: 13px;
 }
 /* ====== 卡片 ====== */
 .card {
-  background: #fffdf9;
+  background: #ffffff;
   border-radius: 14px;
-  border: 1px solid #e5dccf;
+  border: 1px solid #cec4b0;
   overflow: hidden;
 }
 /* 卡片左侧彩色装饰条 */
@@ -407,7 +407,7 @@ page {
   border-left: 3px solid #6b2737;
 }
 .card-accent-gray {
-  border-left: 3px solid #8c8478;
+  border-left: 3px solid #6e6559;
 }
 /* 卡片顶部彩色条 */
 .card-top-teal {
@@ -543,13 +543,13 @@ page {
 /* ====== 分割线 ====== */
 .divider {
   height: 1px;
-  background: #e5dccf;
+  background: #cec4b0;
   margin: 12px 0;
 }
 /* ====== 空状态 ====== */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #8c8478;
+  color: #6e6559;
   font-size: 14px;
 }

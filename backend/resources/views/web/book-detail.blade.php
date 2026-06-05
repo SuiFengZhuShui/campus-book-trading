@@ -115,10 +115,12 @@
             </div>
 
             {{-- 购买按钮 --}}
+            @if($book->status === 'active')
             <a href="/buy/{{ $book->id }}" class="btn-amber"
                     style="display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; font-size: 18px;">
                 立即购买
             </a>
+            @endif
         </div>
     </div>
 

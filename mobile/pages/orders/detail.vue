@@ -10,7 +10,8 @@
         <view class="books-section">
           <view v-for="b in order.books" :key="b.book_id" class="book-row">
             <text class="book-title">{{ b.title }}</text>
-            <text class="book-price">¥{{ b.price }}</text>
+            <text v-if="b.price" class="book-price">¥{{ b.price }}</text>
+            <text v-else class="book-price-pending">审核中，待定价</text>
           </view>
         </view>
         <view class="info-row">
@@ -20,7 +21,8 @@
         <view class="divider"></view>
         <view class="info-row">
           <text class="label">合计金额</text>
-          <text class="amount">¥{{ order.total_amount }}</text>
+          <text v-if="order.total_amount" class="amount">¥{{ order.total_amount }}</text>
+          <text v-else class="amount-pending">审核中，待定价</text>
         </view>
         <view class="info-row mt-12">
           <text class="label">下单时间</text>
@@ -186,6 +188,8 @@ export default {
 .info-row .label { font-size: 13px; color: #8c8478; }
 .info-row .value { font-size: 13px; color: #2c2416; }
 .amount { font-size: 18px; color: #b49450; font-weight: 700; }
+.amount-pending { font-size: 14px; color: #b0822c; font-weight: 500; }
+.book-price-pending { font-size: 12px; color: #b0822c; }
 .section-title { font-size: 16px; font-weight: 600; color: #2c2416; margin-bottom: 12px; display: block; padding-left: 10px; border-left: 3px solid #b49450; }
 .timeline-item { display: flex; padding-left: 6px; margin-bottom: 12px; }
 .timeline-item:last-child { margin-bottom: 0; }

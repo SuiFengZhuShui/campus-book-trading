@@ -70,9 +70,13 @@
                 <div style="display: flex; align-items: baseline; gap: 16px;">
                     <div>
                         <div style="font-size: 12px; color: #6e6559; margin-bottom: 4px;">平台售价</div>
+                        @if($book->price)
                         <span style="font-size: 36px; color: #b49450; font-weight: 700;">¥{{ $book->price }}</span>
+                        @else
+                        <span style="font-size: 18px; color: #b0822c; font-weight: 500;">审核中，待定价</span>
+                        @endif
                     </div>
-                    @if($book->original_price)
+                    @if($book->original_price && $book->price)
                         <div>
                             <div style="font-size: 12px; color: #6e6559; margin-bottom: 4px;">原价</div>
                             <span style="font-size: 20px; color: #5a5145; text-decoration: line-through;">¥{{ $book->original_price }}</span>

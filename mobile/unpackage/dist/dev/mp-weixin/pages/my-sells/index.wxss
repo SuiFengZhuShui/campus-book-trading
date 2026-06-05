@@ -31,6 +31,8 @@
 }
 .price.data-v-e654fd88 { font-size: 14px; color: #b49450; font-weight: 600;
 }
+.price-pending.data-v-e654fd88 { font-size: 13px; color: #b0822c; font-weight: 500;
+}
 .cost.data-v-e654fd88 { font-size: 12px; color: #6e6559;
 }
 .reject-reason.data-v-e654fd88 { font-size: 12px; color: #bc4742; margin-top: 4px; display: block;

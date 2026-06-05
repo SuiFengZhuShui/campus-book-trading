@@ -441,17 +441,15 @@
 
             <nav class="nav-links">
                 <a href="/" class="{{ request()->is('/') && !request('category_id') ? 'active' : '' }}">首页</a>
-                <a href="/wants" class="{{ request()->is('wants*') ? 'active' : '' }}">{{ request('mine') ? '我的求购' : '求购' }}</a>
-                @if(!request()->is('wants*'))
+                <a href="/wants" class="{{ request()->is('wants*') ? 'active' : '' }}">求购</a>
                 <select class="college-select" onchange="location.href=this.value ? '/?category_id='+this.value : '/'">
                     <option value="">✦ 全部学院</option>
                     @foreach($categories ?? [] as $cat)
                         <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                     @endforeach
                 </select>
-                @endif
             </nav>
-            @if(!request()->is('wants*'))
+
             <form class="search-box" action="/search" method="GET">
                 <div class="search-input-wrap">
                     <input type="text" name="keyword" id="search-input" placeholder="搜索书名、作者…"
@@ -469,7 +467,6 @@
                     document.getElementById('clear-search').classList.toggle('visible', this.value.length > 0);
                 });
             </script>
-            @endif
 
             <div class="header-actions">
                 <a href="/sell" class="btn-sell">✦ 卖书</a>

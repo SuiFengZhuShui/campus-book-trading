@@ -150,15 +150,31 @@
             font-size: 13px; color: var(--muted);
             max-width: 80px; overflow: hidden; text-overflow: ellipsis;
         }
-        .header-actions > a[href="/orders"],
-        .header-actions > a[href="/my-sells"] {
+        /* 用户下拉菜单 */
+        .user-dropdown { position: relative; }
+        .user-dropdown-trigger {
             font-size: 13px; color: var(--muted); padding: 6px 10px; border-radius: 20px;
-            transition: all 0.3s;
+            cursor: pointer; white-space: nowrap; transition: all 0.3s;
         }
-        .header-actions > a[href="/orders"]:hover,
-        .header-actions > a[href="/my-sells"]:hover {
-            background: rgba(180,148,80,0.08); color: var(--gold);
+        .user-dropdown:hover .user-dropdown-trigger { background: rgba(180,148,80,0.08); color: var(--gold); }
+        .user-dropdown-menu {
+            position: absolute; top: 100%; right: 0; margin-top: 6px;
+            background: #ffffff; border: 1px solid var(--border); border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1); min-width: 140px;
+            opacity: 0; visibility: hidden; transform: translateY(-4px);
+            transition: all 0.2s; z-index: 100;
         }
+        .user-dropdown:hover .user-dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .user-dropdown-menu a {
+            display: block; padding: 10px 16px; font-size: 13px; color: var(--dark);
+            transition: background 0.15s;
+        }
+        .user-dropdown-menu a:first-child { border-radius: 10px 10px 0 0; }
+        .user-dropdown-menu a:last-child { border-radius: 0 0 10px 10px; color: var(--muted); }
+        .user-dropdown-menu a:hover { background: rgba(180,148,80,0.06); color: var(--gold); }
+        .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+        /* cart link hover */
+        .cart-link:hover { background: rgba(180,148,80,0.08); color: var(--gold) !important; }
 
         /* 主体 */
         .main {
@@ -457,20 +473,23 @@
                 @auth
                     @php $cartCount = \App\CartItem::where('user_id', auth()->id())->count(); @endphp
                     <a href="/cart" class="cart-link" style="position:relative;font-size:13px;color:var(--muted);padding:6px 10px;border-radius:20px;transition:all 0.3s;">
-                        🛒 购物车
+                        🛒
                         @if($cartCount > 0)
                         <span style="position:absolute;top:-2px;right:-2px;background:#bc4742;color:#fff;font-size:10px;min-width:16px;height:16px;line-height:16px;text-align:center;border-radius:8px;padding:0 4px;">{{ $cartCount }}</span>
                         @endif
                     </a>
-                @endauth
-                @guest
-                    <a href="/login" class="btn-login">登录</a>
-                @else
-                    <a href="/orders" style="font-size: 13px; color: var(--muted); padding: 6px 10px; border-radius: 20px; transition: all 0.3s;">我的订单</a>
-                    <a href="/my-sells" style="font-size: 13px; color: var(--muted); padding: 6px 10px; border-radius: 20px; transition: all 0.3s;">我的卖书</a>
-                    <span class="user-name">{{ auth()->user()->name }}</span>
-                    <a href="javascript:document.getElementById('logout-form').submit();" class="btn-login">退出</a>
+                    <div class="user-dropdown">
+                        <span class="user-dropdown-trigger">👤 {{ auth()->user()->name }} ▾</span>
+                        <div class="user-dropdown-menu">
+                            <a href="/orders">📋 我的订单</a>
+                            <a href="/my-sells">📖 我的卖书</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="javascript:document.getElementById('logout-form').submit();">退出登录</a>
+                        </div>
+                    </div>
                     <form id="logout-form" action="/logout" method="POST" style="display:none;">@csrf</form>
+                @else
+                    <a href="/login" class="btn-login">登录</a>
                 @endguest
             </div>
         </div>

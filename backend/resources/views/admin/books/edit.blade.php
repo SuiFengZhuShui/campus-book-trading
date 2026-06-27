@@ -7,6 +7,10 @@
     <span class="page-title" style="margin:0;">编辑书籍</span>
 </div>
 
+    @if(session('page_success'))
+        <div style="background:linear-gradient(135deg,#4a6741,#5a7d51);color:#fff;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;">{{ session('page_success') }}</div>
+    @endif
+
 <div class="flex-row" style="align-items:flex-start">
     <div class="flex-1" style="width:60%">
         <div class="card">
@@ -67,10 +71,10 @@
         <div class="card">
             <div class="card-title">书籍状态</div>
             @php
-                $label = ['pending_review'=>'待审核','approved'=>'已通过','active'=>'在售','sold'=>'已售出','removed'=>'已下架/驳回'];
+                $label = ['pending_review'=>'待审核','active'=>'在售','sold'=>'已售出','rejected'=>'已驳回','removed'=>'已下架'];
             @endphp
             <p>状态：{{ $label[$book->status] ?? $book->status }}</p>
-            @if($book->status === 'removed' && $book->reject_reason)
+            @if(in_array($book->status, ['removed', 'rejected']) && $book->reject_reason)
                 <p style="color:#bc4742;">驳回/下架原因：{{ $book->reject_reason }}</p>
             @endif
         </div>

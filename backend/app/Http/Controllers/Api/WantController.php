@@ -12,11 +12,9 @@ class WantController extends Controller
     public function index(Request $request)
     {
         $wants = Want::with(['user', 'category'])
+            ->where('status', 'active')
             ->when($request->keyword, function ($q, $v) {
                 $q->where('title', 'like', "%{$v}%");
-            })
-            ->when($request->status, function ($q, $v) {
-                $q->where('status', $v);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -88,6 +86,7 @@ class WantController extends Controller
 
         $data = [
             'id' => $want->id,
+            'user_id' => $want->user_id,
             'title' => $want->title,
             'author' => $want->author,
             'publisher' => $want->publisher,
@@ -113,13 +112,21 @@ class WantController extends Controller
             }),
         ];
 
-        // 仅求购满足后对发布者展示接单人信息
+        // 仅求购关闭后对发布者展示接单人信息
+        if ($want->status === 'closed' && auth()->id() === $want->user_id) {
+            $data['fulfiller_visible'] = true;
+        }
+        // 兼容 fulfilled 历史数据
         if ($want->status === 'fulfilled' && auth()->id() === $want->user_id) {
             $data['fulfiller_visible'] = true;
         }
 
         // 发布者信息脱敏
         $data['publisher_name'] = $want->user ? $want->user->name : '匿名';
+
+        // 当前用户是否已接单
+        $data['is_fulfilled'] = auth()->check() && $want->fulfillments()
+            ->where('fulfiller_id', auth()->id())->exists();
 
         return $this->success($data);
     }
@@ -162,7 +169,6 @@ class WantController extends Controller
     {
         $map = [
             'active' => '进行中',
-            'fulfilled' => '已满足',
             'expired' => '已过期',
             'closed' => '已关闭',
         ];

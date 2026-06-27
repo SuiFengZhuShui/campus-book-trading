@@ -6,9 +6,10 @@ const BASE_URL = ''
 // #endif
 
 function getToken() {
+  // auth.token getter reads uni.storage (cross-page) with state fallback.
   try {
-    const info = uni.getStorageSync('auth')
-    return info ? info.token : ''
+    var auth = require('@/stores/auth.js').default
+    return auth.token
   } catch (e) {
     return ''
   }
@@ -40,7 +41,8 @@ function request(options) {
           try { uni.removeStorageSync('auth') } catch (e) { console.log('removeStorageSync error:', e) }
           var auth = require('@/stores/auth.js').default
           auth.logout()
-          uni.showToast({ title: '请先登录，重新进入', icon: 'none' })
+          // Let each page handle its own 401 UI (login card, redirect, etc.)
+          // Do NOT force-navigate here — profile page shows login card, other pages handle via isLogin() check
           reject(res.data)
         } else {
           uni.showToast({ title: res.data.message || '请求失败', icon: 'none' })

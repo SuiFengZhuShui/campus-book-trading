@@ -215,8 +215,8 @@
             padding: 12px 16px; border-radius: 12px;
             margin-bottom: 20px; font-size: 14px;
         }
-        .alert-success { background: rgba(74,103,65,0.08); color: var(--moss); border: 1px solid rgba(74,103,65,0.15); }
-        .alert-error   { background: rgba(107,39,55,0.06); color: var(--wine); border: 1px solid rgba(107,39,55,0.15); }
+        .alert-success { background: linear-gradient(135deg, #4a6741, #5a7d51); color: #fff; font-weight: 500; }
+        .alert-error   { background: linear-gradient(135deg, #6b2737, #8b3a4a); color: #fff; font-weight: 500; }
 
         /* 表单 */
         .form-group { margin-bottom: 18px; }
@@ -334,9 +334,10 @@
             </div>
             <nav class="nav">
                 <a href="{{ url('admin/dashboard') }}" class="{{ request()->is('admin') || request()->is('admin/dashboard') ? 'active' : '' }}">✦ 仪表盘</a>
-                <a href="{{ url('admin/reviews') }}" class="{{ request()->is('admin/reviews*') ? 'active' : '' }}">✦ 审核管理</a>
+                <a href="{{ url('admin/reviews') }}" class="{{ request()->is('admin/reviews*') ? 'active' : '' }}">✦ 书籍审核</a>
                 <a href="{{ url('admin/books') }}" class="{{ request()->is('admin/books*') ? 'active' : '' }}">✦ 书籍管理</a>
                 <a href="{{ url('admin/orders') }}" class="{{ request()->is('admin/orders*') ? 'active' : '' }}">✦ 订单管理</a>
+                <a href="{{ url('admin/ratings') }}" class="{{ request()->is('admin/ratings*') ? 'active' : '' }}">✦ 评价管理</a>
                 <a href="{{ url('admin/users') }}" class="{{ request()->is('admin/users*') ? 'active' : '' }}">✦ 用户管理</a>
                 <a href="{{ url('admin/wants') }}" class="{{ request()->is('admin/wants*') ? 'active' : '' }}">✦ 求购管理</a>
                 <a href="{{ url('admin/categories') }}" class="{{ request()->is('admin/categories*') ? 'active' : '' }}">✦ 分类管理</a>
@@ -366,5 +367,6 @@
             </div>
         </div>
     </div>
+<script>(function(){var f=document.querySelector('.alert-success,.alert-error');if(f){setTimeout(function(){f.style.transition='opacity 0.4s';f.style.opacity='0';setTimeout(function(){f.remove()},400)},2000)}})();</script>
 </body>
 </html>

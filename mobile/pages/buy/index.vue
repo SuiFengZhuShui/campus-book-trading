@@ -15,7 +15,9 @@
 
       <view class="card">
         <text class="section-title">取书地点</text>
-        <input v-model="pickupLocation" class="input" placeholder="请填写取书地点，如图书馆门口" />
+        <picker :value="pickupIndex" :range="pickupOptions" @change="onPickupChange">
+          <view class="picker-display">{{ pickupOptions[pickupIndex] }}</view>
+        </picker>
       </view>
 
       <view class="card">
@@ -40,7 +42,8 @@ export default {
   data() {
     return {
       book: null,
-      pickupLocation: '',
+      pickupIndex: 0,
+      pickupOptions: ['图书馆门口', '第一食堂门口', '第二食堂门口', '第三教学楼大厅', '宿舍楼A区快递点', '行政楼一楼'],
       loading: true
     }
   },
@@ -60,15 +63,15 @@ export default {
         this.loading = false
       }
     },
+    onPickupChange(e) {
+      this.pickupIndex = e.detail.value
+    },
     async onSubmit() {
-      if (!this.pickupLocation.trim()) {
-        uni.showToast({ title: '请填写取书地点', icon: 'none' })
-        return
-      }
+      var loc = this.pickupOptions[this.pickupIndex]
       try {
         var res = await post('/api/orders', {
           book_ids: [this.book.id],
-          pickup_location: this.pickupLocation.trim()
+          pickup_location: loc
         })
         uni.showToast({ title: '下单成功', icon: 'success' })
         setTimeout(function () {
@@ -92,7 +95,7 @@ export default {
 .book-info .meta { font-size: 13px; color: #8c8478; margin-top: 4px; }
 .book-info .price { font-size: 18px; margin-top: 8px; }
 .section-title { font-size: 16px; font-weight: 600; color: #2c2416; margin-bottom: 12px; display: block; }
-.input { width: 100%; height: 44px; border: 1px solid #e5dccf; border-radius: 8px; padding: 0 12px; font-size: 14px; background: #fff; box-sizing: border-box; }
+.picker-display { width: 100%; height: 44px; line-height: 44px; border: 1px solid #e5dccf; border-radius: 8px; padding: 0 12px; font-size: 14px; background: #fff; box-sizing: border-box; color: #2c2416; }
 .notice-item { font-size: 13px; color: #8c8478; line-height: 1.8; display: block; }
 .submit-btn { width: 100%; text-align: center; margin-top: 20px; padding: 14px 0; font-size: 16px; border-radius: 10px; }
 .status-msg { text-align: center; padding: 100px 0; color: #8c8478; }

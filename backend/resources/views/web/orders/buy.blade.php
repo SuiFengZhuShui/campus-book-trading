@@ -60,7 +60,7 @@
             </div>
 
             <div style="display: flex; gap: 12px;">
-                <a href="/books/{{ $book->id }}" class="btn-ghost" style="flex: 1; height: 46px; font-size: 16px;">返回</a>
+                <a href="/" class="btn-ghost" style="flex: 1; height: 46px; font-size: 16px;">返回</a>
                 <button type="submit" class="btn-amber" style="flex: 2; height: 46px; font-size: 16px;">确认下单</button>
             </div>
         </form>

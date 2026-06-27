@@ -43,6 +43,7 @@ class BookController extends Controller
             $cover = $book->images->where('type', 'cover')->first();
             return [
                 'id' => $book->id,
+                'seller_id' => $book->seller_id,
                 'title' => $book->title,
                 'author' => $book->author,
                 'publisher' => $book->publisher,
@@ -69,6 +70,7 @@ class BookController extends Controller
 
         $data = [
             'id' => $book->id,
+            'seller_id' => $book->seller_id,
             'title' => $book->title,
             'author' => $book->author,
             'publisher' => $book->publisher,
@@ -103,9 +105,24 @@ class BookController extends Controller
 
         if ($this->canViewSeller($book)) {
             $data['seller'] = [
+                'id' => $book->seller->id,
                 'name' => $book->seller->name,
                 'phone' => $this->maskPhone($book->seller->phone),
             ];
+            // 卖家历史评价
+            $sellerReviews = \App\Review::whereIn('book_id', function ($q) use ($book) {
+                $q->select('id')->from('books')->where('seller_id', $book->seller_id);
+            })->with('user')->orderBy('created_at', 'desc')->get();
+            $data['seller_reviews'] = $sellerReviews->map(function ($r) {
+                return [
+                    'id' => $r->id,
+                    'book_rating' => $r->book_rating,
+                    'service_rating' => $r->service_rating,
+                    'comment' => $r->comment,
+                    'user_name' => $r->user ? $r->user->name : '匿名',
+                    'created_at' => $r->created_at->toDateTimeString(),
+                ];
+            });
         }
 
         return $this->success($data);
@@ -128,6 +145,7 @@ class BookController extends Controller
             'image_urls' => 'required_without:images|array|min:2|max:5',
             'image_urls.*' => 'string',
             'image_types' => 'nullable|array',
+            'want_id' => 'nullable|integer',
         ]);
 
         $imageUrls = $request->input('image_urls', []);
@@ -224,7 +242,8 @@ class BookController extends Controller
             'approved' => '已通过',
             'active' => '在售',
             'sold' => '已售出',
-            'removed' => '已驳回/已下架',
+            'removed' => '已下架',
+            'rejected' => '已驳回',
         ];
         return $map[$status] ?? $status;
     }

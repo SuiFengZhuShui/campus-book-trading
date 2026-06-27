@@ -73,12 +73,10 @@ export default {
     goPost() { uni.navigateTo({ url: '/pages/wants/post' }) },
     wantStatusClass(status) {
       if (status === 'active') return 'status-success'
-      if (status === 'fulfilled') return 'status-info'
       return 'status-muted'
     },
     wantAccent(status) {
       if (status === 'active') return 'card-accent-teal'
-      if (status === 'fulfilled') return 'card-accent-amber'
       return 'card-accent-gray'
     }
   }

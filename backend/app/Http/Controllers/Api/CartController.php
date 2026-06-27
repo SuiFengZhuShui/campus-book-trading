@@ -57,6 +57,17 @@ class CartController extends Controller
             return $this->error(400, '已在购物车中');
         }
 
+        // 检查是否有软删除的旧记录，有则恢复
+        $trashed = CartItem::withTrashed()
+            ->where('user_id', auth()->id())
+            ->where('book_id', $data['book_id'])
+            ->first();
+
+        if ($trashed) {
+            $trashed->restore();
+            return $this->success(['id' => $trashed->id], '已加入购物车');
+        }
+
         $item = CartItem::create([
             'user_id' => auth()->id(),
             'book_id' => $data['book_id'],
@@ -71,6 +82,13 @@ class CartController extends Controller
         $item->delete();
 
         return $this->success(null, '已移除');
+    }
+
+    public function clear()
+    {
+        CartItem::where('user_id', auth()->id())->delete();
+
+        return $this->success(null, '购物车已清空');
     }
 
     public function checkout(Request $request, OrderService $service)

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Book;
 use App\BookImage;
+use App\WantFulfillment;
 use App\Exceptions\BusinessException;
 use Illuminate\Support\Facades\DB;
 
@@ -42,6 +43,15 @@ class BookService
                 ]);
             }
 
+            // 关联求购接单：提交书即创建/更新接单记录并关闭求购
+            if (!empty($data['want_id'])) {
+                WantFulfillment::updateOrCreate(
+                    ['want_id' => $data['want_id'], 'fulfiller_id' => auth()->id()],
+                    ['book_id' => $book->id, 'status' => 'listed']
+                );
+                \App\Want::where('id', $data['want_id'])->update(['status' => 'closed']);
+            }
+
             return $book;
         });
     }
@@ -59,6 +69,12 @@ class BookService
         $book->approved_at = now();
         $book->received_at = now();
         $book->save();
+
+        // 关联求购：审批通过后将接单标记为完成
+        $fulfillment = WantFulfillment::where('book_id', $bookId)->where('status', 'listed')->first();
+        if ($fulfillment) {
+            $fulfillment->update(['status' => 'completed']);
+        }
     }
 
     public function reject(int $bookId, string $reason): void

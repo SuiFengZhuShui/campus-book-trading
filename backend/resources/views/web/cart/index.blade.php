@@ -3,7 +3,7 @@
 @section('title', '购物车 - 校园二手书网')
 
 @section('content')
-<a href="/" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:16px;">&larr; 返回首页</a>
+<a href="/" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:16px;">&larr; 返回</a>
 <div style="max-width: 800px; margin: 0 auto;">
     <h2 style="font-size: 22px; font-weight: 600; color: #2c2416; margin-bottom: 20px;">🛒 我的购物车</h2>
 
@@ -11,7 +11,7 @@
         <div style="background:#edf5f0;color:#2d6a4f;padding:10px 16px;border-radius:8px;margin-bottom:16px;font-size:14px;">{{ session('success') }}</div>
     @endif
     @if(session('error'))
-        <div style="background:#fdf2f1;color:#bc4742;padding:10px 16px;border-radius:8px;margin-bottom:16px;font-size:14px;">{{ session('error') }}</div>
+        <div style="background:linear-gradient(135deg,#6b2737,#8b3a4a);color:#fff;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px;font-weight:500;">{{ session('error') }}</div>
     @endif
 
     @if($items->count() > 0)
@@ -41,7 +41,7 @@
                             @endif
                         </div>
                         <div style="text-align:right;flex-shrink:0;">
-                            <div style="font-size:16px;font-weight:700;color:#b49450;">¥{{ $book->price }}</div>
+                            <div style="font-size:16px;font-weight:400;color:#b49450;font-family:'LXGW WenKai',serif;">¥{{ $book->price }}</div>
                             <a href="javascript:void(0)" onclick="removeItem({{ $item->id }})"
                                style="font-size:12px;color:#6e6559;margin-top:4px;display:inline-block;">移除</a>
                         </div>
@@ -57,7 +57,7 @@
                     </label>
                     <div style="display:flex;align-items:center;gap:16px;">
                         <span style="font-size:13px;color:#6e6559;">合计：</span>
-                        <span id="total-amount" style="font-size:22px;font-weight:700;color:#b49450;">¥0</span>
+                        <span id="total-amount" style="font-size:22px;font-weight:400;color:#b49450;font-family:'LXGW WenKai',serif;">¥0</span>
                     </div>
                     <select name="pickup_location" required style="height:38px;border:1px solid #cec4b0;border-radius:8px;padding:0 10px;font-size:13px;color:#2c2416;">
                         <option value="">选择取书地点</option>
@@ -68,6 +68,8 @@
                         <option value="快递驿站">快递驿站</option>
                         <option value="其他">其他</option>
                     </select>
+                    <span style="display:inline-flex;gap:4px;">
+                    <button type="button" onclick="clearCart()" style="padding:10px 20px;background:linear-gradient(135deg,#c7915c,#d4a574);color:#fff;border:none;border-radius:10px;font-size:14px;cursor:pointer;">清空</button>
                     <button type="submit" class="btn-amber" style="padding:10px 28px;font-size:15px;border:none;border-radius:10px;cursor:pointer;"
                             onclick="return validateCheckout()">去结算</button>
                 </div>
@@ -110,6 +112,13 @@ function removeItem(id) {
     if (!confirm('确定移除此书籍？')) return;
     var form = document.getElementById('remove-form');
     form.action = '/cart/remove/' + id;
+    form.submit();
+}
+
+function clearCart() {
+    if (!confirm('确定清空购物车？此操作不可恢复。')) return;
+    var form = document.getElementById('remove-form');
+    form.action = '/cart/clear';
     form.submit();
 }
 

@@ -25,17 +25,21 @@ Route::post('/buy/{bookId}', 'Web\OrderController@buy');
 // 求购
 Route::get('/wants', 'Web\HomeController@wants');
 Route::get('/wants/{id}', 'Web\HomeController@wantDetail');
+Route::post('/wants/{id}/fulfill', 'Web\HomeController@fulfillWant');
 Route::get('/post-want', 'Web\HomeController@postWant');
 Route::post('/post-want', 'Web\HomeController@storeWant');
 
 // 个人中心（需登录）
 Route::get('/profile', 'Web\HomeController@profile');
+Route::get('/profile/edit', 'Web\HomeController@editProfile');
+Route::post('/profile/update', 'Web\HomeController@updateProfile');
 
 // 购物车（需登录）
 Route::get('/cart', 'Web\CartController@index');
 Route::post('/cart/add', 'Web\CartController@add');
 Route::post('/cart/remove/{id}', 'Web\CartController@remove');
 Route::post('/cart/checkout', 'Web\CartController@checkout');
+Route::post('/cart/clear', 'Web\CartController@clear');
 
 // 我的卖书（需登录）
 Route::get('/my-sells', 'Web\HomeController@mySells');
@@ -51,7 +55,7 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
         Route::get('/', 'DashboardController@index')->name('admin.dashboard');
         Route::get('dashboard', 'DashboardController@index');
 
-        // 审核管理
+        // 书籍审核
         Route::prefix('reviews')->group(function () {
             Route::get('/', 'ReviewController@index')->name('admin.reviews.index');
             Route::get('{id}', 'ReviewController@detail');
@@ -60,12 +64,19 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
             Route::post('{id}/receive', 'ReviewController@receive');
         });
 
+        // 评价管理
+        Route::prefix('ratings')->group(function () {
+            Route::get('/', 'RatingController@index')->name('admin.ratings.index');
+            Route::get('{id}', 'RatingController@show');
+        });
+
         // 书籍管理
         Route::prefix('books')->group(function () {
             Route::get('/', 'BookController@index')->name('admin.books.index');
             Route::get('{id}/edit', 'BookController@edit');
             Route::post('{id}/update', 'BookController@update');
             Route::post('{id}/remove', 'BookController@remove');
+            Route::post('{id}/delete', 'BookController@destroy');
         });
 
         // 订单管理
@@ -118,3 +129,25 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
         });
     });
 });
+
+// Storage fallback: serve files from storage/app/public when public/storage junction is broken.
+// When the junction exists, Apache serves files directly (RewriteCond skips index.php for real files).
+// This route only activates when the junction is missing — zero overhead when everything is normal.
+Route::get('storage/{path}', function ($path) {
+    $file = storage_path('app/public/' . $path);
+
+    // Block path traversal
+    $realPath = realpath($file);
+    $storagePublic = realpath(storage_path('app/public'));
+    if (!$realPath || strpos($realPath, $storagePublic) !== 0) {
+        abort(404);
+    }
+
+    if (!file_exists($file)) {
+        abort(404);
+    }
+
+    return response()->file($file, [
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->where('path', '.*');

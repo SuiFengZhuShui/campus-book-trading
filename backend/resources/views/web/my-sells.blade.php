@@ -3,7 +3,8 @@
 @section('title', '我的卖书 - 校园二手书网')
 
 @section('content')
-<a href="/" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:16px;">&larr; 返回首页</a>
+@php $mySellsBack = (request('from') === 'want' && request('want_id')) ? '/wants/' . request('want_id') : '/'; @endphp
+<a href="{{ $mySellsBack }}" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:16px;">&larr; 返回</a>
 <h2 style="font-size: 22px; font-weight: 600; color: #2c2416; letter-spacing: -0.01em; margin-bottom: 20px;">我卖的书</h2>
 
 @if($books->count() > 0)
@@ -15,7 +16,7 @@
                 $statusBg = ['pending_review'=>'#fef9f0','approved'=>'rgba(180,148,80,0.08)','active'=>'#edf5f0','sold'=>'#f4f1ec','rejected'=>'#fdf2f1','removed'=>'#f4f1ec'];
                 $statusColor = ['pending_review'=>'#b0822c','approved'=>'#b49450','active'=>'#2d6a4f','sold'=>'#6e6559','rejected'=>'#bc4742','removed'=>'#6e6559'];
             @endphp
-            <div style="background: #ffffff; border-radius: 12px; padding: 16px 20px; border: 1px solid #cec4b0; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; gap: 16px; align-items: center; border-left: 4px solid {{ $statusBorder[$book->status] ?? '#8a8070' }}; transition: box-shadow 0.25s;">
+            <div onclick="location.href='/books/{{ $book->id }}'" style="background: #ffffff; border-radius: 12px; padding: 16px 20px; border: 1px solid #cec4b0; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; gap: 16px; align-items: center; border-left: 4px solid {{ $statusBorder[$book->status] ?? '#8a8070' }}; transition: box-shadow 0.25s; cursor: pointer;">
                 @php $cover = $book->images->where('type', 'cover')->first(); @endphp
                 @if($cover)
                     <img src="{{ asset('storage/' . $cover->path) }}" alt="{{ $book->title }}"
@@ -24,7 +25,7 @@
                     <div style="width: 56px; height: 78px; border-radius: 6px; background: #f4f1ec; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">📖</div>
                 @endif
                 <div style="flex: 1; min-width: 0;">
-                    <a href="/books/{{ $book->id }}" style="font-size: 14px; font-weight: 500; color: #2c2416;">{{ $book->title }}</a>
+                    <span style="font-size: 14px; font-weight: 500; color: #2c2416;">{{ $book->title }}</span>
                     <div style="font-size: 12px; color: #6e6559; margin-top: 2px;">{{ $book->author }} / {{ $book->publisher }}</div>
                             @if($book->reject_reason)
                         <div style="font-size: 12px; color: #bc4742; margin-top: 2px;">驳回原因：{{ $book->reject_reason }}</div>
@@ -37,15 +38,17 @@
                     @if(in_array($book->status, ['removed', 'rejected']))
                         <form class="delete-book-form" data-id="{{ $book->id }}" data-status="{{ $book->status }}" style="margin-top: 6px;">
                             @csrf
-                            <button type="button" class="btn-delete-book" style="font-size: 12px; color: #bc4742; background: none; border: 1px solid #f5c6cb; border-radius: 6px; padding: 3px 10px; cursor: pointer;">删除</button>
+                            <button type="button" class="btn-delete-book" onclick="event.stopPropagation()" style="font-size: 12px; color: #bc4742; background: none; border: 1px solid #f5c6cb; border-radius: 6px; padding: 3px 10px; cursor: pointer;">删除</button>
                         </form>
                     @endif
+                    @if(!in_array($book->status, ['rejected', 'removed']))
                     <div style="font-size: 16px; font-weight: 600; color: #b49450; margin-top: 4px;">
                         @if($book->price) ¥{{ $book->price }} @else <span style="font-size:12px;color:#b0822c;font-weight:500;">待定价</span> @endif
                     </div>
+                    @endif
                     @if($book->status === 'sold' && $book->orderItems->isNotEmpty())
                         @php $orderId = $book->orderItems->first()->order_id; @endphp
-                        <a href="/orders/{{ $orderId }}?from=sells" style="display:inline-block;margin-top:4px;font-size:12px;color:#b49450;">查看订单</a>
+                        <a href="/orders/{{ $orderId }}?from=sells" onclick="event.stopPropagation()" style="display:inline-block;margin-top:4px;font-size:12px;color:#b49450;">查看订单</a>
                     @endif
                 </div>
             </div>

@@ -51,13 +51,15 @@ class UserController extends Controller
             'password' => 'nullable|string|min:6|max:50',
         ]);
 
+        $password = $data['password'];
+        unset($data['password']);
         $user->fill($data);
-        if (!empty($data['password'])) {
-            $user->password = bcrypt($data['password']);
+        if (!empty($password)) {
+            $user->password = bcrypt($password);
         }
         $user->save();
 
-        return redirect('admin/users')->with('success', "用户 {$user->name} 已更新");
+        return back()->with('page_success', "用户 {$user->name} 已更新");
     }
 
     public function toggleStatus($id)

@@ -56,7 +56,7 @@
         .btn:active { transform: scale(0.98); }
 
         .alert { padding: 12px 14px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
-        .alert-error { background: #fdf2f1; border: 1px solid rgba(188,71,66,0.2); color: #bc4742; }
+        .alert-error { background: linear-gradient(135deg, #6b2737, #8b3a4a); color: #fff; font-weight: 500; }
 
         .links { display: flex; justify-content: center; gap: 24px; margin-top: 20px; }
         .links a { font-size: 13px; color: #6e6559; text-decoration: none; transition: color 0.2s; }
@@ -112,7 +112,7 @@
                     <label>手机号</label>
                     <div class="input-wrap">
                         <span class="input-icon">📱</span>
-                        <input type="text" name="phone" class="form-control" value="{{ old('phone') }}" placeholder="请输入11位手机号" required maxlength="11">
+                        <input type="text" name="phone" class="form-control" value="{{ old('phone', request('phone')) }}" placeholder="请输入11位手机号" required maxlength="11">
                     </div>
                     @error('phone')<div style="color:#bc4742;font-size:12px;margin-top:4px;">{{ $message }}</div>@enderror
                 </div>

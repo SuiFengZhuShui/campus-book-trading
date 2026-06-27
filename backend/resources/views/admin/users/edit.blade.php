@@ -7,7 +7,11 @@
     <span class="page-title" style="margin:0;">编辑用户 #{{ $user->id }}</span>
 </div>
 
-<div class="card" style="max-width:600px;">
+    @if(session('page_success'))
+        <div style="background:linear-gradient(135deg,#4a6741,#5a7d51);color:#fff;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;">{{ session('page_success') }}</div>
+    @endif
+
+<div class="card" style="max-width:600px;margin:0 auto;">
     <form method="POST" action="{{ url('admin/users/'.$user->id.'/update') }}">
         @csrf
         <div class="form-group">

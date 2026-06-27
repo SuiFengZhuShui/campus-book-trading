@@ -5,7 +5,12 @@
 @section('content')
 <div style="max-width: 800px; margin: 0 auto;">
     @php $fromSells = request('from') === 'sells'; @endphp
-    <a href="{{ $fromSells ? '/my-sells' : '/orders' }}" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: linear-gradient(135deg, #b49450, #d4bc7c); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none; margin-bottom: 20px;">&larr; {{ $fromSells ? '返回我的卖书' : '返回订单列表' }}</a>
+    @php
+        if (request('from') === 'profile') { $fallback = '/profile'; }
+        elseif ($fromSells) { $fallback = '/my-sells'; }
+        else { $fallback = '/orders'; }
+    @endphp
+    <a href="{{ $fallback }}" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: linear-gradient(135deg, #b49450, #d4bc7c); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none; margin-bottom: 20px;">&larr; 返回</a>
 
     @php
         $statusMap = ['pending'=>'待付款','paid'=>'待确认','confirmed'=>'待取书','picked_up'=>'已完成','cancelled'=>'已取消'];
@@ -24,7 +29,7 @@
             </div>
             <div style="text-align: right;">
                 <div style="font-size: 12px; color: #6e6559; margin-bottom: 4px;">订单金额</div>
-                <div style="font-size: 28px; font-weight: 700; color: #b49450;">¥{{ $order->total_amount }}</div>
+                <div style="font-size: 28px; font-weight: 400; color: #b49450; font-family: 'LXGW WenKai', serif;">¥{{ $order->total_amount }}</div>
             </div>
         </div>
 
@@ -36,11 +41,11 @@
         @if($order->buyer_id === auth()->id())
             @if($order->status === 'pending')
                 <div style="display: flex; gap: 12px; margin-top: 20px;">
-                    <form method="POST" action="/orders/{{ $order->id }}/pay" style="flex: 1;">
+                    <form method="POST" action="/orders/{{ $order->id }}/pay{{ request('from') ? '?from=' . request('from') : '' }}" style="flex: 1;">
                         @csrf
                         <button type="submit" style="width: 100%; height: 42px; background: linear-gradient(135deg, #b49450, #b49450); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.2s;">确认支付</button>
                     </form>
-                    <form method="POST" action="/orders/{{ $order->id }}/cancel" style="flex: 1;" onsubmit="return confirm('确定取消订单？')">
+                    <form method="POST" action="/orders/{{ $order->id }}/cancel{{ request('from') ? '?from=' . request('from') : '' }}" style="flex: 1;" onsubmit="return confirm('确定取消订单？')">
                         @csrf
                         <button type="submit" style="width: 100%; height: 42px; background: #ffffff; color: #6e6559; border: 1px solid #cec4b0; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">取消订单</button>
                     </form>
@@ -50,17 +55,22 @@
                 <div style="margin-top: 16px; background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #b0822c;">
                     📢 等待平台确认订单
                 </div>
-                <form method="POST" action="/orders/{{ $order->id }}/cancel" style="margin-top: 12px;" onsubmit="return confirm('确定取消订单？')">
+                <form method="POST" action="/orders/{{ $order->id }}/cancel{{ request('from') ? '?from=' . request('from') : '' }}" style="margin-top: 12px;" onsubmit="return confirm('确定取消订单？')">
                     @csrf
                     <button type="submit" style="height: 42px; padding: 0 24px; background: #ffffff; color: #6e6559; border: 1px solid #cec4b0; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">取消订单</button>
                 </form>
             @endif
             @if($order->status === 'confirmed')
-                <form method="POST" action="/orders/{{ $order->id }}/pickup" style="margin-top: 12px;">
+                <form method="POST" action="/orders/{{ $order->id }}/pickup{{ request('from') ? '?from=' . request('from') : '' }}" style="margin-top: 12px;">
                     @csrf
                     <button type="submit" style="width: 100%; height: 42px; background: linear-gradient(135deg, #b49450, #b49450); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer;" onclick="return confirm('确认已收到书籍？')">确认取书</button>
                 </form>
             @endif
+        @endif
+        @if($order->status === 'pending' && $order->buyer_id !== auth()->id())
+            <div style="margin-top: 16px; background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #b0822c;">
+                📢 等待买家付款
+            </div>
         @endif
         @if($order->status === 'paid' && $order->buyer_id !== auth()->id())
             <div style="margin-top: 16px; background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #b0822c;">
@@ -73,12 +83,31 @@
             </div>
         @endif
         @if(in_array($order->status, ['cancelled', 'picked_up']) && ($order->buyer_id === auth()->id() || $isSeller))
-            <form method="POST" action="/orders/{{ $order->id }}/delete" style="margin-top: 20px;" onsubmit="return confirm('确定删除此订单吗？')">
+            <form method="POST" action="/orders/{{ $order->id }}/delete{{ request('from') ? '?from=' . request('from') : '' }}" style="margin-top: 20px;" onsubmit="return confirm('确定删除此订单吗？')">
                 @csrf
                 <button type="submit" style="height: 42px; padding: 0 24px; background: #ffffff; color: #bc4742; border: 1px solid #f5c6cb; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;">删除订单</button>
             </form>
         @endif
     </div>
+
+    {{-- 评价 --}}
+    @php $rev = $order->review; @endphp
+    @if($rev)
+    <div style="background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid #cec4b0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 20px;">
+        <div style="font-size: 15px; font-weight: 600; color: #2c2416; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid rgba(180,148,80,0.25);">评价</div>
+        <div style="margin-bottom: 8px;">
+            <span style="font-size: 13px; color: #6e6559;">书况：</span>
+            <span style="color: #b49450; letter-spacing: 2px;">{{ str_repeat('★', $rev->book_rating) }}{{ str_repeat('☆', 5 - $rev->book_rating) }}</span>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <span style="font-size: 13px; color: #6e6559;">服务：</span>
+            <span style="color: #b49450; letter-spacing: 2px;">{{ str_repeat('★', $rev->service_rating) }}{{ str_repeat('☆', 5 - $rev->service_rating) }}</span>
+        </div>
+        @if($rev->comment)
+        <div style="font-size: 14px; color: #2c2416; line-height: 1.6;">{{ $rev->comment }}</div>
+        @endif
+    </div>
+    @endif
 
     {{-- 书籍列表 --}}
     <div style="background: #ffffff; border-radius: 12px; border: 1px solid #cec4b0; box-shadow: 0 1px 2px rgba(0,0,0,0.04); margin-bottom: 20px; overflow: hidden;">
@@ -99,7 +128,7 @@
                     <div style="font-size: 12px; color: #6e6559; margin-top: 4px;">{{ $item->book->author }} / {{ $item->book->publisher }}</div>
                 </div>
                 <div style="text-align: right; font-size: 16px; font-weight: 600; color: #b49450;">
-                    @if($item->price) ¥{{ $item->price }} @else <span style="font-size:13px;color:#b0822c;font-weight:500;">审核中，待定价</span> @endif
+                    @if($item->price) <span style="font-family: 'LXGW WenKai', serif;">¥{{ $item->price }}</span> @else <span style="font-size:13px;color:#b0822c;font-weight:500;">审核中，待定价</span> @endif
                 </div>
             </div>
         @endforeach

@@ -4,7 +4,9 @@
     <template v-else-if="book">
       <swiper v-if="book.images.length" class="image-swiper" :indicator-dots="true" indicator-color="#e5dccf" indicator-active-color="#b49450" circular>
         <swiper-item v-for="img in book.images" :key="img.id">
-          <safe-image :src="img.url" mode="aspectFill" class="swiper-image" @click="previewImage(img.url)" />
+          <view class="swiper-image-wrap">
+            <safe-image :src="img.url" mode="aspectFill" class="swiper-image" @click="previewImage(img.url)" />
+          </view>
         </swiper-item>
       </swiper>
       <view v-else class="no-cover">暂无图片</view>
@@ -34,6 +36,17 @@
           <text class="seller-name">{{ book.seller.name }}</text>
           <text class="seller-phone">{{ book.seller.phone }}</text>
         </view>
+        <view v-if="book.seller_reviews && book.seller_reviews.length" class="seller-reviews">
+          <text class="reviews-title">历史评价</text>
+          <view v-for="r in book.seller_reviews" :key="r.id" class="review-item">
+            <view class="review-top">
+              <text class="review-stars">{{ '★'.repeat(r.book_rating) }}{{ '☆'.repeat(5 - r.book_rating) }} 书况</text>
+              <text class="review-stars" style="margin-left:8px">{{ '★'.repeat(r.service_rating) }}{{ '☆'.repeat(5 - r.service_rating) }} 服务</text>
+              <text class="review-user">{{ r.user_name }}</text>
+            </view>
+            <text v-if="r.comment" class="review-text">{{ r.comment }}</text>
+          </view>
+        </view>
       </view>
 
       <view v-if="book.reviews.length" class="card reviews-card">
@@ -55,8 +68,8 @@
           <text class="price">¥{{ book.price }}</text>
           <text class="condition">{{ book.condition_label }}</text>
         </view>
-        <view class="btn-outline bar-btn-sm" @click="addCart">加入购物车</view>
-        <view class="btn-amber bar-btn" @click="goBuy">立即购买</view>
+        <view v-if="!isSeller" class="btn-outline bar-btn-sm" @click="addCart">加入购物车</view>
+        <view v-if="!isSeller" class="btn-amber bar-btn" @click="goBuy">立即购买</view>
       </view>
     </template>
   </view>
@@ -64,12 +77,18 @@
 
 <script>
 import { get, post } from '@/utils/request.js'
+import auth from '@/stores/auth.js'
 
 export default {
   data() {
     return {
       book: null,
       loading: true
+    }
+  },
+  computed: {
+    isSeller: function () {
+      return this.book && auth.user && auth.user.id === this.book.seller_id
     }
   },
   mounted() {
@@ -112,6 +131,7 @@ export default {
 <style scoped>
 .container { min-height: 100vh; background: #fdfaf4; }
 .image-swiper { width: 100%; height: 400px; }
+.swiper-image-wrap { width: 100%; height: 100%; }
 .swiper-image { width: 100%; height: 100%; }
 .no-cover { width: 100%; height: 240px; display: flex; align-items: center; justify-content: center; background: #e5dccf; color: #8c8478; font-size: 14px; }
 .card { margin: 12px; padding: 16px; }
@@ -131,7 +151,9 @@ export default {
 .seller-card .seller-row { display: flex; }
 .seller-name { font-size: 14px; color: #2c2416; margin-right: 16px; }
 .seller-phone { font-size: 14px; color: #8c8478; }
-.review-item { padding: 12px 0; border-bottom: 1px solid #e5dccf; }
+.seller-reviews { margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5dccf; }
+.reviews-title { font-size: 14px; font-weight: 600; color: #2c2416; margin-bottom: 8px; display: block; }
+.review-item { padding: 10px 0; border-bottom: 1px solid #e5dccf; }
 .review-item:last-child { border-bottom: none; }
 .review-header { display: flex; justify-content: space-between; align-items: center; }
 .review-user { font-size: 14px; color: #2c2416; font-weight: 500; }

@@ -27,6 +27,9 @@ class CartController extends Controller
     public function add(Request $request)
     {
         if (!auth()->check()) {
+            if ($request->expectsJson()) {
+                return response()->json(['code' => 401, 'message' => '请先登录'], 401);
+            }
             return redirect('/login');
         }
 
@@ -36,6 +39,9 @@ class CartController extends Controller
 
         $book = Book::find($data['book_id']);
         if (!$book || $book->status !== 'active') {
+            if ($request->expectsJson()) {
+                return response()->json(['code' => 400, 'message' => '该书籍已下架或已售出'], 400);
+            }
             return back()->with('error', '该书籍已下架或已售出');
         }
 
@@ -44,7 +50,24 @@ class CartController extends Controller
             ->exists();
 
         if ($exists) {
+            if ($request->expectsJson()) {
+                return response()->json(['code' => 400, 'message' => '已在购物车中'], 400);
+            }
             return back()->with('error', '已在购物车中');
+        }
+
+        // 检查是否有软删除的旧记录，有则恢复
+        $trashed = CartItem::withTrashed()
+            ->where('user_id', auth()->id())
+            ->where('book_id', $data['book_id'])
+            ->first();
+
+        if ($trashed) {
+            $trashed->restore();
+            if ($request->expectsJson()) {
+                return response()->json(['code' => 200, 'message' => '已加入购物车']);
+            }
+            return back()->with('success', '已加入购物车');
         }
 
         CartItem::create([
@@ -52,6 +75,9 @@ class CartController extends Controller
             'book_id' => $data['book_id'],
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json(['code' => 200, 'message' => '已加入购物车']);
+        }
         return back()->with('success', '已加入购物车');
     }
 
@@ -65,6 +91,17 @@ class CartController extends Controller
         $item->delete();
 
         return back()->with('success', '已移除');
+    }
+
+    public function clear()
+    {
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        CartItem::where('user_id', auth()->id())->delete();
+
+        return back()->with('success', '购物车已清空');
     }
 
     public function checkout(Request $request, OrderService $service)

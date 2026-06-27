@@ -9,6 +9,7 @@ Route::prefix('auth')->group(function () {
     Route::middleware('api.auth')->group(function () {
         Route::post('logout', 'AuthController@logout');
         Route::get('me', 'AuthController@me');
+        Route::post('profile', 'AuthController@updateProfile');
     });
 });
 
@@ -50,6 +51,7 @@ Route::middleware('api.auth')->group(function () {
     // 购物车
     Route::get('cart', 'CartController@index');
     Route::post('cart', 'CartController@store');
+    Route::delete('cart', 'CartController@clear');
     Route::delete('cart/{id}', 'CartController@destroy');
     Route::post('cart/checkout', 'CartController@checkout');
 });

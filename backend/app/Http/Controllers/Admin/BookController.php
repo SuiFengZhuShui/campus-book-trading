@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+    public function destroy($id)
+    {
+        $book = Book::findOrFail($id);
+        $book->delete();
+        return redirect(url('admin/books'))->with('success', '已删除');
+    }
+
     public function index(Request $request)
     {
         $query = Book::with('seller', 'images', 'category')
@@ -56,7 +63,7 @@ class BookController extends Controller
 
         $service->update($id, $data);
 
-        return redirect()->route('admin.books.index')->with('success', '保存成功');
+        return back()->with('page_success', '保存成功');
     }
 
     public function remove($id, BookService $service)

@@ -15,14 +15,34 @@
             <div><span style="color: #6e6559;">出版社：</span>{{ $want->publisher }}</div>
             <div><span style="color: #6e6559;">最高接受价：</span><span style="font-size: 18px; font-weight: 700; color: #b49450;">¥{{ $want->max_price }}</span></div>
             <div><span style="color: #6e6559;">最低成色：</span>{{ implode('、', array_map(function($v) { return ['like_new'=>'全新','excellent'=>'几乎全新','good'=>'正常使用','fair'=>'较旧'][trim($v)] ?? trim($v); }, explode(',', $want->acceptable_condition))) }}</div>
-            <div><span style="color: #6e6559;">发布者：</span>{{ $want->user->name ?? '匿名' }}</div>
+            <div><span style="color: #6e6559;">发布者：</span>{{ $want->user->name ?? '' }}</div>
             <div><span style="color: #6e6559;">有效期至：</span>{{ $want->expires_at->format('Y-m-d') }}</div>
         </div>
 
-        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #cec4b0;">
-            <a href="/sell?title={{ urlencode($want->title) }}&author={{ urlencode($want->author) }}&publisher={{ urlencode($want->publisher) }}&category_id={{ $want->category_id }}" class="btn-amber" style="width: 100%; text-align: center; text-decoration: none; display: block;">我要卖这本书</a>
-            <p style="font-size: 12px; color: #6e6559; text-align: center; margin-top: 8px;">点击后将跳转到卖书页面，信息已自动填好</p>
+        @if($want->status === 'active' && (!auth()->check() || auth()->id() !== $want->user_id))
+        @php $hasFulfilled = auth()->check() && $want->fulfillments()->where('fulfiller_id', auth()->id())->exists(); @endphp
+        @if($hasFulfilled)
+        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #cec4b0; text-align: center;">
+            <p style="font-size: 14px; color: #b0822c; margin-bottom: 12px;">你已卖当前求购的书，去我的卖书看看吧！</p>
+            <a href="/my-sells?from=want&want_id={{ $want->id }}" class="btn-amber" style="display: inline-block; text-decoration: none; padding: 10px 24px;">查看我的卖书</a>
         </div>
+        @else
+        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #cec4b0;">
+            <form method="POST" action="/wants/{{ $want->id }}/fulfill" style="margin: 0;">
+                @csrf
+                <input type="hidden" name="title" value="{{ $want->title }}">
+                <input type="hidden" name="author" value="{{ $want->author }}">
+                <input type="hidden" name="publisher" value="{{ $want->publisher }}">
+                <input type="hidden" name="category_id" value="{{ $want->category_id }}">
+                <button type="submit" class="btn-amber" style="width: 100%; text-align: center;">我要卖这本书</button>
+            </form>
+            <p style="font-size: 12px; color: #6e6559; text-align: center; margin-top: 8px;">点击后将自动接单并跳转到卖书页面，信息已自动填好</p>
+        </div>
+        @endif
+        @endif
+        @if(auth()->check() && auth()->id() === $want->user_id)
+        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #cec4b0; font-size: 13px; color: #8c8478; text-align: center;">自己的求购不能自己卖书</div>
+        @endif
     </div>
 </div>
 @endsection

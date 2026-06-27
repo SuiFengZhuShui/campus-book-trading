@@ -30,6 +30,11 @@ class HomeController extends Controller
             })
             ->paginate(12);
 
+        if (request()->expectsJson()) {
+            $html = view('web.partials.book-list', compact('books'))->render();
+            return response()->json(['html' => $html]);
+        }
+
         $categories = Category::orderBy('sort')->get();
 
         return view('web.home', compact('books', 'categories'));
@@ -62,6 +67,11 @@ class HomeController extends Controller
             })
             ->paginate(12);
 
+        if (request()->expectsJson()) {
+            $html = view('web.partials.book-list', compact('books'))->render();
+            return response()->json(['html' => $html]);
+        }
+
         $categories = Category::orderBy('sort')->get();
 
         return view('web.home', compact('books', 'categories'));
@@ -86,7 +96,24 @@ class HomeController extends Controller
             }
         }
 
-        return view('web.book-detail', compact('book'));
+        // 卖家历史评价（仅购买过此卖家书籍的买家可见）
+        $sellerReviews = collect();
+        $user = auth()->user();
+        if ($user && $book->seller_id) {
+            $hasBought = \App\OrderItem::whereHas('order', function ($q) use ($user) {
+                $q->where('buyer_id', $user->id)
+                  ->whereIn('status', ['paid', 'confirmed', 'picked_up']);
+            })->whereHas('book', function ($q) use ($book) {
+                $q->where('seller_id', $book->seller_id);
+            })->exists();
+            if ($hasBought) {
+                $sellerReviews = \App\Review::whereIn('book_id', function ($q) use ($book) {
+                    $q->select('id')->from('books')->where('seller_id', $book->seller_id);
+                })->with('user')->orderBy('created_at', 'desc')->get();
+            }
+        }
+
+        return view('web.book-detail', compact('book', 'sellerReviews'));
     }
 
     public function mySells()
@@ -106,12 +133,26 @@ class HomeController extends Controller
     public function wants()
     {
         $wants = \App\Want::with(['user', 'category'])
-            ->active()
+            ->when(!request('mine') || !auth()->check(), function ($q) {
+                $q->active();
+            })
+            ->when(request('keyword'), function ($q, $v) {
+                $q->where(function ($q) use ($v) {
+                    $q->where('title', 'like', "%{$v}%")
+                      ->orWhere('author', 'like', "%{$v}%");
+                });
+            })
             ->when(request('mine') && auth()->check(), function ($q) {
                 $q->where('user_id', auth()->id());
             })
             ->orderBy('created_at', 'desc')
             ->paginate(20);
+
+        if (request()->expectsJson()) {
+            $html = view('web.partials.want-list', compact('wants'))->render();
+            return response()->json(['html' => $html]);
+        }
+
         return view('web.wants', compact('wants'));
     }
 
@@ -180,6 +221,25 @@ class HomeController extends Controller
         return redirect('/wants')->with('success', '求购发布成功');
     }
 
+    public function fulfillWant($id)
+    {
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        // 接单记录延迟到实际提交书时创建（BookService::submit），
+        // 避免点击"我要卖"后不提交就返回仍占坑的问题
+        $params = http_build_query([
+            'title' => request('title'),
+            'author' => request('author'),
+            'publisher' => request('publisher'),
+            'category_id' => request('category_id'),
+            'want_id' => $id,
+        ]);
+
+        return redirect('/sell?' . $params)->with('success', '请填写书籍信息提交审核');
+    }
+
     public function profile()
     {
         if (!auth()->check()) {
@@ -188,10 +248,51 @@ class HomeController extends Controller
 
         $user = auth()->user();
         $orderCount = \App\Order::where('buyer_id', $user->id)->count();
-        $sellCount = \App\Book::where('seller_id', $user->id)->count();
+        $sellCount = \App\Book::where('seller_id', $user->id)->where('status', 'active')->count();
         $cartCount = \App\CartItem::where('user_id', $user->id)->count();
 
-        return view('web.profile', compact('user', 'orderCount', 'sellCount', 'cartCount'));
+        $orderStats = [
+            'pending' => \App\Order::where('buyer_id', $user->id)->where('status', 'pending')->count(),
+            'paid' => \App\Order::where('buyer_id', $user->id)->where('status', 'paid')->count(),
+            'confirmed' => \App\Order::where('buyer_id', $user->id)->where('status', 'confirmed')->count(),
+            'picked_up' => \App\Order::where('buyer_id', $user->id)->where('status', 'picked_up')->count(),
+        ];
+
+        return view('web.profile', compact('user', 'orderCount', 'sellCount', 'cartCount', 'orderStats'));
+    }
+
+    public function editProfile()
+    {
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        return view('web.profile-edit', ['user' => auth()->user()]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        if (!auth()->check()) {
+            if ($request->expectsJson()) {
+                return response()->json(['code' => 401, 'message' => '请先登录'], 401);
+            }
+            return redirect('/login');
+        }
+
+        $data = $request->validate([
+            'name' => 'required|string|max:50',
+            'student_id' => 'required|string|max:20|unique:users,student_id,' . auth()->id(),
+            'phone' => 'required|string|size:11|unique:users,phone,' . auth()->id(),
+        ]);
+
+        $user = auth()->user();
+        $user->fill($data)->save();
+
+        if ($request->expectsJson()) {
+            return response()->json(['code' => 200, 'message' => '保存成功', 'data' => $user]);
+        }
+
+        return redirect('/profile')->with('success', '个人信息已更新');
     }
 
     public function sell()
@@ -243,6 +344,7 @@ class HomeController extends Controller
             'description' => 'nullable|string|max:500',
             'images' => 'required|array|min:2|max:5',
             'images.*' => 'file|mimetypes:image/jpeg,image/png,image/webp|max:5120',
+            'want_id' => 'nullable|integer',
         ]);
 
         $images = $request->file('images', []);

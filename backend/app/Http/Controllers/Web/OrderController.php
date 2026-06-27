@@ -23,6 +23,9 @@ class OrderController extends Controller
                       $q->where('seller_id', auth()->id());
                   });
             })
+            ->when(request('status'), function ($q, $status) {
+                $q->where('status', $status);
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -35,7 +38,7 @@ class OrderController extends Controller
             return redirect('/login');
         }
 
-        $order = Order::with(['items.book.images', 'items.book.category', 'timeline'])
+        $order = Order::with(['items.book.images', 'items.book.category', 'timeline', 'review'])
             ->where(function ($q) {
                 $q->where('buyer_id', auth()->id())
                   ->orWhereHas('items.book', function ($q) {
@@ -57,6 +60,10 @@ class OrderController extends Controller
             ->where('status', 'active')
             ->findOrFail($bookId);
 
+        if ($book->seller_id === auth()->id()) {
+            abort(403, '不能购买自己出售的书');
+        }
+
         return view('web.orders.buy', compact('book'));
     }
 
@@ -66,13 +73,20 @@ class OrderController extends Controller
             return redirect('/login');
         }
 
+        $book = Book::findOrFail($bookId);
+        if ($book->seller_id === auth()->id()) {
+            abort(403, '不能购买自己出售的书');
+        }
+
         $data = $request->validate([
             'pickup_location' => 'required|string|max:100',
         ]);
 
         $order = $service->create(auth()->id(), [$bookId], $data['pickup_location']);
 
-        return redirect('/orders/' . $order->id)->with('success', '下单成功，请尽快付款');
+                $url = '/orders/' . $order->id;
+        if (request('from')) { $url .= '?from=' . request('from'); }
+        return redirect($url)->with('success', '下单成功，请尽快付款');
     }
 
     public function pay($id, OrderService $service)
@@ -87,7 +101,9 @@ class OrderController extends Controller
         }
         $service->pay($order->id);
 
-        return redirect('/orders/' . $order->id)->with('success', '支付成功');
+        $url = '/orders/' . $order->id;
+        if (request('from')) { $url .= '?from=' . request('from'); }
+        return redirect($url)->with('success', '支付成功');
     }
 
     public function cancel($id, OrderService $service)
@@ -102,7 +118,9 @@ class OrderController extends Controller
         }
         $service->cancel($order->id, '买家取消');
 
-        return redirect('/orders/' . $order->id)->with('success', '订单已取消');
+        $url = '/orders/' . $order->id;
+        if (request('from')) { $url .= '?from=' . request('from'); }
+        return redirect($url)->with('success', '订单已取消');
     }
 
     public function pickup($id, OrderService $service)
@@ -117,7 +135,9 @@ class OrderController extends Controller
         }
         $service->pickup($order->id);
 
-        return redirect('/orders/' . $order->id)->with('success', '取书成功，交易完成');
+        $url = '/orders/' . $order->id;
+        if (request('from')) { $url .= '?from=' . request('from'); }
+        return redirect($url)->with('success', '取书成功，交易完成');
     }
 
     public function delete($id)

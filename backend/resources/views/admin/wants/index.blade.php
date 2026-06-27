@@ -9,7 +9,6 @@
         <select name="status" class="form-control" style="width:120px" onchange="this.form.submit()">
             <option value="">全部状态</option>
             <option value="active" {{ request('status')=='active'?'selected':'' }}>进行中</option>
-            <option value="fulfilled" {{ request('status')=='fulfilled'?'selected':'' }}>已满足</option>
             <option value="expired" {{ request('status')=='expired'?'selected':'' }}>已过期</option>
             <option value="closed" {{ request('status')=='closed'?'selected':'' }}>已关闭</option>
         </select>
@@ -34,8 +33,8 @@
                 <td>{{ $want->fulfillments_count }}</td>
                 <td>
                     @php
-                        $badge = ['active'=>'badge-green','fulfilled'=>'badge-blue','expired'=>'badge-gray','closed'=>'badge-red'];
-                        $label = ['active'=>'进行中','fulfilled'=>'已满足','expired'=>'已过期','closed'=>'已关闭'];
+                        $badge = ['active'=>'badge-green','expired'=>'badge-gray','closed'=>'badge-red'];
+                        $label = ['active'=>'进行中','expired'=>'已过期','closed'=>'已关闭'];
                     @endphp
                     <span class="badge {{ $badge[$want->status] ?? 'badge-gray' }}">{{ $label[$want->status] ?? $want->status }}</span>
                 </td>

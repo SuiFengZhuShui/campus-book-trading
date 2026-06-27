@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', '校园二手书网')</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=LXGW+WenKai+TC:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=LXGW+WenKai:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -22,19 +22,15 @@
             --card: #fffdf9;
         }
         body {
-            font-family: 'LXGW WenKai TC', 'Cormorant Garamond', serif;
+            font-family: 'LXGW WenKai', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             background: var(--cream);
             color: var(--ink);
             line-height: 1.8;
             min-height: 100vh;
         }
-        body::before {
-            content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-            background:
-                radial-gradient(ellipse at 20% 20%, rgba(180,148,80,0.04) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 60%, rgba(107,39,55,0.03) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(74,103,65,0.03) 0%, transparent 50%);
-        }
+        /* 极光背景 */
+        .aurora-canvas { position: fixed; inset: 0; pointer-events: none; }
+        .sparkle-canvas { position: fixed; inset: 0; pointer-events: none; }
         a { text-decoration: none; color: inherit; }
 
         /* 导航 — 暖羊皮纸毛玻璃，与奶油底色形成层次 */
@@ -57,7 +53,7 @@
         }
         .logo .amp { font-style: italic; color: var(--gold); font-size: 28px; font-weight: 700; }
         .logo .sub {
-            font-family: 'LXGW WenKai TC', serif; font-size: 11px; color: var(--muted);
+            font-family: 'LXGW WenKai', serif; font-size: 11px; color: var(--muted);
             letter-spacing: 0.06em; margin-left: 2px;
         }
 
@@ -74,7 +70,7 @@
         .college-select {
             height: 38px; padding: 0 32px 0 14px;
             border: 1px solid var(--border); border-radius: 20px;
-            font-family: 'LXGW WenKai TC', serif; font-size: 13px;
+            font-family: 'LXGW WenKai', serif; font-size: 13px;
             color: var(--ink); background: var(--card);
             cursor: pointer; -webkit-appearance: none; appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b49450'/%3E%3C/svg%3E");
@@ -98,7 +94,7 @@
             border: 1px solid var(--border); border-right: none;
             border-radius: 20px 0 0 20px;
             padding: 0 34px 0 16px;
-            font-family: 'LXGW WenKai TC', serif; font-size: 13px;
+            font-family: 'LXGW WenKai', serif; font-size: 13px;
             outline: none; background: var(--card); color: var(--ink);
             transition: border-color 0.3s, box-shadow 0.3s;
         }
@@ -120,7 +116,7 @@
             height: 38px; padding: 0 20px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             color: #fff; border: none; border-radius: 0 20px 20px 0;
-            font-family: 'LXGW WenKai TC', serif; font-size: 13px; font-weight: 700;
+            font-family: 'LXGW WenKai', serif; font-size: 13px; font-weight: 700;
             cursor: pointer; white-space: nowrap;
             transition: opacity 0.2s, box-shadow 0.2s;
         }
@@ -179,14 +175,15 @@
         /* 主体 */
         .main {
             max-width: 1200px; margin: 0 auto; padding: 32px 24px;
+            position: relative; z-index: 1;
         }
 
         /* 成功提示 */
         .flash-success {
-            background: rgba(74,103,65,0.08);
-            color: var(--moss); padding: 12px 16px;
+            background: linear-gradient(135deg, #4a6741, #5a7d51);
+            color: #fff; padding: 14px 20px;
             border-radius: 12px; margin-bottom: 20px;
-            font-size: 14px; border: 1px solid rgba(74,103,65,0.15);
+            font-size: 14px; font-weight: 500;
         }
 
         /* 书籍网格 */
@@ -236,12 +233,13 @@
             margin-top: 10px; display: flex; align-items: baseline; gap: 8px;
         }
         .book-price-current {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 22px; color: var(--wine); font-weight: 700;
+            font-family: 'LXGW WenKai', serif;
+            font-size: 22px; color: var(--wine); font-weight: 400;
         }
         .book-price-current::before { content: '\00a5'; font-size: 13px; }
         .book-price-original {
             font-size: 13px; color: #d4ccb8; text-decoration: line-through;
+            font-family: 'LXGW WenKai', serif;
         }
         .condition-tag {
             display: inline-block; padding: 3px 8px; border-radius: 12px;
@@ -309,7 +307,7 @@
         .form-group textarea {
             width: 100%; height: 44px; padding: 0 14px;
             border: 1px solid var(--border); border-radius: 12px;
-            font-family: 'LXGW WenKai TC', serif; font-size: 14px;
+            font-family: 'LXGW WenKai', serif; font-size: 14px;
             color: var(--ink); background: #fefdfb; outline: none;
             transition: border-color 0.3s cubic-bezier(0.25,0.1,0.25,1),
                         box-shadow 0.3s cubic-bezier(0.25,0.1,0.25,1);
@@ -326,7 +324,7 @@
             width: 100%; height: 46px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             color: #fff; border: none; border-radius: 24px;
-            font-family: 'LXGW WenKai TC', serif;
+            font-family: 'LXGW WenKai', serif;
             font-size: 16px; font-weight: 700; letter-spacing: 0.02em;
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(180,148,80,0.2);
@@ -335,10 +333,10 @@
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(180,148,80,0.35); }
         .btn-primary:active { transform: translateY(0); box-shadow: 0 1px 4px rgba(180,148,80,0.15); }
         .alert-error {
-            background: rgba(107,39,55,0.06); color: var(--wine);
-            padding: 12px 16px; border-radius: 12px;
-            margin-bottom: 20px; font-size: 13px;
-            border: 1px solid rgba(107,39,55,0.15);
+            background: linear-gradient(135deg, #6b2737, #8b3a4a); color: #fff;
+            padding: 14px 20px; border-radius: 12px;
+            margin-bottom: 20px; font-size: 14px; font-weight: 500;
+        }
         }
 
         /* 底部链接 */
@@ -410,7 +408,7 @@
             padding: 12px 28px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             color: #fff; border: none; border-radius: 24px;
-            font-family: 'LXGW WenKai TC', serif;
+            font-family: 'LXGW WenKai', serif;
             font-size: 16px; font-weight: 700;
             cursor: pointer;
             box-shadow: 0 4px 16px rgba(180,148,80,0.3);
@@ -433,6 +431,8 @@
     </style>
 </head>
 <body>
+    <canvas class="aurora-canvas" id="aurora-canvas"></canvas>
+    <canvas class="sparkle-canvas" id="sparkle-canvas"></canvas>
     <header class="header">
         <div class="header-inner">
             <a href="/" class="logo">
@@ -442,20 +442,23 @@
             <nav class="nav-links">
                 <a href="/" class="{{ request()->is('/') && !request('category_id') ? 'active' : '' }}">首页</a>
                 <a href="/wants" class="{{ request()->is('wants*') ? 'active' : '' }}">求购</a>
+                @if(!request()->is('wants*'))
                 <select class="college-select" onchange="location.href=this.value ? '/?category_id='+this.value : '/'">
                     <option value="">✦ 全部学院</option>
                     @foreach($categories ?? [] as $cat)
                         <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                     @endforeach
                 </select>
+                @endif
             </nav>
 
-            <form class="search-box" action="/search" method="GET">
+            @if(!request()->is('wants*'))
+            <form class="search-box" id="layout-search-form" action="/search" method="GET">
                 <div class="search-input-wrap">
                     <input type="text" name="keyword" id="search-input" placeholder="搜索书名、作者…"
                            value="{{ request('keyword') }}" @if(request('keyword')) autofocus onfocus="this.setSelectionRange(this.value.length,this.value.length)" @endif>
                     <span class="clear-btn {{ request('keyword') ? 'visible' : '' }}" id="clear-search"
-                          onclick="document.getElementById('search-input').value='';this.classList.remove('visible');location.href='/'">&times;</span>
+                          onclick="clearSearch()">&times;</span>
                 </div>
                 @if(request('category_id'))
                     <input type="hidden" name="category_id" value="{{ request('category_id') }}">
@@ -466,7 +469,33 @@
                 document.getElementById('search-input').addEventListener('input', function() {
                     document.getElementById('clear-search').classList.toggle('visible', this.value.length > 0);
                 });
+                document.getElementById('layout-search-form').addEventListener('submit', function(e) {
+                    var results = document.getElementById('book-results');
+                    if (!results) return;
+                    e.preventDefault();
+                    var form = this;
+                    var keyword = form.querySelector('[name=keyword]').value;
+                    if (!keyword) { clearSearch(); return; }
+                    var url = '/search?keyword=' + encodeURIComponent(keyword);
+                    var cat = form.querySelector('[name=category_id]');
+                    if (cat) url += '&category_id=' + encodeURIComponent(cat.value);
+                    history.pushState({}, '', '/?keyword=' + encodeURIComponent(keyword));
+                    fetch(url, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+                        .then(function(r) { return r.json() })
+                        .then(function(d) { results.innerHTML = d.html; });
+                });
+                function clearSearch() {
+                    document.getElementById('search-input').value = '';
+                    document.getElementById('clear-search').classList.remove('visible');
+                    var results = document.getElementById('book-results');
+                    if (!results) { location.href = '/'; return; }
+                    history.pushState({}, '', '/');
+                    fetch('/', { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+                        .then(function(r) { return r.json() })
+                        .then(function(d) { results.innerHTML = d.html; });
+                }
             </script>
+            @endif
 
             <div class="header-actions">
                 <a href="/sell" class="btn-sell">✦ 卖书</a>
@@ -474,9 +503,7 @@
                     @php $cartCount = \App\CartItem::where('user_id', auth()->id())->count(); @endphp
                     <a href="/cart" class="cart-link" style="position:relative;font-size:13px;color:var(--muted);padding:6px 10px;border-radius:20px;transition:all 0.3s;">
                         🛒
-                        @if($cartCount > 0)
-                        <span style="position:absolute;top:-2px;right:-2px;background:#bc4742;color:#fff;font-size:10px;min-width:16px;height:16px;line-height:16px;text-align:center;border-radius:8px;padding:0 4px;">{{ $cartCount }}</span>
-                        @endif
+                        <span id="cart-badge" style="position:absolute;top:-2px;right:-2px;background:#bc4742;color:#fff;font-size:10px;min-width:16px;height:16px;line-height:16px;text-align:center;border-radius:8px;padding:0 4px;{{ $cartCount > 0 ? '' : 'display:none;' }}">{{ $cartCount }}</span>
                     </a>
                     <div class="user-dropdown">
                         <span class="user-dropdown-trigger">👤 {{ auth()->user()->name }} ▾</span>
@@ -508,5 +535,130 @@
     <footer style="text-align: center; padding: 40px 20px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border);">
         <span>✦ 校园二手书网 © 2026 ✦</span>
     </footer>
+
+    {{-- 极光背景动画 --}}
+    <script>
+    (function() {
+        var ac = document.getElementById('aurora-canvas');
+        var actx = ac.getContext('2d');
+        var sc = document.getElementById('sparkle-canvas');
+        var sctx = sc.getContext('2d');
+        var W, H, t = 0, mx = 0.5, my = 0.5;
+
+        function resize() {
+            W = ac.width = sc.width = window.innerWidth;
+            H = ac.height = sc.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        document.addEventListener('mousemove', function(e) {
+            mx = e.clientX / W; my = e.clientY / H;
+        });
+        document.addEventListener('touchmove', function(e) {
+            mx = e.touches[0].clientX / W; my = e.touches[0].clientY / H;
+        }, {passive: true});
+
+        // 微光粒子
+        var sparkles = [];
+        for (var i = 0; i < 40; i++) {
+            sparkles.push({
+                x: Math.random() * W, y: Math.random() * H,
+                r: 0.5 + Math.random() * 1.5,
+                vx: (Math.random() - 0.5) * 0.15,
+                vy: (Math.random() - 0.5) * 0.15 - 0.08,
+                alpha: 0.25 + Math.random() * 0.4,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+
+        function draw() {
+            t += 0.003;
+            var px = mx, py = my;
+
+            // === 极光 ===
+            actx.clearRect(0, 0, W, H);
+
+            var bands = [
+                { baseY: H * 0.20, r: 180, g: 148, b: 80,  r2: 212, g2: 188, b2: 124, h: 150, sp: 0.7,  amp: 50, s: 1.0  },
+                { baseY: H * 0.38, r: 212, g: 188, b: 124, r2: 180, g2: 148, b2: 80,  h: 130, sp: 0.55, amp: 55, s: 0.85 },
+                { baseY: H * 0.52, r: 107, g: 39,  b: 55,  r2: 139, g2: 58,  b2: 74,  h: 110, sp: 0.6,  amp: 45, s: 0.7  },
+                { baseY: H * 0.68, r: 74,  g: 103, b: 65,  r2: 90,  g2: 125, b2: 81,  h: 120, sp: 0.5,  amp: 40, s: 0.65 },
+                { baseY: H * 0.84, r: 139, g: 58,  b: 74,  r2: 107, g2: 39,  b2: 55,  h: 90,  sp: 0.45, amp: 30, s: 0.5  },
+            ];
+
+            bands.forEach(function(b) {
+                var oy = (py - 0.5) * 25 * b.s;
+                var ox = (px - 0.5) * 18 * b.s;
+                var by = b.baseY + oy;
+
+                var grad = actx.createLinearGradient(0, by - b.h, 0, by + b.h);
+                grad.addColorStop(0, 'rgba(' + b.r + ',' + b.g + ',' + b.b + ',0)');
+                grad.addColorStop(0.25, 'rgba(' + b.r + ',' + b.g + ',' + b.b + ',0.25)');
+                grad.addColorStop(0.5, 'rgba(' + b.r2 + ',' + b.g2 + ',' + b.b2 + ',0.15)');
+                grad.addColorStop(0.75, 'rgba(' + b.r + ',' + b.g + ',' + b.b + ',0.05)');
+                grad.addColorStop(1, 'rgba(' + b.r + ',' + b.g + ',' + b.b + ',0)');
+
+                actx.fillStyle = grad;
+                actx.beginPath();
+                actx.moveTo(-50, by);
+                for (var x = -50; x <= W + 50; x += 5) {
+                    var y = by
+                        + Math.sin(x * 0.002 + t * b.sp + b.baseY * 0.01 + ox * 0.01) * b.amp * b.s
+                        + Math.sin(x * 0.005 + t * b.sp * 1.4 + b.baseY * 0.02) * b.amp * 0.55 * b.s
+                        + Math.sin(x * 0.009 + t * b.sp * 0.6) * b.amp * 0.3 * b.s
+                        + Math.sin(x * 0.018 + t * b.sp * 2.1) * b.amp * 0.18 * b.s;
+                    actx.lineTo(x, y);
+                }
+                actx.lineTo(W + 50, by + b.h + 80);
+                actx.lineTo(-50, by + b.h + 80);
+                actx.closePath();
+                actx.fill();
+            });
+
+            // === 微光粒子 ===
+            sctx.clearRect(0, 0, W, H);
+            sparkles.forEach(function(s) {
+                s.x += s.vx + Math.sin(t * 3 + s.phase) * 0.08;
+                s.y += s.vy + Math.cos(t * 2.5 + s.phase) * 0.06;
+                if (s.x < -10) s.x = W + 10;
+                if (s.x > W + 10) s.x = -10;
+                if (s.y < -10) s.y = H + 10;
+                if (s.y > H + 10) s.y = -10;
+
+                var pulse = 0.4 + 0.6 * Math.sin(t * 2 + s.phase);
+                var alpha = s.alpha * pulse;
+
+                sctx.beginPath();
+                sctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                sctx.fillStyle = 'rgba(180,148,80,' + alpha + ')';
+                sctx.fill();
+                sctx.beginPath();
+                sctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI * 2);
+                sctx.fillStyle = 'rgba(180,148,80,' + (alpha * 0.15) + ')';
+                sctx.fill();
+            });
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+    </script>
+<script>
+function updateCartBadge(count) {
+    var badge = document.getElementById('cart-badge');
+    if (!badge) return;
+    if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = '';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+</script>
+<script>
+(function(){var f=document.querySelector('.flash-success,.alert-error');if(f){setTimeout(function(){f.style.transition='opacity 0.4s';f.style.opacity='0';setTimeout(function(){f.remove()},400)},2000)}})();
+</script>
+    @yield('scripts')
 </body>
 </html>

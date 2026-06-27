@@ -67,6 +67,7 @@ export default {
 </script>
 
 <style scoped>
+image { width: 100%; height: 100%; }
 .ph { width: 100%; height: 100%; background: #e5dccf; display: flex; align-items: center; justify-content: center; }
 .ph-icon { font-size: 28px; color: #d0cdc8; }
 </style>

@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Skill(update-config)",
-      "mcp__doubao-vision__analyze_image"
+      "mcp__doubao-vision__analyze_image",
+      "mcp__codegraph__codegraph_node",
+      "mcp__codegraph__codegraph_explore"
     ]
   },
   "hooks": {

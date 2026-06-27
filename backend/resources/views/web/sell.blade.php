@@ -4,7 +4,8 @@
 
 @section('content')
 <div style="max-width: 640px; margin: 0 auto;">
-    <a href="/" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:20px;cursor:pointer;">&larr; 返回首页</a>
+    @php $backUrl = request('want_id') ? '/wants/' . request('want_id') : '/'; @endphp
+    <a href="{{ $backUrl }}" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:20px;cursor:pointer;">&larr; 返回</a>
     <div class="form-card">
         <h1 class="form-title" style="text-align: left;">提交卖书信息</h1>
 
@@ -12,6 +13,9 @@
 
         <form id="sell-form" action="/sell" method="POST" enctype="multipart/form-data">
             @csrf
+            @if(request('want_id'))
+            <input type="hidden" name="want_id" value="{{ request('want_id') }}">
+            @endif
 
             <div class="form-group">
                 <label><span class="required">*</span> 书名</label>
@@ -70,7 +74,7 @@
                     <div class="icon">📷</div>
                     <p>点击上传照片</p>
                 </div>
-                <input type="file" name="images[]" id="file-input" accept="image/jpeg,image/png,image/jpg,image/webp" multiple style="display:none;">
+                <input type="file" name="images[]" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;">
                 <div class="preview-grid" id="preview-grid"></div>
                 <div class="hint">支持 JPG、PNG、WebP，单张 ≤ 5MB</div>
             </div>
@@ -83,7 +87,7 @@
 <div id="toast" class="toast"></div>
 
 <style>
-.toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.15); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+.toast { position: fixed; top: 76px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.15); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
 .toast.show { opacity: 1; }
 .toast.success { background: #d4edda; color: #2d6a4f; }
 .toast.error { background: #fee2e2; color: #bc4742; }
@@ -146,10 +150,21 @@
         setTimeout(function() { t.classList.remove('show'); }, 3000);
     }
 
+    function ensureAlertBox() {
+        var box = document.querySelector('.alert-error');
+        if (box) return box;
+        box = document.createElement('div');
+        box.className = 'alert-error';
+        box.style.display = 'none';
+        var card = document.querySelector('.form-card');
+        card.insertBefore(box, card.firstChild);
+        return box;
+    }
+
     function resetErrors() {
         document.querySelectorAll('.field-err').forEach(function(el) { el.remove(); });
         document.querySelectorAll('input, select, textarea').forEach(function(el) { el.style.borderColor = ''; });
-        var box = document.querySelector('.alert-error');
+        var box = ensureAlertBox();
         box.style.display = 'none';
         box.innerHTML = '';
     }
@@ -182,17 +197,20 @@
                                 }
                             });
                         }
-                        var box = document.querySelector('.alert-error');
+                        var box = ensureAlertBox();
                         box.style.display = 'none';
                         showToast(d.message || '提交失败', 'error');
                         btn.disabled = false; btn.textContent = '提交审核';
                         throw new Error('validation failed');
                     }
                     // 提交成功
-                    document.querySelector('#sell-form').reset();
+                    var form = document.querySelector('#sell-form');
+                    form.querySelectorAll('input[type=text], input[type=number], textarea').forEach(function(el) { el.value = ''; });
+                    form.querySelectorAll('select').forEach(function(el) { el.selectedIndex = 0; });
                     filesArray = [];
                     document.getElementById('preview-grid').innerHTML = '';
-                    showToast('提交成功！平台会在1-2个工作日内审核。', 'success');
+                    document.getElementById('file-input').value = '';
+                    showToast('提交审核成功', 'success');
                     btn.disabled = false; btn.textContent = '提交审核';
                 });
             })

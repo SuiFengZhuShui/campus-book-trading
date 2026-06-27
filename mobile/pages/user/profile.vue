@@ -92,6 +92,14 @@
       <view class="section">
         <text class="section-title">更多</text>
         <view class="menu-card card">
+          <view class="menu-item" @click="goEditProfile">
+            <view class="menu-left">
+              <text class="menu-icon">👤</text>
+              <text class="menu-label">编辑信息</text>
+            </view>
+            <text class="menu-arrow">›</text>
+          </view>
+          <view class="divider"></view>
           <view class="menu-item" @click="goSell">
             <view class="menu-left">
               <text class="menu-icon">✏️</text>
@@ -179,6 +187,7 @@ export default {
     goSell: function () { uni.navigateTo({ url: '/pages/books/sell' }) },
     goWants: function () { uni.switchTab({ url: '/pages/wants/index' }) },
     goMyWants: function () { uni.navigateTo({ url: '/pages/wants/mine' }) },
+    goEditProfile: function () { uni.navigateTo({ url: '/pages/user/edit' }) },
     goPostWant: function () { uni.navigateTo({ url: '/pages/wants/post' }) },
     onLogout: function () {
       var self = this

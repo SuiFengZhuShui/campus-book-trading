@@ -15,6 +15,7 @@
           <text class="book-title ellipsis-2">{{ o.books[0] ? o.books[0].title : '' }}</text>
           <text v-if="o.books.length > 1" class="book-count">共{{ o.books.length }}本书</text>
         </view>
+        <view v-if="o.status === 'pending' && !o.is_buyer" class="seller-tip">等待买家付款</view>
         <view class="order-footer">
           <text class="amount">合计 ¥{{ o.total_amount }}</text>
           <text class="date">{{ o.created_at }}</text>
@@ -101,4 +102,5 @@ export default {
 .amount { font-size: 15px; font-weight: 600; color: #b49450; }
 .date { font-size: 12px; color: #8c8478; }
 .status-msg { text-align: center; padding: 100px 0; color: #8c8478; }
+.seller-tip { font-size: 11px; color: #b0822c; background: #fef9f0; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
 </style>

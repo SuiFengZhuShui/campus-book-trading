@@ -18,6 +18,14 @@ class OrderController extends Controller
             'pickup_location' => 'required|string|max:200',
         ]);
 
+        // 不能购买自己卖的书
+        foreach ($data['book_ids'] as $bookId) {
+            $book = \App\Book::find($bookId);
+            if ($book && $book->seller_id === auth()->id()) {
+                return response()->json(['code' => 403, 'message' => '不能购买自己出售的书'], 403);
+            }
+        }
+
         $order = $service->create(auth()->id(), $data['book_ids'], $data['pickup_location']);
 
         return $this->success([
@@ -76,7 +84,7 @@ class OrderController extends Controller
             ];
         });
 
-        // 卖家信息（仅购买者可见）
+        // 卖家信息
         if (in_array($order->status, ['paid', 'confirmed', 'picked_up'])) {
             $firstItem = $order->items->first();
             if ($firstItem && $firstItem->book && $firstItem->book->seller) {
@@ -85,6 +93,17 @@ class OrderController extends Controller
                     'phone' => $this->maskPhone($firstItem->book->seller->phone),
                 ];
             }
+        }
+
+        // 评价（买家和卖家都可见）
+        $review = \App\Review::where('order_id', $order->id)->first();
+        if ($review) {
+            $data['review'] = [
+                'book_rating' => $review->book_rating,
+                'service_rating' => $review->service_rating,
+                'comment' => $review->comment,
+                'created_at' => $review->created_at->toDateTimeString(),
+            ];
         }
 
         return $this->success($data);
@@ -181,6 +200,7 @@ class OrderController extends Controller
             'pickup_location' => $order->pickup_location,
             'cover_img' => $cover,
             'books' => $books,
+            'is_buyer' => $order->buyer_id === auth()->id(),
             'created_at' => $order->created_at->toDateTimeString(),
         ];
     }

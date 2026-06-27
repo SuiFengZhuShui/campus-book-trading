@@ -1,0 +1,120 @@
+校园二手书平台 — 换机部署注意事项（U盘复制版）
+========================================================
+
+适用场景：U盘把整个 D:\MySubject\Schoolcampus_books 复制到机房。
+
+====== U盘复制的坑（务必看完再动手） ======
+
+1. Windows Junction（storage 软链接）U盘复制必断。
+   public\storage → storage\app\public 这个链接复制后要么变空目录要么丢失。
+   → 到机房第一步就重做 php artisan storage:link
+
+2. vendor/ 和 node_modules/ 文件在，但 composer autoload 里缓存了旧机子路径。
+   → 必须 composer dump-autoload
+
+3. 数据库（MySQL）不在项目文件里，U盘只带了代码。
+   → 机房必须建库 + migrate + db:seed（或者你从本机导出 SQL 带过去）
+
+4. bootstrap/cache/ 里的编译文件含旧路径。
+   → 到机房必须 php artisan config:clear + route:clear + view:clear
+
+
+====== 一、机房前置环境 ======
+
+1. 小皮（phpstudy）已装，Apache + MySQL 启动
+   - 站点根目录 → backend\public
+   - MySQL root 密码 root（不同则改 backend\.env）
+   - 80 端口别被 Skype/IIS/迅雷占用
+
+2. Node.js（v14+）+ HBuilder X CLI
+   npm install -g @dcloudio/uvm
+
+3. U盘里项目拷到任意盘，假设 D:\Schoolcampus_books
+
+
+====== 二、后端启动（按顺序跑） ======
+
+cd D:\Schoolcampus_books\backend
+
+① 建库 + 导入 SQL（campus_books.sql 已放项目根目录，跟着拷到 U盘）
+   mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS campus_books CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+   mysql -u root -proot campus_books < D:\Schoolcampus_books\campus_books.sql
+
+② 刷新 autoload（vendor 在但路径变了）
+   composer dump-autoload
+
+③ 重建 storage 链接（修复图片！U盘复制必断）
+   php artisan storage:link
+
+⑤ 确认 .htaccess 非空
+   type public\.htaccess
+   空的话 → git checkout -- public\.htaccess
+
+⑥ 清缓存（清掉旧机子路径）
+   php artisan config:clear
+   php artisan route:clear
+   php artisan view:clear
+
+⑦ 验证
+   浏览器 http://127.0.0.1 → 看到首页，图片没裂。
+   curl -H "Accept: application/json" http://127.0.0.1/api/books → 返回 JSON。
+
+
+====== 三、移动端启动 ======
+
+cd D:\Schoolcampus_books\mobile
+
+① npm install   （node_modules 在但保险起见重装）
+   或者 npm rebuild  （快一点，只重建 native 绑定）
+
+② 如果 HBuilder X CLI 没装：
+   npm install -g @dcloudio/uvm
+
+③ npm run dev:h5
+
+④ 验证
+   浏览器 http://localhost:8080
+   F12 → Network → 刷新 → /api/books 返回 200
+   不是 200：
+     - manifest.json → h5.devServer.proxy.target 是否为 http://127.0.0.1
+     - proxy 不生效 → 临时改 utils/request.js 第 5 行：
+       const BASE_URL = 'http://127.0.0.1'
+       浏览器装 CORS 插件解决跨域
+
+
+====== 四、微信小程序模式（学校机房用这个就和本机一样） ======
+
+HBuilder X → 运行 → 运行到小程序模拟器 → 微信开发者工具
+微信开发者工具 → 详情 → 本地设置 → 勾选"不校验合法域名"
+
+
+====== 五、如果机房有还原卡（每次重启后） ======
+
+cd D:\Schoolcampus_books\backend
+php artisan storage:link        （Junction 最容易被还原）
+php artisan config:clear        （缓存清旧路径）
+
+小皮启动 Apache + MySQL
+
+cd D:\Schoolcampus_books\mobile
+npm run dev:h5                  （重启 dev server）
+
+
+====== 六、常见问题 ======
+
+| 现象                   | 原因                      | 修复                                   |
+|------------------------|---------------------------|----------------------------------------|
+| 首页正常图片全裂       | U盘复制断了 Junction      | php artisan storage:link               |
+| 页面 500 / 白屏        | autoload 路径是旧机子的   | composer dump-autoload                 |
+| Class not found        | 同上                      | composer dump-autoload                 |
+| 数据库报错             | 没建库 / 没导入           | 建库 + migrate + db:seed（或导入 SQL） |
+| 移动端"网络错误"       | dev server proxy 没转发   | 检查 manifest.json，或改 BASE_URL      |
+| .htaccess 导致 404     | .htaccess 空了            | git checkout -- public\.htaccess       |
+| 80 端口冲突            | Skype/其他程序占端口      | 小皮改端口，同步改 proxy target        |
+| composer dump 报错     | PHP 版本低                | 小皮切 PHP 7.3+                        |
+
+
+====== 七、测试账户 ======
+
+管理员：admin / REDACTED-PASSWORD（或 13800000000）
+学生：13800000001 ~ 13800000003 / REDACTED-PASSWORD

@@ -38,7 +38,7 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->fill($data)->save();
 
-        return redirect('admin/categories')->with('success', '分类已更新');
+        return back()->with('page_success', '分类已更新');
     }
 
     public function destroy($id)

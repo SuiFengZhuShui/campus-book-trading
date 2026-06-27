@@ -54,6 +54,8 @@
       </view>
 
       <view class="btn-amber submit-btn" @click="onSubmit">提交审核</view>
+
+      <view v-if="successMsg" class="success-msg">{{ successMsg }}</view>
     </view>
   </view>
 </template>
@@ -70,6 +72,8 @@ export default {
       images: [],
       categoryName: '',
       conditionLabel: '',
+      successMsg: '',
+      wantId: null,
       form: {
         title: '',
         author: '',
@@ -101,6 +105,7 @@ export default {
       var c = self.categories.find(function (c) { return c.id === self.form.category_id })
       if (c) self.categoryName = c.name
     }
+    if (opts.want_id) self.wantId = parseInt(opts.want_id)
   },
   methods: {
     onCategoryChange: function (e) {
@@ -134,6 +139,16 @@ export default {
       if (!this.form.original_price || parseFloat(this.form.original_price) <= 0) { uni.showToast({ title: '请输入有效定价', icon: 'none' }); return }
       if (this.images.length < 2) { uni.showToast({ title: '请上传至少2张图片', icon: 'none' }); return }
 
+      if (this.wantId) {
+        try {
+          var wantCheck = await get('/api/wants/' + this.wantId)
+          if (wantCheck.data && wantCheck.data.status !== 'active') {
+            uni.showToast({ title: '该求购已被其他人响应', icon: 'none' })
+            return
+          }
+        } catch (e) { console.log('check want error:', e) }
+      }
+
       uni.showLoading({ title: '提交中...' })
       try {
         var fields = {
@@ -146,6 +161,7 @@ export default {
           original_price: parseFloat(this.form.original_price),
           description: this.form.description.trim()
         }
+        if (this.wantId) fields.want_id = this.wantId
 
         var imageTypes = ['cover']
         for (var i = 1; i < this.images.length; i++) {
@@ -156,12 +172,15 @@ export default {
         await uploadFiles('/api/books/submit', this.images, fields, imageTypes)
 
         uni.hideLoading()
-        uni.showToast({ title: '提交成功，等待审核', icon: 'success' })
-        setTimeout(function () {
-          uni.switchTab({ url: '/pages/user/profile' })
-        }, 1000)
+        this.successMsg = '提交成功，等待管理员审核定价后上架'
+        this.form = { title: '', author: '', publisher: '', isbn: '', category_id: null, condition: '', original_price: '', description: '' }
+        this.images = []
+        this.categoryName = ''
+        this.conditionLabel = ''
+        this.wantId = null
       } catch (e) {
         uni.hideLoading()
+        uni.showToast({ title: e.message || '提交失败', icon: 'none' })
         console.log('submit book error:', e)
       }
     }
@@ -187,4 +206,5 @@ export default {
 .add-text { font-size: 11px; color: #8c8478; margin-top: 2px; }
 .hint { font-size: 12px; color: #bc4742; margin-top: 6px; display: block; }
 .submit-btn { width: 100%; text-align: center; margin-top: 20px; padding: 14px 0; font-size: 16px; border-radius: 10px; }
+.success-msg { background: rgba(74,103,65,0.12); color: #2d6a4f; border: 1px solid rgba(74,103,65,0.25); padding: 12px 16px; border-radius: 8px; margin-top: 12px; font-size: 14px; font-weight: 500; text-align: center; }
 </style>

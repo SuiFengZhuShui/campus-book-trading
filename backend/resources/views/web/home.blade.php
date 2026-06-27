@@ -15,26 +15,26 @@
             </p>
             <div style="display: flex; gap: 14px;">
                 <a href="/sell" style="display: inline-flex; align-items: center; gap: 6px; padding: 14px 32px; background: linear-gradient(135deg, #6b2737, #8b3a4a); color: #fff; border-radius: 24px; font-size: 15px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 16px rgba(107,39,55,0.2); transition: all 0.3s;">✦ 出售闲置教材</a>
-                <a href="/wants" style="display: inline-flex; align-items: center; padding: 14px 28px; border: 1px solid #cec4b0; border-radius: 24px; color: #2c2416; font-size: 15px; text-decoration: none; transition: all 0.3s;">查看求购</a>
+                <a href="/wants" style="display: inline-flex; align-items: center; gap: 6px; padding: 14px 32px; background: linear-gradient(135deg, #4a6741, #5a7d51); color: #fff; border-radius: 24px; font-size: 15px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 16px rgba(74,103,65,0.25); transition: all 0.3s;">查看求购</a>
             </div>
         </div>
         <div style="background: #fffdf9; border: 1px solid #cec4b0; border-radius: 20px; padding: 36px 32px; position: relative; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.04);">
-            <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #b49450, #d4bc7c, #6b2737);"></div>
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #c7915c, #d4bc7c, #8b3a4a); border-radius: 20px 20px 0 0;"></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div>
-                    <div style="font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 700; color: #b49450; line-height: 1.1;">{{ $books->total() }}+</div>
+                    <div style="font-family: 'LXGW WenKai', serif; font-size: 42px; font-weight: 400; color: #b49450; line-height: 1.1;">{{ $books->total() }}+</div>
                     <div style="font-size: 13px; color: #6e6559;">在售课本</div>
                 </div>
                 <div>
-                    <div style="font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 700; color: #b49450; line-height: 1.1;">7</div>
+                    <div style="font-family: 'LXGW WenKai', serif; font-size: 42px; font-weight: 400; color: #b49450; line-height: 1.1;">7</div>
                     <div style="font-size: 13px; color: #6e6559;">覆盖学院</div>
                 </div>
                 <div>
-                    <div style="font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 700; color: #b49450; line-height: 1.1;">15+</div>
+                    <div style="font-family: 'LXGW WenKai', serif; font-size: 42px; font-weight: 400; color: #b49450; line-height: 1.1;">15+</div>
                     <div style="font-size: 13px; color: #6e6559;">活跃同学</div>
                 </div>
                 <div>
-                    <div style="font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 700; color: #b49450; line-height: 1.1;">10+</div>
+                    <div style="font-family: 'LXGW WenKai', serif; font-size: 42px; font-weight: 400; color: #b49450; line-height: 1.1;">10+</div>
                     <div style="font-size: 13px; color: #6e6559;">成交订单</div>
                 </div>
             </div>
@@ -43,9 +43,9 @@
             </div>
         </div>
     </div>
-    <div style="background: linear-gradient(135deg, #2c2416, #3d3428); color: rgba(255,255,255,0.65); padding: 10px 0; margin-bottom: 28px; overflow: hidden; white-space: nowrap; border-top: 2px solid #b49450; border-bottom: 2px solid #b49450;">
-        <marquee behavior="scroll" direction="left" scrollamount="4" style="font-size: 13px;">
-            ✦ 只收教材课本，不收课外书 ✦ 覆盖全校七大学院 ✦ 同学直接交易，省心又省钱 ✦ 让旧课本在校园里流转 ✦
+    <div style="background: linear-gradient(135deg, #2c2416, #3d3428); color: rgba(255,255,255,0.65); padding: 10px 0; margin-bottom: 28px; overflow: hidden; white-space: nowrap;">
+        <marquee behavior="scroll" direction="left" scrollamount="4" style="font-size: 18px;">
+            ✦ 只收教材课本，不收课外书 ✦ 覆盖全校七大学院 ✦ 支付后等待平台确认再下一步 ✦ 同学直接交易，省心又省钱 ✦ 让旧课本在校园里流转 ✦
         </marquee>
     </div>
     @endif
@@ -66,51 +66,45 @@
         </select>
     </div>
 
-    @if($books->count() > 0)
-        <div class="book-grid">
-            @foreach($books as $book)
-                <div class="book-card" style="cursor: default;">
-                    @php $cover = $book->images->where('type', 'cover')->first(); @endphp
-                    <a href="/books/{{ $book->id }}" style="display: block;">
-                    @if($cover)
-                        <img class="book-cover" src="{{ asset('storage/' . $cover->path) }}" alt="{{ $book->title }}">
-                    @else
-                        <div class="book-cover">📖</div>
-                    @endif
-                    </a>
-                    <div class="book-info">
-                        <a href="/books/{{ $book->id }}" class="book-title" style="display: block;">{{ $book->title }}</a>
-                        <div class="book-meta">
-                            <span>{{ $book->author }}</span>
-                            <span class="condition-tag">{{ ['like_new'=>'全新','excellent'=>'几乎全新','good'=>'正常使用','fair'=>'较旧'][$book->condition] ?? $book->condition }}</span>
-                        </div>
-                        <div class="book-price">
-                            <span class="book-price-current">{{ $book->price }}</span>
-                            @if($book->original_price)
-                                <span class="book-price-original">¥{{ $book->original_price }}</span>
-                            @endif
-                        </div>
-                        <div style="display:flex;gap:6px;margin-top:10px;">
-                            <a href="/buy/{{ $book->id }}" style="flex:1;padding:8px 0;background:linear-gradient(135deg,#b49450,#d4bc7c);color:#fff;border:none;border-radius:20px;font-size:12px;text-align:center;font-weight:600;text-decoration:none;">立即购买</a>
-                            <form method="POST" action="/cart/add" style="flex:1;">
-                                @csrf
-                                <input type="hidden" name="book_id" value="{{ $book->id }}">
-                                <button type="submit" style="width:100%;padding:8px 0;background:#ffffff;color:#b49450;border:1px solid #b49450;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">加购物车</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
+    <div id="book-results">
+    @include('web.partials.book-list')
+    </div>
+@endsection
 
-        <div class="pagination">
-            {{ $books->appends(request()->query())->links() }}
-        </div>
-    @else
-        <div style="text-align:center;padding:40px 20px;color:#6e6559;">
-            <div style="font-size:64px;margin-bottom:12px;">📚</div>
-            <p style="font-size:16px;">暂无在售书籍</p>
-            <p style="margin-top:8px;">成为第一个卖书的同学吧！</p>
-        </div>
-    @endif
+@section('scripts')
+<script>
+function addToCart(bookId, btn) {
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    btn.disabled = true;
+    btn.textContent = '...';
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ book_id: bookId })
+    }).then(function(r) { return r.json() }).then(function(d) {
+        if (d.code === 200) {
+            btn.textContent = '已加入 ✓';
+            btn.style.color = '#4a6741';
+            btn.style.borderColor = '#4a6741';
+            var badge = document.getElementById('cart-badge');
+            var cur = badge ? parseInt(badge.textContent) || 0 : 0;
+            updateCartBadge(cur + 1);
+        } else if (d.code === 401) {
+            location.href = '/login';
+        } else {
+            alert(d.message || '操作失败');
+            btn.disabled = false;
+            btn.textContent = '加购物车';
+        }
+    }).catch(function() {
+        btn.disabled = false;
+        btn.textContent = '加购物车';
+    });
+}
+</script>
 @endsection

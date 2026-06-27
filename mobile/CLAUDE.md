@@ -64,3 +64,12 @@ mobile/
 ## Vue 事件传参陷阱
 
 `@click="fn"` 会把 click 事件对象作为第一个参数传入。如果 fn 的参数期望非事件值（如 `fn(isNew)`），事件对象 truthy 会导致逻辑错误。必须显式传参：`@click="fn(false)"`。
+
+## 微信小程序页面隔离（关键）
+
+微信小程序每页独立 JS 上下文。`Vue.observable` 模块级变量在**不同页面是不同对象**，不跨页共享。
+
+- `stores/auth.js` 的 `isLogin()`、`get token()`、`get user()` **必须从 `uni.getStorageSync('auth')` 读取**
+- `state` 降级为当前页内 Vue 响应式辅助，**不得**用作跨页数据源
+- **H5 开发模式无此问题**（浏览器单上下文），bug 只在真机/预览时暴露
+- `utils/request.js` 的 401 拦截器清 auth 但**不得强制 `navigateTo` 登录页**，让各页面自行处理 401 UI

@@ -44,16 +44,20 @@ class WantController extends Controller
             'title' => 'required|string|max:200',
             'author' => 'nullable|string|max:100',
             'publisher' => 'nullable|string|max:100',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',
             'max_price' => 'required|numeric|min:0',
-            'acceptable_condition' => 'nullable|string|max:100',
-            'status' => 'required|in:active,fulfilled,expired,closed',
+            'acceptable_condition' => 'nullable|array',
+            'acceptable_condition.*' => 'string',
+            'status' => 'required|in:active,expired,closed',
         ]);
 
         $want = Want::findOrFail($id);
+        if (isset($data['acceptable_condition'])) {
+            $data['acceptable_condition'] = implode(',', $data['acceptable_condition']);
+        }
         $want->fill($data)->save();
 
-        return redirect()->route('admin.wants.index')->with('success', '求购已更新');
+        return back()->with('page_success', '求购已更新');
     }
 
     public function destroy($id)

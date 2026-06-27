@@ -24,6 +24,12 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt(['phone' => $data['phone'], 'password' => $data['password']])) {
+            // 检查手机号是否已注册
+            $exists = User::where('phone', $data['phone'])->exists();
+            if (!$exists) {
+                return redirect('/register?phone=' . urlencode($data['phone']))
+                    ->with('error', '该手机号尚未注册，请先注册');
+            }
             return back()->withInput()->with('error', '手机号或密码错误');
         }
 

@@ -138,9 +138,9 @@
             font-size: 13px;
         }
         .alert-error {
-            background: #fdf2f1;
-            border: 1px solid rgba(188,71,66,0.2);
-            color: #bc4742;
+            background: linear-gradient(135deg, #6b2737, #8b3a4a);
+            color: #fff;
+            font-weight: 500;
         }
 
         .links {

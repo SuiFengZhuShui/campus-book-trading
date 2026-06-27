@@ -11,8 +11,8 @@
             <option value="active" {{ request('status')=='active'?'selected':'' }}>在售</option>
             <option value="sold" {{ request('status')=='sold'?'selected':'' }}>已售出</option>
             <option value="pending_review" {{ request('status')=='pending_review'?'selected':'' }}>待审核</option>
-            <option value="approved" {{ request('status')=='approved'?'selected':'' }}>已通过(未入库)</option>
-            <option value="removed" {{ request('status')=='removed'?'selected':'' }}>已下架/驳回</option>
+            <option value="rejected" {{ request('status')=='rejected'?'selected':'' }}>已驳回</option>
+            <option value="removed" {{ request('status')=='removed'?'selected':'' }}>已下架</option>
         </select>
         <input type="text" name="keyword" class="form-control" placeholder="书名/作者/ISBN" value="{{ request('keyword') }}" style="width:200px">
         <button type="submit" class="btn btn-primary">搜索</button>
@@ -39,20 +39,21 @@
                 <td>{{ $book->seller->name ?? '-' }}</td>
                 <td>
                     @php
-                        $badge = ['pending_review'=>'badge-yellow','approved'=>'badge-cyan','active'=>'badge-green','sold'=>'badge-blue','removed'=>'badge-gray'];
-                        $label = ['pending_review'=>'待审核','approved'=>'已通过','active'=>'在售','sold'=>'已售出','removed'=>'已下架/驳回'];
+                        $badge = ['pending_review'=>'badge-yellow','active'=>'badge-green','sold'=>'badge-blue','rejected'=>'badge-red','removed'=>'badge-gray'];
+                        $label = ['pending_review'=>'待审核','active'=>'在售','sold'=>'已售出','rejected'=>'已驳回','removed'=>'已下架'];
                     @endphp
                     <span class="badge {{ $badge[$book->status] ?? 'badge-gray' }}">{{ $label[$book->status] ?? $book->status }}</span>
-                    @if($book->status === 'removed' && $book->reject_reason)
+                    @if(in_array($book->status, ['removed', 'rejected']) && $book->reject_reason)
                         <div style="font-size:11px;color:#bc4742;margin-top:2px">{{ $book->reject_reason }}</div>
                     @endif
                 </td>
                 <td>
+                    <a href="{{ url('admin/books/'.$book->id.'/edit') }}" class="btn btn-sm">编辑</a>
                     @if($book->status === 'active')
-                        <a href="{{ url('admin/books/'.$book->id.'/edit') }}" class="btn btn-sm">编辑</a>
                         <button class="btn btn-danger btn-sm" onclick="if(confirm('确认下架？')){var f=document.createElement('form');f.method='POST';f.action='{{ url('admin/books/'.$book->id.'/remove') }}';f.innerHTML='<input type=hidden name=_token value={{ csrf_token() }}>';document.body.appendChild(f);f.submit();}">下架</button>
-                    @else
-                        <a href="{{ url('admin/books/'.$book->id.'/edit') }}" class="btn btn-sm">查看</a>
+                    @endif
+                    @if($book->status === 'rejected')
+                        <button class="btn btn-danger btn-sm" onclick="if(confirm('确认删除？')){var f=document.createElement('form');f.method='POST';f.action='{{ url('admin/books/'.$book->id.'/delete') }}';f.innerHTML='<input type=hidden name=_token value={{ csrf_token() }}>';document.body.appendChild(f);f.submit();}">删除</button>
                     @endif
                 </td>
             </tr>

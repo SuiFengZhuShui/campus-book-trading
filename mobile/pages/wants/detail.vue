@@ -38,21 +38,31 @@
         </view>
       </view>
 
-      <view v-if="want.status === 'active'" class="btn-teal sell-btn" @click="goSell">
+      <view v-if="want.status === 'active' && !isOwner && !want.is_fulfilled" class="btn-teal sell-btn" @click="goSell">
         我要卖这本书
       </view>
+      <view v-if="want.status === 'closed' || want.is_fulfilled" class="closed-hint">
+        <text>求购已完成</text>
+      </view>
+      <view v-if="isOwner && want.status === 'active'" class="owner-hint">自己的求购不能自己卖书</view>
     </template>
   </view>
 </template>
 
 <script>
-import { get } from '@/utils/request.js'
+import { get, post } from '@/utils/request.js'
+import auth from '@/stores/auth.js'
 
 export default {
   data() {
     return {
       want: null,
       loading: true
+    }
+  },
+  computed: {
+    isOwner: function () {
+      return this.want && auth.user && auth.user.id === this.want.user_id
     }
   },
   mounted() {
@@ -76,12 +86,15 @@ export default {
       const params = 'title=' + encodeURIComponent(w.title) +
         (w.author ? '&author=' + encodeURIComponent(w.author) : '') +
         (w.publisher ? '&publisher=' + encodeURIComponent(w.publisher) : '') +
-        (w.category_id ? '&category_id=' + w.category_id : '')
+        (w.category_id ? '&category_id=' + w.category_id : '') +
+        '&want_id=' + w.id
       uni.navigateTo({ url: '/pages/books/sell?' + params })
+    },
+    goMySells() {
+      uni.navigateTo({ url: '/pages/my-sells/index' })
     },
     wantStatusClass(status) {
       if (status === 'active') return 'status-success'
-      if (status === 'fulfilled') return 'status-info'
       return 'status-muted'
     }
   }
@@ -109,5 +122,8 @@ export default {
 .fulfiller { font-size: 14px; color: #2c2416; }
 .fulfill-status { font-size: 12px; color: #8c8478; }
 .sell-btn { width: 100%; text-align: center; padding: 14px 0; font-size: 16px; border-radius: 10px; margin-top: 20px; }
+.owner-hint { text-align: center; padding: 18px 0 0; font-size: 13px; color: #8c8478; }
+.closed-hint { text-align: center; padding: 18px 0 0; }
+.closed-hint text { display: block; font-size: 14px; color: #8c8478; margin-bottom: 10px; }
 .status-msg { text-align: center; padding: 100px 0; color: #8c8478; }
 </style>

@@ -93,13 +93,11 @@ class AuthController extends Controller
 
     private function orderCount($user, $status)
     {
-        return Order::where('status', $status)
-            ->where(function ($q) use ($user) {
-                $q->where('buyer_id', $user->id)
-                  ->orWhereHas('items.book', function ($q) use ($user) {
-                      $q->where('seller_id', $user->id);
-                  });
-            })->count();
+        // 仅统计买家侧订单，与 Blade profile 一致。
+        // 标签"待付款/已付款/待取书/已完成"是买家视角，不应混入卖家订单。
+        return Order::where('buyer_id', $user->id)
+            ->where('status', $status)
+            ->count();
     }
 
     private function userData(User $user): array
@@ -113,5 +111,20 @@ class AuthController extends Controller
             'avatar' => $user->avatar,
             'status' => $user->status,
         ];
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:50',
+            'student_id' => 'required|string|max:20|unique:users,student_id,' . $user->id,
+            'phone' => 'required|string|size:11|unique:users,phone,' . $user->id,
+        ]);
+
+        $user->fill($data)->save();
+
+        return $this->success($this->userData($user), '保存成功');
     }
 }

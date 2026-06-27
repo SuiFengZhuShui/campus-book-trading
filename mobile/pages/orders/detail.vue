@@ -53,6 +53,10 @@
         </view>
       </view>
 
+      <view v-if="order.status === 'pending' && !order.is_buyer" class="notice-bar">
+        <text class="notice-text">📢 等待买家付款</text>
+      </view>
+
       <view v-if="order.status === 'paid'" class="notice-bar">
         <text class="notice-text">📢 等待平台确认订单</text>
       </view>
@@ -61,11 +65,24 @@
         <text class="notice-text">{{ order.is_buyer ? '📢 请前往取书地点取书' : '📢 请等待买家确认取书' }}</text>
       </view>
 
+      <view v-if="order.review" class="card">
+        <text class="section-title">评价</text>
+        <view class="review-stars">
+          <text class="star-label">书况</text>
+          <text class="star">{{ '★'.repeat(order.review.book_rating) }}{{ '☆'.repeat(5 - order.review.book_rating) }}</text>
+        </view>
+        <view class="review-stars">
+          <text class="star-label">服务</text>
+          <text class="star">{{ '★'.repeat(order.review.service_rating) }}{{ '☆'.repeat(5 - order.review.service_rating) }}</text>
+        </view>
+        <text v-if="order.review.comment" class="review-comment">{{ order.review.comment }}</text>
+      </view>
+
       <view v-if="order.is_buyer" class="actions">
         <view v-if="order.status === 'pending'" class="btn-danger action-btn" @click="onCancel">取消订单</view>
         <view v-if="order.status === 'pending'" class="btn-amber action-btn" @click="onPay">立即支付</view>
         <view v-if="order.status === 'confirmed'" class="btn-amber action-btn" @click="onPickup">确认取书</view>
-        <view v-if="order.status === 'picked_up'" class="btn-primary action-btn" @click="goReview">去评价</view>
+        <view v-if="order.status === 'picked_up' && !order.review" class="btn-primary action-btn" @click="goReview">去评价</view>
       </view>
       <view v-if="(order.status === 'cancelled' || order.status === 'picked_up') && (order.is_buyer || order.is_seller)" class="actions">
         <view class="btn-danger action-btn" @click="onDelete">删除订单</view>
@@ -212,4 +229,8 @@ export default {
 .status-msg { text-align: center; padding: 100px 0; color: #8c8478; }
 .notice-bar { background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 10px 14px; margin-top: 14px; }
 .notice-text { font-size: 13px; color: #b0822c; }
+.review-stars { display: flex; margin-bottom: 4px; }
+.star-label { font-size: 13px; color: #8c8478; width: 40px; }
+.star { font-size: 14px; color: #b49450; letter-spacing: 2px; }
+.review-comment { font-size: 13px; color: #2c2416; margin-top: 8px; display: block; }
 </style>

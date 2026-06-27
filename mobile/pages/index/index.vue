@@ -33,6 +33,12 @@
       </view>
     </view>
 
+    <view class="notice-bar" v-if="noticeText">
+      <view class="notice-scroll" :style="{ transform: 'translateX(' + noticeOffset + 'px)' }">
+        <text>{{ noticeText }}</text>
+      </view>
+    </view>
+
     <view class="book-grid">
       <view v-for="(b, idx) in books" :key="b.id" :class="['book-card', cardAccent(idx)]" @click="goDetail(b.id)">
         <view class="cover-wrap"><safe-image :src="b.cover_img" mode="aspectFill" class="cover-img" /></view>
@@ -43,11 +49,16 @@
             <text class="price">¥{{ b.price }}</text>
             <view class="bottom-actions">
               <text class="condition">{{ b.condition_label }}</text>
-              <view class="cart-btn" @click.stop="addCart(b.id)">🛒</view>
+              <view v-if="!isOwnBook(b)" class="cart-btn" @click.stop="addCart(b.id)">🛒</view>
             </view>
           </view>
         </view>
       </view>
+    </view>
+
+    <view class="fab-sell" @click="goSell">
+      <text class="fab-icon">+</text>
+      <text class="fab-text">卖书</text>
     </view>
 
     <view v-if="loading" class="status-msg">加载中...</view>
@@ -59,6 +70,7 @@
 
 <script>
 import { get, post } from '@/utils/request.js'
+import auth from '@/stores/auth.js'
 
 export default {
   data() {
@@ -74,6 +86,8 @@ export default {
       loadError: '',
       page: 1,
       hasMore: false,
+      noticeText: '✦ 只收教材课本 ✦ 覆盖七大学院 ✦ 支付后等待平台确认再下一步 ✦ 同学直接交易省心又省钱 ✦',
+      noticeOffset: 0,
       sorts: [
         { label: '最新', value: 'newest' },
         { label: '价格↑', value: 'price_asc' },
@@ -85,8 +99,21 @@ export default {
   async mounted() {
     await this.fetchCategories()
     await this.fetchBooks(true)
+    this.startNoticeScroll()
+  },
+  beforeDestroy() {
+    if (this._scrollTimer) { clearInterval(this._scrollTimer); this._scrollTimer = null }
   },
   methods: {
+    startNoticeScroll() {
+      var self = this
+      if (this._scrollTimer) clearInterval(this._scrollTimer)
+      this._scrollTimer = setInterval(function () {
+        self.noticeOffset = self.noticeOffset - 1
+        // reset when scrolled past
+        if (self.noticeOffset < -300) { self.noticeOffset = 350 }
+      }, 30)
+    },
     async fetchCategories() {
       try {
         var res = await get('/api/categories')
@@ -148,6 +175,12 @@ export default {
     cardAccent(idx) {
       var accents = ['card-accent-blue', 'card-accent-amber', 'card-accent-teal', 'card-accent-coral', 'card-accent-indigo']
       return accents[idx % accents.length]
+    },
+    isOwnBook(book) {
+      return auth.user && book.seller_id === auth.user.id
+    },
+    goSell() {
+      uni.navigateTo({ url: '/pages/books/sell' })
     }
   }
 }
@@ -173,6 +206,9 @@ export default {
 .sort-row { display: flex; margin-bottom: 12px; }
 .sort-item { padding: 4px 12px; border-radius: 14px; font-size: 12px; color: #6e6559; background: #fff; border: 1px solid #cec4b0; margin-right: 8px; }
 .sort-item.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, #b49450, #d4bc7c); }
+.notice-bar { background: linear-gradient(135deg, #2c2416, #3d3428); padding: 8px 12px; margin-bottom: 12px; border-radius: 6px; overflow: hidden; }
+.notice-scroll { white-space: nowrap; display: inline-block; }
+.notice-scroll text { font-size: 13px; color: rgba(255,255,255,0.65); }
 .book-grid { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
 .book-card { width: 49%; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #cec4b0; margin-bottom: 10px; box-sizing: border-box; }
 .book-card:active { transform: scale(0.98); opacity: 0.9; }
@@ -189,4 +225,13 @@ export default {
 .status-msg { text-align: center; padding: 60px 0; color: #6e6559; font-size: 14px; }
 .status-msg.error { color: #bc4742; }
 .load-more { text-align: center; padding: 16px; color: #b49450; font-size: 14px; }
+.fab-sell {
+  position: fixed; right: 14px; bottom: 80px; z-index: 99;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, #b49450, #d4bc7c);
+  box-shadow: 0 4px 16px rgba(180,148,80,0.4);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.fab-icon { font-size: 22px; color: #fff; line-height: 1; font-weight: 300; }
+.fab-text { font-size: 10px; color: #fff; font-weight: 500; line-height: 1; margin-top: 1px; }
 </style>

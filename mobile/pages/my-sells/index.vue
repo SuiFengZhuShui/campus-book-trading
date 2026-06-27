@@ -15,7 +15,7 @@
           <view class="book-info">
             <text class="title ellipsis-2">{{ b.title }}</text>
             <text :class="['status-tag', statusClass(b.status)]">{{ b.status_label }}</text>
-            <view class="price-row">
+            <view v-if="b.status !== 'rejected' && b.status !== 'removed'" class="price-row">
               <text v-if="b.price" class="price">售价 ¥{{ b.price }}</text>
               <text v-else class="price-pending">售价 待定价</text>
               <text v-if="b.cost_price" class="cost">结算 ¥{{ b.cost_price }}</text>
@@ -23,7 +23,6 @@
             <text v-if="b.reject_reason" class="reject-reason">驳回原因：{{ b.reject_reason }}</text>
             <text v-if="b.submitted_at" class="date">{{ b.submitted_at }}</text>
             <view class="actions-row">
-              <view v-if="b.order_id" class="btn-outline btn-sm" @click.stop="goOrder(b.order_id)">查看订单</view>
               <view v-if="b.status === 'removed' || b.status === 'rejected'" class="btn-danger btn-sm" @click.stop="onDelete(b)">删除</view>
             </view>
           </view>

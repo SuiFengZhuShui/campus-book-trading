@@ -9,6 +9,10 @@ page {
   font-size: 15px;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
+/* 确保页面内容在极光 canvas 之上 */
+uni-app, uni-page, uni-page-wrapper, uni-page-body {
+  position: relative; z-index: 1;
+}
 
 /* ====== 按钮 ====== */
 .btn-primary {

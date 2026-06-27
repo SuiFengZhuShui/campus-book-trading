@@ -6,9 +6,20 @@
 
 <a href="{{ url('admin/wants') }}" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#c7915c,#d4a574);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:20px;">&larr; 返回求购管理</a>
 
+    @if(session('page_success'))
+        <div style="background:linear-gradient(135deg,#4a6741,#5a7d51);color:#fff;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;">{{ session('page_success') }}</div>
+    @endif
+
 <div class="card">
     <form method="POST" action="{{ url('admin/wants/'.$want->id.'/update') }}">
         @csrf
+        @if($errors->any())
+            <div class="alert alert-error" style="background:linear-gradient(135deg,#6b2737,#8b3a4a);color:#fff;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;">
+                @foreach($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
         <div class="form-group">
             <label>书名</label>
             <input type="text" name="title" class="form-control" value="{{ old('title', $want->title) }}" required>
@@ -39,14 +50,27 @@
             </div>
         </div>
         <div class="form-group">
-            <label>成色要求（逗号分隔）</label>
-            <input type="text" name="acceptable_condition" class="form-control" value="{{ old('acceptable_condition', $want->acceptable_condition) }}" placeholder="全新,几乎全新,正常使用,较旧">
+            <label>成色要求</label>
+            @php
+                $condMap = ['like_new'=>'全新','excellent'=>'几乎全新','good'=>'正常使用','fair'=>'较旧'];
+                $rawCond = old('acceptable_condition', $want->acceptable_condition);
+                if (is_array($rawCond)) { $selectedConds = $rawCond; }
+                else { $selectedConds = array_map('trim', explode(',', $rawCond)); }
+            @endphp
+            <div style="display:flex;gap:16px;flex-wrap:wrap;padding-top:4px;">
+                @foreach($condMap as $key => $label)
+                <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;">
+                    <input type="checkbox" name="acceptable_condition[]" value="{{ $key }}" {{ in_array($key, $selectedConds) ? 'checked' : '' }} style="accent-color:#b49450;">
+                    {{ $label }}
+                </label>
+                @endforeach
+            </div>
         </div>
         <div class="form-group">
             <label>状态</label>
             <select name="status" class="form-control" style="width:160px">
                 <option value="active" {{ old('status', $want->status) == 'active' ? 'selected' : '' }}>进行中</option>
-                <option value="fulfilled" {{ old('status', $want->status) == 'fulfilled' ? 'selected' : '' }}>已满足</option>
+                <option value="closed" {{ old('status', $want->status) == 'closed' ? 'selected' : '' }}>已关闭</option>
                 <option value="expired" {{ old('status', $want->status) == 'expired' ? 'selected' : '' }}>已过期</option>
                 <option value="closed" {{ old('status', $want->status) == 'closed' ? 'selected' : '' }}>已关闭</option>
             </select>

@@ -78,7 +78,7 @@ cd mobile && npm run dev:h5
 42. **Vue `@click` 事件传参陷阱**：`@click="fn"` 会把 click 事件对象作为第一个参数传入 fn。如果 fn 期望非事件值（如 `fn(isNew)` 判断 truthy/falsy），事件对象为 truthy 会导致逻辑错误。必须显式传参：`@click="fn(false)"`。uni-app 和 Web Vue 均适用。
 43. **微信小程序密码框**：`type="password"` 在微信小程序中不生效，必须用 `:password="true"`。
 44. **微信小程序 HTTP 图片**：新版基础库禁止 `<image>` 加载 HTTP 图片。已封装 `safe-image` 全局组件（`uni.downloadFile` → 本地临时文件后显示），所有图片显示必须用 `<safe-image>` 替代 `<image>`。
-45. **401 需清本地状态**：`utils/request.js` 中 401 拦截器必须同时调用 `auth.logout()` 清空内存中的用户状态，否则页面显示旧数据但接口报未登录。
+45. **401 需清本地状态**：`utils/request.js` 中 401 拦截器必须同时调用 `auth.logout()` 清空内存中的用户状态，否则页面显示旧数据但接口报未登录。**但 401 拦截器不得强制 `navigateTo` 登录页**，让各页面自行处理 401 UI（如 profile.vue 的 `v-if="!auth.isLogin()"` 登录卡片）。
 46. **tabBar 页面不能用 navigateTo**：必须用 `switchTab` 跳转。如需从 tabBar 页面跳转到独立子页面（如"我的求购"），需创建非 tabBar 的独立页面。
 47. **微信小程序多图上传**：`uni.uploadFile` 每次只支持一个文件。多图提交走两步流程：① 逐文件 `uni.uploadFile` → `/api/upload` 获取 URL ② `uni.request` JSON POST `image_urls` 提交书数据。后端 `BookService::submit()` 已支持文件对象和路径字符串双模式。
 48. **软删除全量覆盖**：**所有** Model 必须 `use SoftDeletes`，**所有**表必须有 `deleted_at` 列。包括关联表（book_images/order_items/order_timeline/reviews/wants/want_fulfillments），不只是主表。新增 Model/表时第一步就加。
@@ -88,18 +88,20 @@ cd mobile && npm run dev:h5
 52. **safe-image 外层需包裹 view**：微信小程序自定义组件 class 不透传，`<safe-image>` 必须用 `<view class="xxx">` 包裹并设固定宽高（`overflow: hidden`），否则图片高度为 0 文字会覆盖上去。
 53. **登录/注册页防滚动**：`pages.json` 中设 `"disableScroll": true`，容器 CSS 用 `height: 100vh; box-sizing: border-box;`（非 `min-height`），否则 100vh 含导航栏高度导致溢出滚动。
 54. **URL 参数需手动解码**：uni-app 微信小程序 `onLoad(options)` 不会自动 URL-decode 中文参数，接收方必须 `decodeURIComponent()`。
-55. **Windows 符号链接**：`public/storage` 和 `wwwroot` 必须用 PowerShell `New-Item -ItemType Junction` 创建目录联结，**禁止** Git Bash 的 Unix symlink（Apache 不认）。`php artisan storage:link` 在 Git Bash 下创建的也是 Unix symlink，不可用。
-56. **`.htaccess` 保护**：Laravel 默认 `.htaccess` 可能被意外清空。启动前检查 `backend/public/.htaccess` 非空，内容缺失从 git 恢复。
-57. **`rejected` ≠ `removed`**：审核驳回（`rejected`）和下架（`removed`）是两个独立状态。所有 admin 视图的 badge/label 映射和筛选下拉必须同时包含两者，驳回原因对两个状态都要显示。全局禁止「已下架/驳回」合并写法。
-58. **Seeder 订单号格式**：必须与 `OrderService::generateOrderNo()` 一致 — `date('YmdHis') . sprintf('%04d', random_int(0, 9999))`。禁止 `ORD` 前缀格式。
-59. **平台收购订单无评价**：`buyer->role === 'admin'` 的订单不显示评价入口、不允许提交评价。ReviewService/API/Web/Mobile 四端均需判断。
-60. **Layout 学院下拉框上下文**：`app.blade.php` 的学院 `<select>` 和搜索框仅在非 `/wants*` 页面显示，避免在求购页误触跳回首页。
-61. **Admin 操作按钮规范**：所有状态统一显示「编辑」按钮（非「查看」），仅 `active` 附加「下架」、`rejected` 附加「删除」。
+55. **Storage 图片兜底路由**（2026-06-15）：`routes/web.php` 末尾已加 `Route::get('storage/{path}', ...)` 兜底路由。Junction 正常时 Apache 直接 serve（零开销），Junction 损坏时 Laravel 从 `storage/app/public/` 读文件返回。**换机器/重装/任何情况图片都不会破裂**，无需手动建 Junction。路径穿越已做防护（realpath 校验）。
+56. **Windows 符号链接**（可选）：如需最高性能（Apache 静态文件 serve），用 PowerShell `New-Item -ItemType Junction` 创建 `public/storage` → `storage/app/public` 联结。但不建也能正常工作（兜底路由接管）。
+57. **`.htaccess` 保护**：Laravel 默认 `.htaccess` 可能被意外清空。启动前检查 `backend/public/.htaccess` 非空，内容缺失从 git 恢复。
+58. **`rejected` ≠ `removed`**：审核驳回（`rejected`）和下架（`removed`）是两个独立状态。所有 admin 视图的 badge/label 映射和筛选下拉必须同时包含两者，驳回原因对两个状态都要显示。全局禁止「已下架/驳回」合并写法。
+59. **Seeder 订单号格式**：必须与 `OrderService::generateOrderNo()` 一致 — `date('YmdHis') . sprintf('%04d', random_int(0, 9999))`。禁止 `ORD` 前缀格式。
+60. **平台收购订单无评价**：`buyer->role === 'admin'` 的订单不显示评价入口、不允许提交评价。ReviewService/API/Web/Mobile 四端均需判断。
+61. **Layout 学院下拉框上下文**：`app.blade.php` 的学院 `<select>` 和搜索框仅在非 `/wants*` 页面显示，避免在求购页误触跳回首页。
+62. **Admin 操作按钮规范**：所有状态统一显示「编辑」按钮（非「查看」），仅 `active` 附加「下架」、`rejected` 附加「删除」。
+63. **微信小程序页面隔离 — 禁止用 Vue.observable 跨页共享状态**：微信小程序每页独立 JS 上下文，模块级 `Vue.observable` 在不同页面是不同对象。`stores/auth.js` 的 `isLogin()`、`get token()`、`get user()` 必须从 `uni.getStorageSync('auth')` 读取，`state` 仅作当前页内响应式辅助。**H5 开发模式无此问题**（浏览器单上下文），所以这个 bug 在 HBuilder X 模拟器里不可见，真机/预览时才暴露。
 
 ### uni-app 移动端（15 页 + 3 tabBar）
 - 15 个页面：首页/登录/注册/书籍详情/卖书/购买/订单列表/订单详情/评价/我的卖书/求购广场/求购详情/发布求购/我的求购/个人中心
 - tabBar 导航（首页/求购/我的），Material Design 81x81 PNG 图标
-- API 封装（`utils/request.js`，#ifdef MP-WEIXIN 绝对路径，401 自动清 auth）+ Vue.observable() auth store（`stores/auth.js`）
+- API 封装（`utils/request.js`，#ifdef MP-WEIXIN 绝对路径，401 清 auth 但不强制跳转）+ auth store（`stores/auth.js`，用 `uni.getStorageSync` 跨页共享，非 `Vue.observable`）
 - **运行唯一方式**：HBuilder X → 运行 → 运行到小程序模拟器 → 微信开发者工具。禁止 CLI/Vite
 - **设计系统**（2026-05-28 轻奢学院风）：香槟金+酒红+暖棕品牌色 + 苔绿(#4a6741 求购)/暖珊瑚(#e07b5a 快捷入口)/靛紫(#5b7fbd 分类) 辅助色
 - 全局工具类：`.card-accent-*`（8 色卡片左边框）、`.card-top-*`（顶部彩色条）、`.gradient-*`（渐变头部）、`.btn-teal`（青绿按钮）
@@ -393,3 +395,11 @@ ECC `coding-style.md` 中的不可变性规则（"ALWAYS create new objects, NEV
 - 理由：Active Record 模式天然依赖对象属性变更，强行要求不可变性会破坏框架设计
 - 适用范围：仅限 PHP 端的 Eloquent 模型操作
 - 前端 JS/Vue 代码仍遵循不可变性原则
+## PPT 生成/修改（ppt-master）
+
+64. **减法定制优先改 SVG**：从现成 PPT 删/改某类内容时，直接编辑 svg_final/ 或 svg_output/ 中 SVG 文件，重跑 finalize_svg.py + svg_to_pptx.py 导出。不要重走完整 ppt-master 八步流水线。
+65. **clipPath 必须放 `<defs>` 内**：svg_to_pptx.py 对 defs 外的 `<clipPath>` 报 unsupported visual SVG element(s) 错误。
+66. **微信开发者工具截图先问模拟器位置**：新版模拟器在**右边**（旧版左边）。
+67. **导出必须带 `-t fade -a auto`**：不加动画参数 PPT 无翻页过渡和元素进场效果。
+68. **图片容器尺寸匹配源图宽高比**：排版前查源图比例。移动截图 1250x1000（1.25:1）不能放 1.8:1 容器。
+69. **Windows CMD 终端适配**：不能用 cp（用 copy）、`&&` 链式不一定生效（逐条给）。

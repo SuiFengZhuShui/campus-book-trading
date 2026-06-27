@@ -18,6 +18,11 @@
                 @endphp
                 <span class="badge {{ $badge[$order->status] ?? 'badge-gray' }}">{{ $label[$order->status] ?? $order->status }}</span>
             </div>
+            @if($order->status === 'pending')
+                <div style="background: #fef9f0; border: 1px solid #cec4b0; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; color: #b0822c;">
+                    📢 等待买家 <strong>{{ $order->buyer->name ?? '未知' }}</strong>（{{ $order->buyer->phone ?? '' }}）付款
+                </div>
+            @endif
             <table>
                 <thead><tr><th>封面</th><th>书名</th><th>售价</th><th>卖家</th><th>结算状态</th></tr></thead>
                 <tbody>

@@ -69,7 +69,10 @@ function cancelOrder(id, no) {
     if (!reason) return;
     var form = document.createElement('form');
     form.method = 'POST'; form.action = '/admin/orders/' + id + '/cancel';
-    form.innerHTML = '@csrf<input type="hidden" name="reason" value="' + reason + '">';
+    form.innerHTML = '@csrf';
+    var input = document.createElement('input');
+    input.type = 'hidden'; input.name = 'reason'; input.value = reason;
+    form.appendChild(input);
     document.body.appendChild(form); form.submit();
 }
 function deleteOrder(id, no) {

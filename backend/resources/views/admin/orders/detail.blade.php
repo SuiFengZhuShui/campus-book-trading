@@ -87,6 +87,6 @@
 <script>
 function confirmOrder(id) { if(!confirm('确认订单？')) return; var f=document.createElement('form');f.method='POST';f.action='/admin/orders/'+id+'/confirm';f.innerHTML='@csrf';document.body.appendChild(f);f.submit(); }
 function pickupOrder(id) { if(!confirm('确认买家已取书？卖家将立即结算。')) return; var f=document.createElement('form');f.method='POST';f.action='/admin/orders/'+id+'/pickup';f.innerHTML='@csrf';document.body.appendChild(f);f.submit(); }
-function cancelOrder(id) { var r=prompt('取消原因（必填）：'); if(!r) return; var f=document.createElement('form');f.method='POST';f.action='/admin/orders/'+id+'/cancel';f.innerHTML='@csrf<input type="hidden" name="reason" value="'+r+'">';document.body.appendChild(f);f.submit(); }
+function cancelOrder(id) { var r=prompt('取消原因（必填）：'); if(!r) return; var f=document.createElement('form');f.method='POST';f.action='/admin/orders/'+id+'/cancel'; var i=document.createElement('input'); i.type='hidden'; i.name='reason'; i.value=r; f.appendChild(i); f.innerHTML='@csrf'+f.innerHTML; document.body.appendChild(f);f.submit(); }
 </script>
 @endsection

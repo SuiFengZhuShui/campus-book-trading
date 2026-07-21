@@ -10,10 +10,10 @@
 
 | 项目 | 值 |
 |------|-----|
-| MySQL | 小皮（phpstudy），127.0.0.1:3306，root / root |
+| MySQL | 小皮（phpstudy），127.0.0.1:3306（凭据见 .env） |
 | 数据库 | campus_books（InnoDB + utf8mb4） |
 | 管理工具 | DBeaver |
-| 管理员 | admin（或 13800000000）/ REDACTED-PASSWORD |
+| 管理员 | 凭据见 .env（ADMIN_USERNAME / ADMIN_PASSWORD） |
 | PHP | 7.3.4 |
 | Node | v24.15.0 / npm 11.12.1 |
 | uni-app | Vue 2 Options API + HBuilder X，15 页面 + 3 tabBar，`cd mobile && npm run dev:h5` |
@@ -403,3 +403,31 @@ ECC `coding-style.md` 中的不可变性规则（"ALWAYS create new objects, NEV
 67. **导出必须带 `-t fade -a auto`**：不加动画参数 PPT 无翻页过渡和元素进场效果。
 68. **图片容器尺寸匹配源图宽高比**：排版前查源图比例。移动截图 1250x1000（1.25:1）不能放 1.8:1 容器。
 69. **Windows CMD 终端适配**：不能用 cp（用 copy）、`&&` 链式不一定生效（逐条给）。
+
+## uni-app / 微信小程序页面隔离（强制）
+
+> 从全局 CLAUDE.md 迁入（本节为本项目 uni-app 端专属，全局只留一行指针）。
+
+**微信小程序每页独立 JS 上下文。** 模块级变量在不同页面是不同对象，不跨页共享。
+
+### Vue.observable 不跨页
+
+`Vue.observable` 在 `stores/auth.js` 顶层创建的 `state` 对象，在 login.vue 和 profile.vue 中是两份独立数据。login.vue 写入 `state.token`，profile.vue 读到的是空字符串。
+
+**规则：**
+- `isLogin()`、`get token()`、`get user()` 必须从 `uni.getStorageSync('auth')` 读取
+- `state` 仅作当前页内 Vue 响应式辅助，不得用作跨页数据源
+- `auth.save()` 同时写 `state.token` + `uni.setStorageSync`
+- `auth.logout()` 同时清 `state` + `uni.removeStorageSync`
+
+**陷阱：H5 开发模式无此问题。** 浏览器单上下文，`Vue.observable` 跨页完美工作。bug 只在微信小程序真机/预览暴露。
+
+### 401 拦截器只清状态，不强制跳转
+
+`utils/request.js` 401 拦截器必须调用 `auth.logout()` 清状态，但**不得强制 `navigateTo` 登录页**。让各页面自行处理 401 UI（如 `v-if="!auth.isLogin()"` 显示登录卡片），避免双层跳转冲突。
+
+### uni-app 项目结构
+
+- 页面 `pages/`，组件 `components/`，API 封装 `utils/request.js`
+- API URL 通过 `BASE_URL` 统一管理，页面禁止硬编码
+- 环境切换时全局搜索远程 IP → 逐一改源文件 → grep 确认

@@ -34,7 +34,8 @@ export default {
     return {
       orders: [],
       loading: true,
-      filterStatus: ''
+      filterStatus: '',
+      _mounted: false
     }
   },
   onLoad: function (options) {
@@ -42,12 +43,17 @@ export default {
       this.filterStatus = options.status
     }
   },
+  onShow: function () {
+    if (this._mounted) {
+      this.fetchOrders()
+    }
+  },
   mounted: function () {
     if (!auth.isLogin()) {
-      uni.showToast({ title: '请先登录', icon: 'none' })
-      setTimeout(function () { uni.navigateTo({ url: '/pages/auth/login' }) }, 1000)
+      uni.redirectTo({ url: '/pages/auth/login' })
       return
     }
+    this._mounted = true
     this.fetchOrders()
   },
   methods: {

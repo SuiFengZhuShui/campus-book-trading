@@ -165,6 +165,10 @@ export default {
     },
     goDetail(id) { uni.navigateTo({ url: '/pages/books/detail?id=' + id }) },
     async addCart(bookId) {
+      if (!auth.isLogin()) {
+        uni.redirectTo({ url: '/pages/auth/login' })
+        return
+      }
       try {
         await post('/api/cart', { book_id: bookId })
         uni.showToast({ title: '已加入购物车', icon: 'success' })
@@ -206,9 +210,9 @@ export default {
 .sort-row { display: flex; margin-bottom: 12px; }
 .sort-item { padding: 4px 12px; border-radius: 14px; font-size: 12px; color: #6e6559; background: #fff; border: 1px solid #cec4b0; margin-right: 8px; }
 .sort-item.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, #b49450, #d4bc7c); }
-.notice-bar { background: linear-gradient(135deg, #2c2416, #3d3428); padding: 8px 12px; margin-bottom: 12px; border-radius: 6px; overflow: hidden; }
+.notice-bar { background: linear-gradient(135deg, #2c2416, #3d3428); padding: 8px 12px; margin-bottom: 12px; border-radius: 6px; overflow: hidden; height: 36px; display: flex; align-items: center; }
 .notice-scroll { white-space: nowrap; display: inline-block; }
-.notice-scroll text { font-size: 13px; color: rgba(255,255,255,0.65); }
+.notice-scroll text { font-size: 13px; color: rgba(255,255,255,0.65); white-space: nowrap; }
 .book-grid { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
 .book-card { width: 49%; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #cec4b0; margin-bottom: 10px; box-sizing: border-box; }
 .book-card:active { transform: scale(0.98); opacity: 0.9; }

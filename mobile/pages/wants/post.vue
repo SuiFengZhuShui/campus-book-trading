@@ -58,8 +58,7 @@ export default {
   },
   mounted() {
     if (!auth.isLogin()) {
-      uni.showToast({ title: '请先登录', icon: 'none' })
-      setTimeout(function () { uni.navigateTo({ url: '/pages/auth/login' }) }, 1000)
+      uni.redirectTo({ url: '/pages/auth/login' })
       return
     }
     this.fetchCategories()
@@ -68,15 +67,20 @@ export default {
     async fetchCategories() {
       try {
         const res = await get('/api/categories')
-        this.categories = res.data
+        this.categories = [{ id: 0, name: '不限' }].concat(res.data)
       } catch (e) {
         console.log('fetch categories error:', e)
       }
     },
     onCategoryChange(e) {
       const idx = e.detail.value
-      this.form.category_id = this.categories[idx].id
-      this.categoryName = this.categories[idx].name
+      if (idx === 0) {
+        this.form.category_id = null
+        this.categoryName = '不限'
+      } else {
+        this.form.category_id = this.categories[idx].id
+        this.categoryName = this.categories[idx].name
+      }
     },
     onConditionChange(e) {
       this.form.acceptable_condition = this.conditions[e.detail.value]

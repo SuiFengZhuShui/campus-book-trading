@@ -25,7 +25,7 @@
       </view>
       <view class="input-group">
         <text class="input-label">成色 <text class="required">*</text></text>
-        <picker :range="conditions" @change="onConditionChange">
+        <picker :range="conditionLabels" @change="onConditionChange">
           <view class="picker-view">{{ conditionLabel || '请选择成色' }}</view>
         </picker>
       </view>
@@ -62,6 +62,7 @@
 
 <script>
 import { get, uploadFiles } from '@/utils/request.js'
+import auth from '@/stores/auth.js'
 
 export default {
   data() {
@@ -87,6 +88,10 @@ export default {
     }
   },
   mounted: async function () {
+    if (!auth.isLogin()) {
+      uni.redirectTo({ url: '/pages/auth/login' })
+      return
+    }
     var self = this
     try {
       var res = await get('/api/categories')

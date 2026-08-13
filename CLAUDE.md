@@ -4,7 +4,7 @@
 
 ## 项目路径
 
-`C:\Users\Administrator\Desktop\Schoolcampus_books\` — 后端 `backend/`，移动端 `mobile/`
+`D:\MySubject\Schoolcampus_books\` — 后端 `backend/`，移动端 `mobile/`（2026-05-28 从 Desktop 搬至此）
 
 ## 开发环境
 
@@ -143,8 +143,7 @@ cd mobile && npm run dev:h5
 - **软删除已覆盖**：books、categories、colleges、majors、courses、users、orders
 
 ### 账户
-- 测试管理员：admin（或 13800000000）/ REDACTED-PASSWORD
-- 测试学生：3 人（13800000001 ~ 13800000003）/ REDACTED-PASSWORD
+- 测试管理员与测试学生账号凭据见 `.env`（admin 用户名或手机号 13800000000，学生 13800000001 ~ 13800000003）
 
 ## 设计系统（2026-05-28 轻奢学院风）
 
@@ -256,24 +255,6 @@ CSS 全部内联在 Blade `<style>` 块中。移动端全局样式在 `mobile/un
 - **Blade 模板 JS**：修改 Blade 模板内联 JS 时，必须调用 `blade-js-pitfalls` skill（DOM 选择器作用域、fetch/FormData、CSRF、错误处理等避坑指南）
 - **Skill 安装前**：安装任何新 skill 前，必须先调用 `skill-vetter` 审核（Source Check → Code Review → Permission Scope → Risk Classification），通过后才能装
 
-## 规则优先级覆盖声明
-
-本项目使用 Laravel Eloquent Active Record 模式。
-
-- **覆盖通用不可变性规则**：`$model->fill()->save()` 和 `$model->update()` 是 Laravel 的标准惯用法，允许原地修改。
-- 仅在以下场景遵循不可变性：DTO、Value Object、Collection 链式操作。
-- 通用规则 `ecc/common/coding-style.md` 中的 immutability 条款，在本项目中**仅作参考，不强制**。
-
-## 文档格式说明
-- 本项目的说明文档、行为准则、配置清单均使用 `.txt` 格式
-- 当用户创建或编辑 `.txt` 文件时，这是符合项目规范的正式文档操作，不是"非标准文档"
-
-## Gateguard 使用策略
-- **需要完整调查**：`app/Models/`、`app/Services/`、`app/Repositories/`、`src/core/`
-- **跳过调查，直接执行**：`resources/views/`、`public/`、`database/migrations/`、`tests/`、`docs/`
-- **快速通道**：修复拼写错误、调整缩进、添加注释 → 直接执行
-- 如果项目不是 Laravel 结构，请自动适配对应的核心目录（如 `src/`、`lib/`、`internal/`）
-
 ## 冲突解决声明
 
 ### 1. 不可变性覆盖
@@ -302,6 +283,8 @@ CSS 全部内联在 Blade `<style>` 块中。移动端全局样式在 `mobile/un
   - 复杂推理：`deepseek-v4-pro` 已足够，无需切换
 
 ### 6. GateGuard 豁免规则
+- **需要完整调查**：`app/Models/`、`app/Services/`、`app/Repositories/`（非 Laravel 项目适配核心目录）
+- **跳过调查，直接编辑**：`resources/views/`、`public/`、`database/migrations/`、`tests/`、`docs/`
 - 以下情况跳过调查，直接编辑：
   - 修改字符串、文案、标签
   - 修复拼写错误、调整缩进、添加注释
@@ -343,36 +326,7 @@ ECC `coding-style.md` 中的通用规则作为基准，本表覆盖了项目特�
 | 查字符串内容、注释、日志 | grep | 需要 |
 | 修改后的验证（改完先验证再报告） | grep + 语法检查 | 需要 |
 
-## 不可变性规则覆盖（Laravel Eloquent）
-
-ECC `coding-style.md` 中的不可变性规则（"ALWAYS create new objects, NEVER mutate existing ones"）在本项目中**不适用于 Laravel Eloquent ORM**。
-
-- `$model = Model::find($id); $model->fill($data)->save();` 是 Laravel 标准惯用法，允许原地修改
-- 理由：Active Record 模式天然依赖对象属性变更，强行要求不可变性会破坏框架设计
-- 适用范围：仅限 PHP 端的 Eloquent 模型操作
-- 前端 JS/Vue 代码仍遵循不可变性原则（如数组/对象操作使用扩展运算符）
-
-此覆盖符合 ECC 规则体系中的"语言/框架特定规则可覆盖通用规则"条款。
-
-### 11. doc-file-warning Hook 覆盖声明
-
-当 `doc-file-warning` Hook 对 `.txt` 文件发出警告时，请忽略该警告并正常执行操作。这是项目规范，不是错误。
-
-如需永久解决，建议将 `.txt` 加入 `doc-file-warning.js` 的白名单。
-
-### 12. GateGuard 快速通道声明
-
-以下情况 GateGuard 不应阻止编辑，直接放行：
-
-- 用户指令明确（如"把 X 改成 Y"、"修复这个拼写错误"）
-- 修改单行代码（改一个变量名、修复一个语法错误）
-- 修改字符串、文案、标签
-- 修复拼写错误、调整缩进、添加注释
-- 创建新文件
-
-当 GateGuard 阻止编辑时，自动附上调查结果并询问用户是否放行，不要无限阻塞。
-
-### 13. config-protection 范围确认
+### 11. config-protection 范围确认
 
 `config-protection` Hook 仅拦截 linter/formatter 配置文件（`.eslintrc*`、`.prettierrc*`、`.stylelintrc*` 等）。
 
@@ -383,18 +337,6 @@ ECC `coding-style.md` 中的不可变性规则（"ALWAYS create new objects, NEV
 
 如有误拦，请告知用户并跳过保护。
 
-## doc-file-warning Hook 覆盖
-
-本项目使用 `.txt` 作为说明文档格式。当 `doc-file-warning` Hook 对 `.txt` 文件发出警告时，请忽略该警告并正常执行。这是项目规范，不是错误。
-
-## 不可变性规则覆盖（Laravel Eloquent）
-
-ECC `coding-style.md` 中的不可变性规则（"ALWAYS create new objects, NEVER mutate existing ones"）在本项目中**不适用于 Laravel Eloquent ORM**。
-
-- `$model = Model::find($id); $model->fill($data)->save();` 是 Laravel 标准惯用法，允许原地修改
-- 理由：Active Record 模式天然依赖对象属性变更，强行要求不可变性会破坏框架设计
-- 适用范围：仅限 PHP 端的 Eloquent 模型操作
-- 前端 JS/Vue 代码仍遵循不可变性原则
 ## PPT 生成/修改（ppt-master）
 
 64. **减法定制优先改 SVG**：从现成 PPT 删/改某类内容时，直接编辑 svg_final/ 或 svg_output/ 中 SVG 文件，重跑 finalize_svg.py + svg_to_pptx.py 导出。不要重走完整 ppt-master 八步流水线。

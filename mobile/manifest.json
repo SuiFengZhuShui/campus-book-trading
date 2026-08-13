@@ -24,6 +24,25 @@
                     "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>"
                 ]
             },
+            "icons" : {
+                "android" : {
+                    "ldpi" : "static/icons/icon-48x48.png",
+                    "mdpi" : "static/icons/icon-72x72.png",
+                    "hdpi" : "static/icons/icon-96x96.png",
+                    "xhdpi" : "static/icons/icon-144x144.png",
+                    "xxhdpi" : "static/icons/icon-192x192.png",
+                    "xxxhdpi" : "static/icons/icon-256x256.png"
+                }
+            },
+            "splashscreen" : {
+                "android" : {
+                    "ldpi" : "static/splash/splash-240x427.png",
+                    "mdpi" : "static/splash/splash-320x569.png",
+                    "hdpi" : "static/splash/splash-480x853.png",
+                    "xhdpi" : "static/splash/splash-720x1280.png",
+                    "xxhdpi" : "static/splash/splash-1080x1920.png"
+                }
+            },
             "ios" : {
                 "dSYMs" : false
             },

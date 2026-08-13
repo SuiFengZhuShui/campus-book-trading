@@ -81,8 +81,7 @@ export default {
   },
   mounted: function () {
     if (!auth.isLogin()) {
-      uni.showToast({ title: '请先登录', icon: 'none' })
-      setTimeout(function () { uni.navigateTo({ url: '/pages/auth/login' }) }, 1000)
+      uni.redirectTo({ url: '/pages/auth/login' })
       return
     }
     this.fetchCart()
@@ -197,7 +196,8 @@ export default {
 .total-row { display: flex; align-items: baseline; margin-left: 8px; }
 .total-label { font-size: 12px; color: #6e6559; }
 .total-amount { font-size: 18px; font-weight: 700; color: #b49450; margin-left: 4px; }
-.btn-group { display: inline-flex; gap: 4px; }
+.btn-group { display: inline-flex; }
+.btn-group .btn-clear { margin-right: 4px; }
 .btn-clear { font-size: 13px; color: #fff; background: linear-gradient(135deg, #c7915c, #d4a574); border-radius: 10px; padding: 10px 16px; }
 .checkout-btn { padding: 10px 20px; font-size: 14px; border-radius: 10px; }
 .pickup-card { margin-top: 12px; margin-bottom: 70px; padding: 14px; }

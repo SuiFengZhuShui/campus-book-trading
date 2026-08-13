@@ -63,6 +63,10 @@
     {
       "path": "pages/user/profile",
       "style": { "navigationBarTitleText": "个人中心" }
+    },
+    {
+      "path": "pages/user/edit",
+      "style": { "navigationBarTitleText": "编辑信息" }
     }
   ],
   "globalStyle": {

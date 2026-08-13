@@ -37,6 +37,7 @@
 
 <script>
 import { get, post } from '@/utils/request.js'
+import auth from '@/stores/auth.js'
 
 export default {
   data() {
@@ -48,6 +49,10 @@ export default {
     }
   },
   mounted() {
+    if (!auth.isLogin()) {
+      uni.redirectTo({ url: '/pages/auth/login' })
+      return
+    }
     var pages = getCurrentPages()
     var bookId = pages[pages.length - 1].options.bookId
     if (bookId) this.fetchBook(bookId)
@@ -73,11 +78,9 @@ export default {
           book_ids: [this.book.id],
           pickup_location: loc
         })
-        uni.showToast({ title: '下单成功', icon: 'success' })
-        setTimeout(function () {
-          uni.redirectTo({ url: '/pages/orders/detail?id=' + res.data.order_id })
-        }, 1000)
+        uni.redirectTo({ url: '/pages/orders/detail?id=' + res.data.order_id })
       } catch (e) {
+        uni.showToast({ title: e.message || '下单失败', icon: 'none' })
         console.log('submit order error:', e)
       }
     }

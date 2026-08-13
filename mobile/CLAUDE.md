@@ -73,3 +73,24 @@ mobile/
 - `state` 降级为当前页内 Vue 响应式辅助，**不得**用作跨页数据源
 - **H5 开发模式无此问题**（浏览器单上下文），bug 只在真机/预览时暴露
 - `utils/request.js` 的 401 拦截器清 auth 但**不得强制 `navigateTo` 登录页**，让各页面自行处理 401 UI
+
+## APK 打包（新增 2026-06-28）
+
+### 打包前检查 3 项
+
+1. **manifest.json 图标/启动图层级**：图标在 `distribute.icons.android`（非 `distribute.android.icons`），启动图在 `distribute.splashscreen.android`
+2. **`utils/request.js` APP-PLUS 分支**：`#ifdef APP-PLUS` 段 BASE_URL 必须指向手机可访问的后端地址（局域网 IP 或公网），不能是 `127.0.0.1` 或空
+3. **App WebView 兼容**：`<text>` 默认 inline（APK 中不像 H5 自动 block），所有独立文案/按钮必须显式 `display:block`；`white-space:nowrap` 必须直接写在 `<text>` 上（不继承父级）
+
+### 打包步骤
+
+1. HBuilder X → 发行 → 原生App-云打包 → Android
+2. 证书选「使用云端证书」
+3. 打包方式选「快速安心打包」
+4. 输出 → `unpackage/release/apk/`
+
+### 已知坑
+
+- App WebView ≠ H5 浏览器：CSS 渲染差异大，H5 正常不代表 APK 正常
+- 真机验证不可省略：网络请求、页面布局、条件编译全看真机表现
+- 图标用密度多档（48~256px），不用单 `src` 自动生成

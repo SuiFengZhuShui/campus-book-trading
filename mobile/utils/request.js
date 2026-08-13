@@ -1,8 +1,16 @@
 // #ifdef MP-WEIXIN
 const BASE_URL = 'http://127.0.0.1'
 // #endif
+// #ifdef APP-PLUS
+// 开发/生产环境后端地址 — 根据实际情况修改
+// 局域网: http://你电脑的IP (如 http://192.168.1.100)
+// 公网: http://你的域名或服务器IP
+const BASE_URL = 'http://127.0.0.1' // TODO: 替换为实际后端地址
+// #endif
 // #ifndef MP-WEIXIN
+// #ifndef APP-PLUS
 const BASE_URL = ''
+// #endif
 // #endif
 
 function getToken() {
@@ -23,6 +31,7 @@ function request(options) {
       header['Authorization'] = 'Bearer ' + token
     }
     if (options.method === 'POST' || options.method === 'PUT') {
+      header['Content-Type'] = 'application/json'
       header['Accept'] = 'application/json'
     }
 

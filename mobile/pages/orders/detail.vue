@@ -93,6 +93,7 @@
 
 <script>
 import { get, post, del } from '@/utils/request.js'
+import auth from '@/stores/auth.js'
 
 export default {
   data() {
@@ -102,6 +103,10 @@ export default {
     }
   },
   mounted: function () {
+    if (!auth.isLogin()) {
+      uni.redirectTo({ url: '/pages/auth/login' })
+      return
+    }
     var pages = getCurrentPages()
     var id = pages[pages.length - 1].options.id
     if (id) this.fetchOrder(id)
@@ -124,6 +129,7 @@ export default {
         var self = this
         setTimeout(function () { self.fetchOrder(self.order.id) }, 800)
       } catch (e) {
+        uni.showToast({ title: e.message || '支付失败', icon: 'none' })
         console.log('pay error:', e)
       }
     },

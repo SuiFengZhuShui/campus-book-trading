@@ -3,8 +3,8 @@
     <view v-if="loading" class="status-msg">加载中...</view>
     <template v-else>
       <view v-if="wants.length === 0" class="empty-state">
-        <text>暂无我的求购</text>
-        <text class="btn-amber mt-16" style="padding:8px 20px;display:inline-block;" @click="goPost">发布求购</text>
+        <text style="display:block;">暂无我的求购</text>
+        <text class="btn-amber mt-16" style="padding:8px 20px;display:block;width:fit-content;margin:16px auto 0;" @click="goPost">发布求购</text>
       </view>
       <view v-for="w in wants" :key="w.id" :class="['card', 'want-card', wantAccent(w.status)]" @click="goDetail(w.id)">
         <view class="want-header">

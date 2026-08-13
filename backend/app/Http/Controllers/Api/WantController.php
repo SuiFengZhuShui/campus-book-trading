@@ -33,8 +33,8 @@ class WantController extends Controller
                 'status' => $w->status,
                 'status_label' => $this->wantStatusLabel($w->status),
                 'fulfiller_count' => $w->fulfillments()->count(),
-                'expires_at' => $w->expires_at->toDateTimeString(),
-                'created_at' => $w->created_at->toDateTimeString(),
+                'expires_at' => $w->expires_at ? $w->expires_at->toDateTimeString() : null,
+                'created_at' => $w->created_at ? $w->created_at->toDateTimeString() : null,
             ];
         });
 
@@ -67,8 +67,8 @@ class WantController extends Controller
                 'status' => $w->status,
                 'status_label' => $this->wantStatusLabel($w->status),
                 'fulfiller_count' => $w->fulfillments()->count(),
-                'expires_at' => $w->expires_at->toDateTimeString(),
-                'created_at' => $w->created_at->toDateTimeString(),
+                'expires_at' => $w->expires_at ? $w->expires_at->toDateTimeString() : null,
+                'created_at' => $w->created_at ? $w->created_at->toDateTimeString() : null,
             ];
         });
 
@@ -97,8 +97,8 @@ class WantController extends Controller
             'condition_label' => $this->conditionLabel($want->acceptable_condition),
             'status' => $want->status,
             'status_label' => $this->wantStatusLabel($want->status),
-            'expires_at' => $want->expires_at->toDateTimeString(),
-            'created_at' => $want->created_at->toDateTimeString(),
+            'expires_at' => $want->expires_at ? $want->expires_at->toDateTimeString() : null,
+            'created_at' => $want->created_at ? $want->created_at->toDateTimeString() : null,
             'fulfillments' => $want->fulfillments->map(function ($f) {
                 return [
                     'id' => $f->id,
@@ -175,8 +175,11 @@ class WantController extends Controller
         return $map[$status] ?? $status;
     }
 
-    private function conditionLabel(string $condition): string
+    private function conditionLabel(?string $condition): string
     {
+        if (empty($condition)) {
+            return '不限';
+        }
         $map = [
             'like_new' => '全新',
             'excellent' => '几乎全新',

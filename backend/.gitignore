@@ -10,3 +10,10 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+
+# 敏感文件防护
+.env.*
+*.bak*
+*.bak.*
+*.sql
+*.sql.gz

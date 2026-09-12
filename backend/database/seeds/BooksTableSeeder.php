@@ -102,7 +102,7 @@ class BooksTableSeeder extends Seeder
             $this->sellerIds[] = DB::table('users')->insertGetId([
                 'name' => $s['name'],
                 'phone' => $s['phone'],
-                'password' => Hash::make('REDACTED-PASSWORD'),
+                'password' => Hash::make(DemoPassword::get()),
                 'role' => 'student',
                 'status' => 1,
                 'created_at' => now(),

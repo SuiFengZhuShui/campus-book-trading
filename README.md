@@ -71,10 +71,11 @@ php artisan serve
 
 | 角色 | 账号 | 密码 |
 |------|------|------|
-| 管理员 | `admin`（手机号 `13800000000`） | `REDACTED-PASSWORD` |
-| 学生 | 手机号 `13800000001` ~ `13800000015`（共 15 个） | `REDACTED-PASSWORD` |
+| 管理员 | `admin`（手机号 `13800000000`） | 见 `.env` 的 `SEED_PASSWORD` |
+| 学生 | 手机号 `13800000001` ~ `13800000015`（共 15 个） | 见 `.env` 的 `SEED_PASSWORD` |
 
-> **注意**：密码是 seeder 中留下的**占位字符串** `REDACTED-PASSWORD`（见 `backend/database/seeds/UsersTableSeeder.php` 与 `BooksTableSeeder.php`），为了不把真实凭据写进公开仓库而做了脱敏。它可以直接登录，但**请务必自行改成强密码**，或把 seeder 里的占位值换掉后重新 seed。
+> 演示账号密码**不硬编码在代码里**，seeder 通过 `DemoPassword::get()` 读取 `.env` 的 `SEED_PASSWORD`（`.env.example` 默认 `ChangeMe@2026`）。未配置该变量时 seeder 会直接报错，不会静默使用空密码。
+> **生产环境务必改成强密码**，并在 seed 之前就设好。
 
 ### 移动端启动
 

@@ -13,7 +13,7 @@ class UsersTableSeeder extends Seeder
                 'username' => 'admin',
                 'name' => '管理员',
                 'phone' => '13800000000',
-                'password' => Hash::make('REDACTED-PASSWORD'),
+                'password' => Hash::make(DemoPassword::get()),
                 'role' => 'admin',
                 'status' => 1,
                 'created_at' => now(),

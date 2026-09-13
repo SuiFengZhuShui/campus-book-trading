@@ -392,3 +392,24 @@
 ### 遇到的问题
 - docx 文档 styles.xml 重复样式导致 Word 报错 → 已重新生成修复
 - MySQL 用小皮（phpstudy），已安装未启动，DBeaver 管理
+
+## 2026-09-13
+### 今日完成
+- README 重构：版式对齐参考项目，并按代码校正业务描述（实为 PC 网页端 + 微信小程序 + Android APK 三端；交易是平台审核上架 + 线下自提，非快递；书籍按学院→专业→课程三级组织）
+- seeder 演示密码外置：新增 `DemoPassword` 从 `.env` 的 `SEED_PASSWORD` 读取，未配置时抛异常，不再硬编码明文密码
+- 合并 GitHub 侧 `.gitignore` 敏感文件防护（`.env.*` / `*.bak*` / `*.sql`）
+- 移除从未使用的 Laravel-mix 前端构建脚手架（视图走 CDN + 内联，全仓库对 `mix()` / `app.css` / `app.js` 引用数为 0）；补入漏跟踪的 `public/js/echarts.min.js`
+- 新增 `SECURITY.md`：28 条依赖告警的成因、为何无法通过升级依赖消除、已实施的安全措施
+- 解决本地源目录与 GitHub 的历史分叉（两侧无共同祖先，此前本地提交推不上去）→ 用 `git merge -s ours` 同步，未 force-push、未毁远端历史
+- 摘出作品集不收录的材料（3 个演示 PPTX + 2 个内部笔记），文件保留在磁盘
+
+### 待办事项
+- [ ] MySQL 启动（小皮）+ 建库 `campus_books` + 运行 migration + seeder
+- [ ] 测试后端可用（注册/登录/提交卖书）
+- [ ] 书籍 / 订单 / 求购广场 / 评价 各模块
+- [ ] Vue Web 前端开发
+- [ ] uni-app 移动端开发
+
+### 遇到的问题
+- `backend/public/favicon.ico` 是 0 字节空文件，据此误判「无图标」，实际小程序端有完整图标集 `mobile/static/icons/`（48~1024 共 7 个）→ 已补进 README
+- 本地与 GitHub 是两条独立历史（各自 `git init`，根提交 `a6fd2ac` vs `1e3b8d1`，`merge-base` 为空）→ 已解决

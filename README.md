@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="mobile/static/icons/icon-256x256.png" width="120" height="120" style="border-radius: 20px;" alt="校园二手书交易平台">
+</p>
+
 <h1 align="center">校园二手书交易平台</h1>
 
 <p align="center">面向高校教材的二手书交易平台 · PC 网页端 + 移动端（微信小程序 / Android App）</p>

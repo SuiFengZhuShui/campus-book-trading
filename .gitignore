@@ -51,3 +51,13 @@ backend/storage/logs/
 mobile/node_modules/
 mobile/.env
 mobile/unpackage/
+
+# 不入库的本地材料（作品集仓库只放代码与文档）
+# 2026-09-13 从 git 摘出：3 个演示 PPTX 与 2 个内部开发笔记
+*.pptx
+bug.txt
+换机注意事项.txt
+
+# 数据库导出（体积大且含数据，不入库）
+*.sql
+*.sql.gz

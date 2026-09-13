@@ -61,3 +61,7 @@ bug.txt
 # 数据库导出（体积大且含数据，不入库）
 *.sql
 *.sql.gz
+
+# Claude Code 本地工作区（settings/cache 忽略，项目记忆保留）
+.claude/*
+!.claude/memory/

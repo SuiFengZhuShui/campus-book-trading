@@ -373,3 +373,26 @@ ECC `coding-style.md` 中的通用规则作为基准，本表覆盖了项目特�
 - 页面 `pages/`，组件 `components/`，API 封装 `utils/request.js`
 - API URL 通过 `BASE_URL` 统一管理，页面禁止硬编码
 - 环境切换时全局搜索远程 IP → 逐一改源文件 → grep 确认
+
+## 后台仪表盘报表（ECharts 数字卡 + 趋势线）
+
+（2026-09-02 新增）
+
+### 实现要点
+- 4 张数字卡 + 近 30 天 sparkline 趋势线，`DashboardController@index` 聚合，`dashboard.blade.php` 渲染
+- 趋势字段选业务时间字段，不 created_at 一锅端：
+  - 待审核书籍 → `books.submitted_at`
+  - 在售书籍 → `books.approved_at`
+  - 待处理订单 → `orders.paid_at`
+  - 今日订单 → `orders.created_at`
+- 聚合：`->selectRaw('DATE(col) AS d, COUNT(*) AS c')->groupBy(DB::raw('DATE(col)'))->pluck('c','d')`，遍历近 30 天缺失填 0
+
+### 踩坑
+1. **Laravel 5.8 无 `groupByRaw()`** —— 报 `Call to undefined method Builder::groupByRaw()`，用 `->groupBy(DB::raw('DATE(col)'))`（需 `use Illuminate\Support\Facades\DB`）。
+2. **ECharts 本地化** —— CDN 1MB 加载慢，下载到 `public/js/echarts.min.js`，视图用 `asset('js/echarts.min.js')`。
+3. **测试趋势要改数据日期** —— dump 数据日期旧，近 30 天全 0。`UPDATE books SET submitted_at = DATE_SUB(NOW(), INTERVAL (id % 15) DAY)` 分散到近几天制造起伏。
+
+### 本地环境三坑（nginx 部署项目拉到本地）
+1. 登录 419：`.env` 的 `SESSION_DOMAIN=.xiaozhanan.xyz` + `SESSION_SECURE_COOKIE=true` 在本地 http 下 cookie 失效，改 `SESSION_DOMAIN=`（空）+ `SESSION_SECURE_COOKIE=false`。
+2. 页面 404：nginx 部署项目 `public/.htaccess` 空，本地 Apache 缺重写，补 Laravel 标准规则。
+3. 连不上库：`.env` DB 凭据是服务器用户，本地改 `root/root`，部署前改回生产值。

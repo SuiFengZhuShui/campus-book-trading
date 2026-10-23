@@ -84,7 +84,7 @@ php artisan serve
 ### 移动端启动
 
 1. HBuilderX 打开 `mobile/` 目录
-2. `manifest.json` 中配置微信小程序 appid（打包 App 还需配置图标与启动图）
+2. `manifest.json` 中 `mp-weixin.appid` 填自己的微信小程序 AppID（仓库内默认为空，`__UNI__CB4CDD4` 是 uni-app 应用标识，不用改）。**填完不要提交**——AppID 属于个人凭据，提交前用 `git diff mobile/manifest.json` 确认没有带出（打包 App 还需配置图标与启动图）
 3. 修改 `mobile/utils/request.js` 内的 API 地址，指向本地后端
 4. 运行到微信开发者工具，或用 HBuilderX 内置浏览器预览 H5
 
